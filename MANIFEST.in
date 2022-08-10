@@ -1,0 +1,11 @@
+include flight_path/flight_path.min.js
+include flight_path/flight_path.min.js.map
+include flight_path/async-*.js
+include flight_path/async-*.js.map
+include flight_path/*-shared.js
+include flight_path/*-shared.js.map
+include flight_path/metadata.json
+include flight_path/package-info.json
+include README.md
+include LICENSE
+include package.json
