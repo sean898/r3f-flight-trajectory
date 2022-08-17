@@ -7,7 +7,6 @@ const packagejson = require('./package.json');
 const dashLibraryName = packagejson.name.replace(/-/g, '_');
 
 module.exports = (env, argv) => {
-
     let mode;
 
     const overrides = module.exports || {};
@@ -28,7 +27,7 @@ module.exports = (env, argv) => {
     }
 
     let filename = (overrides.output || {}).filename;
-    if(!filename) {
+    if (!filename) {
         const modeSuffix = mode === 'development' ? 'dev' : 'min';
         filename = `${dashLibraryName}.${modeSuffix}.js`;
     }
@@ -37,12 +36,15 @@ module.exports = (env, argv) => {
 
     const devtool = overrides.devtool || 'source-map';
 
-    const externals = ('externals' in overrides) ? overrides.externals : ({
-        react: 'React',
-        'react-dom': 'ReactDOM',
-        'plotly.js': 'Plotly',
-        'prop-types': 'PropTypes',
-    });
+    const externals =
+        'externals' in overrides
+            ? overrides.externals
+            : {
+                  react: 'React',
+                  'react-dom': 'ReactDOM',
+                  'plotly.js': 'Plotly',
+                  'prop-types': 'PropTypes',
+              };
 
     return {
         mode,
@@ -71,11 +73,24 @@ module.exports = (env, argv) => {
                         {
                             loader: 'style-loader',
                             options: {
-                                insertAt: 'top'
-                            }
+                                insertAt: 'top',
+                            },
                         },
                         {
                             loader: 'css-loader',
+                        },
+                    ],
+                },
+                {
+                    test: /\.(txt|csv|mmdb)$/,
+
+                    use: [
+                        {
+                            loader: 'file-loader',
+                            options: {
+                                name: '[path][name].[ext]',
+                                emitFile: true,
+                            },
                         },
                     ],
                 },
@@ -89,9 +104,9 @@ module.exports = (env, argv) => {
                     cache: './.build_cache/terser',
                     terserOptions: {
                         warnings: false,
-                        ie8: false
-                    }
-                })
+                        ie8: false,
+                    },
+                }),
             ],
             splitChunks: {
                 name: true,
@@ -101,23 +116,23 @@ module.exports = (env, argv) => {
                         minSize: 0,
                         name(module, chunks, cacheGroupKey) {
                             return `${cacheGroupKey}-${chunks[0].name}`;
-                        }
+                        },
                     },
                     shared: {
                         chunks: 'all',
                         minSize: 0,
                         minChunks: 2,
-                        name: 'flight_path-shared'
-                    }
-                }
-            }
+                        name: 'flight_path-shared',
+                    },
+                },
+            },
         },
         plugins: [
             new WebpackDashDynamicImport(),
             new webpack.SourceMapDevToolPlugin({
                 filename: '[file].map',
-                exclude: ['async-plotlyjs']
-            })
-        ]
-    }
+                exclude: ['async-plotlyjs'],
+            }),
+        ],
+    };
 };
