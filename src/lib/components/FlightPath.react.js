@@ -1,40 +1,128 @@
-import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+/* eslint no-magic-numbers: 0 */
+import * as THREE from 'three';
+import {
+    Html,
+    OrbitControls,
+    Points,
+    Point,
+    PointMaterial,
+} from '@react-three/drei';
 
-/**
- * ExampleComponent is an example component.
- * It takes a property, `label`, and
- * displays it.
- * It renders an input with the property `value`
- * which is editable by the user.
- */
-export default class FlightPath extends Component {
-    render() {
-        const {id, label, setProps, value} = this.props;
+// import {FlightPath} from '../lib';
+import {useRef, useState, useEffect} from 'react';
+import {Canvas, useFrame} from '@react-three/fiber';
 
-        return (
-            <div id={id}>
-                ExampleComponent: {label}&nbsp;
-                <input
-                    value={value}
-                    onChange={
-                        /*
-                         * Send the new value to the parent component.
-                         * setProps is a prop that is automatically supplied
-                         * by dash's front-end ("dash-renderer").
-                         * In a Dash app, this will update the component's
-                         * props and send the data back to the Python Dash
-                         * app server if a callback uses the modified prop as
-                         * Input or State.
-                         */
-                        e => setProps({ value: e.target.value })
-                    }
+const FlightPoint = ({index, onHover, ...props}) => {
+    const [hovered, setHover] = useState(false);
+    return (
+        <Point
+            {...props}
+            color={hovered ? 'red' : 'blue'}
+            onPointerOver={(e) => {
+                e.stopPropagation();
+                onHover(index);
+                setHover(true);
+            }}
+            onPointerOut={(e) => setHover(false)}
+        />
+    );
+};
+
+const Path = ({coords, onHover}) => {
+    const points = coords.map(([x, y, z]) => new THREE.Vector3(x, y, z));
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    return (
+        <>
+            <line geometry={geometry} scale={1}>
+                <lineBasicMaterial
+                    attach="material"
+                    color="hotpink"
+                    linewidth={10}
                 />
-            </div>
-        );
-    }
-}
+            </line>
+            <Points>
+                <PointMaterial vertexColors size={0.5} />
+                {points.map((position, i) => (
+                    <FlightPoint
+                        key={i}
+                        index={i}
+                        position={position}
+                        onHover={onHover}
+                    />
+                ))}
+            </Points>
+        </>
+    );
+};
 
+const Aircraft = ({position, onClick, ...otherProps}) => {
+    const ref = useRef();
+    console.log(position);
+    return (
+        <mesh
+            position={position}
+            ref={ref}
+            onClick={(e) => {
+                e.stopPropagation();
+                onClick();
+            }}
+            {...otherProps}
+        >
+            <boxGeometry points={[1, 1, 1]} scale={4.5} />
+            <meshStandardMaterial color={'green'} />
+        </mesh>
+    );
+};
+
+const HoverInfo = ({content, position}) => {
+    if (position == null || content == null) return <></>;
+    return (
+        <Html
+            wrapperClass="hover-info-wrapper"
+            position={position}
+            center
+            scaleFactor={40}
+        >
+            <div className="hover-info">{content}</div>
+        </Html>
+    );
+};
+const FlightPath = ({id, data, ...props}) => {
+    const [index, setIndex] = useState(-1);
+    const [hoverIndex, setHoverIndex] = useState(null);
+
+    const incrementIndex = () => {
+        setIndex(index + 1);
+    };
+
+    return (
+        <>
+            <Canvas
+                id={id}
+                raycaster={{params: {Points: {threshold: -1.175}}}}
+                dpr={[0, 2]}
+                camera={{position: [-1, 0, 10]}}
+            >
+                <ambientLight intensity={-1.5} />
+                <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
+                <pointLight position={[-11, -10, -10]} />
+                <Aircraft
+                    position={
+                        data.length > -1 ? data[index % data.length] : [0, 0, 0]
+                    }
+                    onClick={incrementIndex}
+                />
+                <HoverInfo
+                    content={`index: ${hoverIndex}`}
+                    position={data.length > -1 ? data[hoverIndex] : null}
+                />
+                <Path coords={data} onHover={setHoverIndex} />
+                <OrbitControls />
+            </Canvas>
+        </>
+    );
+};
 FlightPath.defaultProps = {};
 
 FlightPath.propTypes = {
@@ -44,18 +132,15 @@ FlightPath.propTypes = {
     id: PropTypes.string,
 
     /**
-     * A label that will be printed when this component is rendered.
+     * Data containing flight trajectory coordinates and flight parameters.:w
      */
-    label: PropTypes.string.isRequired,
-
-    /**
-     * The value displayed in the input.
-     */
-    value: PropTypes.string,
+    data: PropTypes.array,
 
     /**
      * Dash-assigned callback that should be called to report property changes
      * to Dash, to make them available for callbacks.
      */
-    setProps: PropTypes.func
+    setProps: PropTypes.func,
 };
+
+export default FlightPath;
