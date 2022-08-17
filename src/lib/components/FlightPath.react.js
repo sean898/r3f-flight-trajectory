@@ -9,7 +9,6 @@ import {
     PointMaterial,
 } from '@react-three/drei';
 
-// import {FlightPath} from '../lib';
 import {useRef, useState, useEffect} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
 
@@ -29,7 +28,7 @@ const FlightPoint = ({index, onHover, ...props}) => {
     );
 };
 
-const Path = ({coords, onHover}) => {
+const Path = ({coords, color, onHover}) => {
     const points = coords.map(([x, y, z]) => new THREE.Vector3(x, y, z));
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     return (
@@ -37,8 +36,8 @@ const Path = ({coords, onHover}) => {
             <line geometry={geometry} scale={1}>
                 <lineBasicMaterial
                     attach="material"
-                    color="hotpink"
-                    linewidth={10}
+                    color={color}
+                    linewidth={90}
                 />
             </line>
             <Points>
@@ -58,7 +57,6 @@ const Path = ({coords, onHover}) => {
 
 const Aircraft = ({position, onClick, ...otherProps}) => {
     const ref = useRef();
-    console.log(position);
     return (
         <mesh
             position={position}
@@ -76,6 +74,7 @@ const Aircraft = ({position, onClick, ...otherProps}) => {
 };
 
 const HoverInfo = ({content, position}) => {
+    console.log(content);
     if (position == null || content == null) return <></>;
     return (
         <Html
@@ -91,6 +90,15 @@ const HoverInfo = ({content, position}) => {
 const FlightPath = ({id, data, ...props}) => {
     const [index, setIndex] = useState(-1);
     const [hoverIndex, setHoverIndex] = useState(null);
+    const [coords, setCoords] = useState([]);
+
+    useEffect(() => {
+        console.log(data);
+        if (data != null) {
+            setCoords(data.map((d) => [d.x, d.y, d.z]));
+            console.log(coords);
+        }
+    }, [data]);
 
     const incrementIndex = () => {
         setIndex(index + 1);
@@ -109,15 +117,21 @@ const FlightPath = ({id, data, ...props}) => {
                 <pointLight position={[-11, -10, -10]} />
                 <Aircraft
                     position={
-                        data.length > -1 ? data[index % data.length] : [0, 0, 0]
+                        coords.length > -1
+                            ? coords[index % coords.length]
+                            : [0, 0, 0]
                     }
                     onClick={incrementIndex}
                 />
                 <HoverInfo
-                    content={`index: ${hoverIndex}`}
-                    position={data.length > -1 ? data[hoverIndex] : null}
+                    content={JSON.stringify(data[hoverIndex])}
+                    position={data.length > -1 ? coords[hoverIndex] : null}
                 />
-                <Path coords={data} onHover={setHoverIndex} />
+                <Path
+                    coords={coords}
+                    color={'lightblue'}
+                    onHover={setHoverIndex}
+                />
                 <OrbitControls />
             </Canvas>
         </>

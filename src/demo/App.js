@@ -1,17 +1,20 @@
 import {FlightPath} from '../lib';
 import {useRef, useState, useEffect} from 'react';
 import csvFile from './data/test.csv';
+import Papa from 'papaparse';
 
 const useData = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        setData([
-            [-1.2, 0, 0],
-            [-10, 0, 5],
-            [0, 10, 0],
-            [10, 0, -5],
-        ]);
+        Papa.parse(csvFile, {
+            delimiter: ',',
+            download: true,
+            preview: 50,
+            header: true,
+            dynamicTyping: true,
+            complete: (result) => setData(result.data),
+        });
     }, []);
     return data;
 };
