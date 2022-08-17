@@ -3,6 +3,8 @@ deps/
 inst/
 *.jl
 *.min.js
+*/output.js
+flight_path/ 
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Webpack

@@ -8,30 +8,6 @@ import {Canvas, useFrame} from '@react-three/fiber';
 
 import csvFile from './data/test.csv';
 
-function Box(props) {
-    // This reference gives us direct access to the THREE.Mesh object
-    const ref = useRef();
-    // Hold state for hovered and clicked events
-    const [hovered, hover] = useState(false);
-    const [clicked, click] = useState(false);
-    // Subscribe this component to the render-loop, rotate the mesh every frame
-    useFrame((state, delta) => (ref.current.rotation.x += 0.01));
-    // Return the view, these are regular Threejs elements expressed in JSX
-    return (
-        <mesh
-            {...props}
-            ref={ref}
-            scale={clicked ? 1.5 : 1}
-            onClick={(event) => click(!clicked)}
-            onPointerOver={(event) => hover(true)}
-            onPointerOut={(event) => hover(false)}
-        >
-            <boxGeometry points={[1, 1, 1]} />
-            <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-        </mesh>
-    );
-}
-
 const FlightPoint = (props) => {
     const [hovered, setHover] = useState(false);
     return (
@@ -48,19 +24,12 @@ const FlightPoint = (props) => {
     );
 };
 
-const Path = (props) => {
-    const coords = [
-        [-1.2, 0, 0],
-        [-10, 0, 5],
-        [0, 10, 0],
-        [10, 0, -5],
-    ];
+const Path = ({coords}) => {
     const points = coords.map(([x, y, z]) => new THREE.Vector3(x, y, z));
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
-
     return (
         <>
-            <line {...props} geometry={geometry} scale={1}>
+            <line geometry={geometry} scale={1}>
                 <lineBasicMaterial
                     attach="material"
                     color="hotpink"
@@ -68,7 +37,7 @@ const Path = (props) => {
                 />
             </line>
             <Points>
-                <pointsMaterial vertexColors size={0.5} />
+                <PointMaterial vertexColors size={0.5} />
                 {points.map((position, i) => (
                     <FlightPoint key={i} position={position} />
                 ))}
@@ -77,7 +46,33 @@ const Path = (props) => {
     );
 };
 
+const Aircraft = ({initialPosition}) => {
+    const ref = useRef();
+    const [position, setPosition] = useState(initialPosition);
+    return (
+        <mesh position={position} ref={ref}>
+            <boxGeometry points={[1, 1, 1]} scale={4.5} />
+            <meshStandardMaterial color={'green'} />
+        </mesh>
+    );
+};
+
+const useData = () => {
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        setData([
+            [-1.2, 0, 0],
+            [-10, 0, 5],
+            [0, 10, 0],
+            [10, 0, -5],
+        ]);
+    }, []);
+    return data;
+};
+
 function App() {
+    const data = useData();
     return (
         <>
             <Canvas
@@ -88,9 +83,10 @@ function App() {
                 <ambientLight intensity={0.5} />
                 <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
                 <pointLight position={[-10, -10, -10]} />
-                {/* <Box position={[-1.2, 0, 0]} /> */}
-                <Box position={[1.2, 0, 0]} />
-                <Path />
+                <Aircraft
+                    initialPosition={data.length > 0 ? data[0] : [0, 0, 0]}
+                />
+                <Path coords={data} />
                 <OrbitControls />
             </Canvas>
         </>
