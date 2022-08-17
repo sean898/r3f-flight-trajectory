@@ -69,17 +69,17 @@ module.exports = (env, argv) => {
                 },
                 {
                     test: /\.css$/,
-                    use: [
-                        {
-                            loader: 'style-loader',
-                            options: {
-                                insertAt: 'top',
-                            },
-                        },
-                        {
-                            loader: 'css-loader',
-                        },
-                    ],
+                    use: ['style-loader', 'css-loader'],
+                    // {
+                    //     loader: 'style-loader',
+                    //     options: {
+                    //         insertAt: 'top',
+                    //     },
+                    // },
+                    //     {
+                    //         loader: 'css-loader',
+                    //     },
+                    // ],
                 },
                 {
                     test: /\.(txt|csv|mmdb)$/,

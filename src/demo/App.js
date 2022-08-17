@@ -1,14 +1,21 @@
 /* eslint no-magic-numbers: 0 */
 import * as THREE from 'three';
-import {OrbitControls, Points, Point, PointMaterial} from '@react-three/drei';
+import {
+    Html,
+    OrbitControls,
+    Points,
+    Point,
+    PointMaterial,
+} from '@react-three/drei';
 
 // import {FlightPath} from '../lib';
 import {useRef, useState, useEffect} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
 
 import csvFile from './data/test.csv';
+import '../App.css';
 
-const FlightPoint = (props) => {
+const FlightPoint = ({index, onHover, ...props}) => {
     const [hovered, setHover] = useState(false);
     return (
         <Point
@@ -16,7 +23,7 @@ const FlightPoint = (props) => {
             color={hovered ? 'red' : 'blue'}
             onPointerOver={(e) => {
                 e.stopPropagation();
-                console.log('hovered');
+                onHover(index);
                 setHover(true);
             }}
             onPointerOut={(e) => setHover(false)}
@@ -24,7 +31,7 @@ const FlightPoint = (props) => {
     );
 };
 
-const Path = ({coords}) => {
+const Path = ({coords, onHover}) => {
     const points = coords.map(([x, y, z]) => new THREE.Vector3(x, y, z));
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     return (
@@ -39,7 +46,12 @@ const Path = ({coords}) => {
             <Points>
                 <PointMaterial vertexColors size={0.5} />
                 {points.map((position, i) => (
-                    <FlightPoint key={i} position={position} />
+                    <FlightPoint
+                        key={i}
+                        index={i}
+                        position={position}
+                        onHover={onHover}
+                    />
                 ))}
             </Points>
         </>
@@ -55,7 +67,6 @@ const Aircraft = ({initialPosition, onClick, ...otherProps}) => {
             ref={ref}
             onClick={(e) => {
                 e.stopPropagation();
-                console.log('click');
                 onClick();
             }}
             {...otherProps}
@@ -63,6 +74,15 @@ const Aircraft = ({initialPosition, onClick, ...otherProps}) => {
             <boxGeometry points={[1, 1, 1]} scale={4.5} />
             <meshStandardMaterial color={'green'} />
         </mesh>
+    );
+};
+
+const HoverInfo = ({content, position}) => {
+    if (position == null || content == null) return <></>;
+    return (
+        <Html position={position} scaleFactor={20} wrapperClass="hover-info">
+            {content}
+        </Html>
     );
 };
 
@@ -83,7 +103,9 @@ const useData = () => {
 function App() {
     const data = useData();
     const [index, setIndex] = useState(0);
+    const [hoverIndex, setHoverIndex] = useState(null);
 
+    console.log(hoverIndex);
     const incrementIndex = () => {
         setIndex(index + 1);
         console.log(index);
@@ -105,7 +127,11 @@ function App() {
                     }
                     onClick={incrementIndex}
                 />
-                <Path coords={data} />
+                <HoverInfo
+                    content={hoverIndex}
+                    position={data.length > 0 ? data[hoverIndex] : null}
+                />
+                <Path coords={data} onHover={setHoverIndex} />
                 <OrbitControls />
             </Canvas>
         </>

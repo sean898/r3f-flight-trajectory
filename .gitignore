@@ -5,6 +5,7 @@ inst/
 *.min.js
 */output.js
 flight_path/ 
+flight_path/output.js 
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Webpack
