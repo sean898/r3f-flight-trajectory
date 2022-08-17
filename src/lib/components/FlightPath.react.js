@@ -6,11 +6,14 @@ import {
     OrbitControls,
     Points,
     Point,
+    Line,
     PointMaterial,
+    Plane,
 } from '@react-three/drei';
 
 import {useRef, useState, useEffect} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
+import {Vector3} from 'three';
 
 const FlightPoint = ({index, onHover, ...props}) => {
     const [hovered, setHover] = useState(false);
@@ -29,17 +32,13 @@ const FlightPoint = ({index, onHover, ...props}) => {
 };
 
 const Path = ({coords, color, onHover}) => {
+    if (coords == null || coords.length == 0) return <></>;
+
     const points = coords.map(([x, y, z]) => new THREE.Vector3(x, y, z));
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     return (
         <>
-            <line geometry={geometry} scale={1}>
-                <lineBasicMaterial
-                    attach="material"
-                    color={color}
-                    linewidth={90}
-                />
-            </line>
+            <Line points={coords} lineWidth={3} color={'lightBlue'} />
             <Points>
                 <PointMaterial vertexColors size={0.5} />
                 {points.map((position, i) => (
@@ -74,7 +73,6 @@ const Aircraft = ({position, onClick, ...otherProps}) => {
 };
 
 const HoverInfo = ({content, position}) => {
-    console.log(content);
     if (position == null || content == null) return <></>;
     return (
         <Html
@@ -115,6 +113,11 @@ const FlightPath = ({id, data, ...props}) => {
                 <ambientLight intensity={-1.5} />
                 <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
                 <pointLight position={[-11, -10, -10]} />
+                {/* <planeHelper
+                    plane={Plane(new Vector3(1, 1, 0), 3)}
+                    size={3}
+                    color="red"
+                /> */}
                 <Aircraft
                     position={
                         coords.length > -1
