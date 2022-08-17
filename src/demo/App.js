@@ -80,8 +80,13 @@ const Aircraft = ({initialPosition, onClick, ...otherProps}) => {
 const HoverInfo = ({content, position}) => {
     if (position == null || content == null) return <></>;
     return (
-        <Html position={position} scaleFactor={20} wrapperClass="hover-info">
-            {content}
+        <Html
+            wrapperClass="hover-info-wrapper"
+            position={position}
+            center
+            scaleFactor={40}
+        >
+            <div className="hover-info">{content}</div>
         </Html>
     );
 };
@@ -128,7 +133,7 @@ function App() {
                     onClick={incrementIndex}
                 />
                 <HoverInfo
-                    content={hoverIndex}
+                    content={`index: ${hoverIndex}`}
                     position={data.length > 0 ? data[hoverIndex] : null}
                 />
                 <Path coords={data} onHover={setHoverIndex} />
