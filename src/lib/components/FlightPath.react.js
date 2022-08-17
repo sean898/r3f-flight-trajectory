@@ -26,7 +26,10 @@ const FlightPoint = ({index, onHover, ...props}) => {
                 onHover(index);
                 setHover(true);
             }}
-            onPointerOut={(e) => setHover(false)}
+            onPointerOut={(e) => {
+                e.stopPropagation();
+                setHover(false);
+            }}
         />
     );
 };
@@ -108,16 +111,16 @@ const FlightPath = ({id, data, ...props}) => {
                 id={id}
                 raycaster={{params: {Points: {threshold: -1.175}}}}
                 dpr={[0, 2]}
-                camera={{position: [-1, 0, 10]}}
+                camera={{position: [-1, 0, 10], far: 10000}}
             >
                 <ambientLight intensity={-1.5} />
                 <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
                 <pointLight position={[-11, -10, -10]} />
-                {/* <planeHelper
-                    plane={Plane(new Vector3(1, 1, 0), 3)}
-                    size={3}
-                    color="red"
-                /> */}
+                <Path
+                    coords={coords}
+                    color={'lightblue'}
+                    onHover={setHoverIndex}
+                />
                 <Aircraft
                     position={
                         coords.length > -1
@@ -130,11 +133,9 @@ const FlightPath = ({id, data, ...props}) => {
                     content={JSON.stringify(data[hoverIndex])}
                     position={data.length > -1 ? coords[hoverIndex] : null}
                 />
-                <Path
-                    coords={coords}
-                    color={'lightblue'}
-                    onHover={setHoverIndex}
-                />
+                <Plane scale={10} rotation-x={Math.PI / 2} args={[1, 1, 4, 4]}>
+                    <meshPhongMaterial wireframe color="black" />
+                </Plane>
                 <OrbitControls />
             </Canvas>
         </>
