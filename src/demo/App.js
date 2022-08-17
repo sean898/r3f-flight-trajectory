@@ -46,11 +46,20 @@ const Path = ({coords}) => {
     );
 };
 
-const Aircraft = ({initialPosition}) => {
+const Aircraft = ({initialPosition, onClick, ...otherProps}) => {
     const ref = useRef();
     const [position, setPosition] = useState(initialPosition);
     return (
-        <mesh position={position} ref={ref}>
+        <mesh
+            position={position}
+            ref={ref}
+            onClick={(e) => {
+                e.stopPropagation();
+                console.log('click');
+                onClick();
+            }}
+            {...otherProps}
+        >
             <boxGeometry points={[1, 1, 1]} scale={4.5} />
             <meshStandardMaterial color={'green'} />
         </mesh>
@@ -73,6 +82,13 @@ const useData = () => {
 
 function App() {
     const data = useData();
+    const [index, setIndex] = useState(0);
+
+    const incrementIndex = () => {
+        setIndex(index + 1);
+        console.log(index);
+    };
+
     return (
         <>
             <Canvas
@@ -84,7 +100,10 @@ function App() {
                 <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
                 <pointLight position={[-10, -10, -10]} />
                 <Aircraft
-                    initialPosition={data.length > 0 ? data[0] : [0, 0, 0]}
+                    position={
+                        data.length > 0 ? data[index % data.length] : [0, 0, 0]
+                    }
+                    onClick={incrementIndex}
                 />
                 <Path coords={data} />
                 <OrbitControls />
