@@ -38,7 +38,11 @@ const FlightPoint = (props) => {
         <Point
             {...props}
             color={hovered ? 'red' : 'blue'}
-            onPointerOver={(e) => (e.stopPropagation(), setHover(true))}
+            onPointerOver={(e) => {
+                e.stopPropagation();
+                console.log('hovered');
+                setHover(true);
+            }}
             onPointerOut={(e) => setHover(false)}
         />
     );
@@ -63,13 +67,8 @@ const Path = (props) => {
                     linewidth={10}
                 />
             </line>
-            <Points limit={points.length}>
-                <PointMaterial
-                    vertextColors={true}
-                    size={50}
-                    sizeAttenuation={false}
-                    depthWrite={false}
-                />
+            <Points>
+                <pointsMaterial vertexColors size={0.5} />
                 {points.map((position, i) => (
                     <FlightPoint key={i} position={position} />
                 ))}
@@ -82,14 +81,9 @@ function App() {
     return (
         <>
             <Canvas
-                camera={{
-                    aspect: 2,
-                    far: 1000,
-                    fov: 40,
-                    near: 0.1,
-                    position: [0, 10, 0],
-                    up: [0, 0, 1],
-                }}
+                raycaster={{params: {Points: {threshold: 0.175}}}}
+                dpr={[1, 2]}
+                camera={{position: [0, 0, 10]}}
             >
                 <ambientLight intensity={0.5} />
                 <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
