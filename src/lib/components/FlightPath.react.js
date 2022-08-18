@@ -202,9 +202,9 @@ const FlightPath = ({id, data, ...props}) => {
                 />
                 <Suspense fallback={null}>
                     <Aircraft
-                        position={
-                            coords.length > -1
-                                ? coords[index % coords.length]
+                        positionData={
+                            data.length > -1
+                                ? data[index % data.length]
                                 : [0, 0, 0]
                         }
                         onClick={incrementIndex}
