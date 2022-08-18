@@ -82,7 +82,7 @@ module.exports = (env, argv) => {
                     // ],
                 },
                 {
-                    test: /\.(txt|csv|mmdb)$/,
+                    test: /\.(glb|txt|csv|mmdb)$/,
 
                     use: [
                         {
@@ -99,33 +99,33 @@ module.exports = (env, argv) => {
         optimization: {
             minimizer: [
                 new TerserPlugin({
-                    sourceMap: true,
-                    parallel: true,
-                    cache: './.build_cache/terser',
-                    terserOptions: {
-                        warnings: false,
-                        ie8: false,
-                    },
+                    // sourceMap: true,
+                    // parallel: true,
+                    // // cache: './.build_cache/terser',
+                    // terserOptions: {
+                    //     warnings: false,
+                    //     ie8: false,
+                    // },
                 }),
             ],
-            splitChunks: {
-                name: true,
-                cacheGroups: {
-                    async: {
-                        chunks: 'async',
-                        minSize: 0,
-                        name(module, chunks, cacheGroupKey) {
-                            return `${cacheGroupKey}-${chunks[0].name}`;
-                        },
-                    },
-                    shared: {
-                        chunks: 'all',
-                        minSize: 0,
-                        minChunks: 2,
-                        name: 'flight_path-shared',
-                    },
-                },
-            },
+            // splitChunks:
+            //     name: true,
+            //     cacheGroups: {
+            //         async: {
+            //             chunks: 'async',
+            //             minSize: 0,
+            //             name(module, chunks, cacheGroupKey) {
+            //                 return `${cacheGroupKey}-${chunks[0].name}`;
+            //             },
+            //         },
+            //         shared: {
+            //             chunks: 'all',
+            //             minSize: 0,
+            //             minChunks: 2,
+            //             name: 'flight_path-shared',
+            //         },
+            //     },
+            // },
         },
         plugins: [
             new WebpackDashDynamicImport(),
