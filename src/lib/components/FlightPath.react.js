@@ -19,7 +19,7 @@ import {
     useGLTF,
 } from '@react-three/drei';
 
-import {Suspense, useRef, useState, useEffect} from 'react';
+import {Suspense, useRef, useState, useEffect, useMemo} from 'react';
 import {Canvas, useFrame, useThree} from '@react-three/fiber';
 import {Vector3} from 'three';
 import modelFile from '../../assets/F-16.glb';
@@ -71,6 +71,10 @@ const Path = ({coords, color, onHover}) => {
 const Aircraft = ({position, onClick, ...otherProps}) => {
     const ref = useRef();
     const model = useGLTF(modelFile, false);
+    const color = 'green';
+    useMemo(() => {
+        model.materials['Material.002'].color.set(color);
+    }, [color]);
     return (
         <primitive
             object={model.scene}
