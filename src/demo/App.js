@@ -21,7 +21,18 @@ const useData = () => {
 
 function App() {
     const data = useData();
-    return <FlightPath data={data} />;
+    const [playing, setPlaying] = useState(true);
+    const [counter, setCounter] = useState(1);
+
+    useEffect(() => {
+        if (!playing) return;
+        let interval = setInterval(() => {
+            setCounter((x) => x + 1);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [counter, playing]);
+
+    return <FlightPath counter={counter} data={data} />;
 }
 
 export default App;

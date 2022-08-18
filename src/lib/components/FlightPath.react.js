@@ -85,7 +85,8 @@ const HoverInfo = ({data, position, fields}) => {
     );
 };
 
-const PlotControls = ({...props}) => {
+const PlotControls = ({incrementIndex, ...props}) => {
+    // useFrame(() => incrementIndex());
     const camera = useThree((state) => state.camera);
     const setCameraPosition = (position) => {
         camera.position.set(...position);
@@ -141,11 +142,19 @@ const hoverInfoFields = [
     'pitch',
 ];
 
-const FlightPath = ({id, data, ...props}) => {
+const FlightPath = ({id, data, counter, ...props}) => {
     const [index, setIndex] = useState(-1);
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState([]);
     const [bounds, setBounds] = useState(null);
+
+    const incrementIndex = () => {
+        setIndex(index + 1);
+    };
+
+    useEffect(() => {
+        incrementIndex();
+    }, [counter]);
 
     useEffect(() => {
         if (data != null) {
@@ -173,10 +182,6 @@ const FlightPath = ({id, data, ...props}) => {
         }
     }, [coords]);
 
-    const incrementIndex = () => {
-        setIndex(index + 1);
-    };
-
     return (
         <>
             <Canvas
@@ -191,7 +196,7 @@ const FlightPath = ({id, data, ...props}) => {
                     far={9000}
                 />
                 <OrbitControls zoomSpeed="2" />
-                <PlotControls />
+                <PlotControls incrementIndex={incrementIndex} />
                 <ambientLight intensity={-1.5} />
                 <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
                 <pointLight position={[-11, -10, -10]} />

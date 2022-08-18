@@ -22,10 +22,10 @@ export default function Aircraft({positionData, onClick, ...otherProps}) {
             ref.current.position.y = y;
             ref.current.position.z = z;
 
-            ref.current.rotation.x = bank * degreesToRadians;
             ref.current.rotation.y =
                 (heading + headingOffset) * degreesToRadians;
             ref.current.rotation.z = pitch * degreesToRadians;
+            ref.current.rotation.x = bank * degreesToRadians;
         }
     }, [positionData]);
 
@@ -34,7 +34,7 @@ export default function Aircraft({positionData, onClick, ...otherProps}) {
             <axesHelper args={[20]} setColors={['red', 'green', 'blue']} />
             <primitive
                 object={model.scene}
-                scale={0.1}
+                scale={0.3}
                 onClick={(e) => {
                     e.stopPropagation();
                     onClick();
