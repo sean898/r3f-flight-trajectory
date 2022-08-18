@@ -16,11 +16,13 @@ import {
     Plane,
     OrthographicCamera,
     PerspectiveCamera,
+    useGLTF,
 } from '@react-three/drei';
 
-import {useRef, useState, useEffect} from 'react';
+import {Suspense, useRef, useState, useEffect} from 'react';
 import {Canvas, useFrame, useThree} from '@react-three/fiber';
 import {Vector3} from 'three';
+import modelFile from '../../assets/F-16.glb';
 
 const initialCameraPosition = [-10, 0, 10];
 
@@ -68,19 +70,19 @@ const Path = ({coords, color, onHover}) => {
 
 const Aircraft = ({position, onClick, ...otherProps}) => {
     const ref = useRef();
+    const model = useGLTF(modelFile, false);
     return (
-        <mesh
+        <primitive
+            object={model.scene}
             position={position}
+            scale={0.1}
             ref={ref}
             onClick={(e) => {
                 e.stopPropagation();
                 onClick();
             }}
             {...otherProps}
-        >
-            <boxGeometry points={[1, 1, 1]} scale={4.5} />
-            <meshStandardMaterial color={'green'} />
-        </mesh>
+        />
     );
 };
 
@@ -217,14 +219,16 @@ const FlightPath = ({id, data, ...props}) => {
                     color={'lightblue'}
                     onHover={setHoverIndex}
                 />
-                <Aircraft
-                    position={
-                        coords.length > -1
-                            ? coords[index % coords.length]
-                            : [0, 0, 0]
-                    }
-                    onClick={incrementIndex}
-                />
+                <Suspense fallback={null}>
+                    <Aircraft
+                        position={
+                            coords.length > -1
+                                ? coords[index % coords.length]
+                                : [0, 0, 0]
+                        }
+                        onClick={incrementIndex}
+                    />
+                </Suspense>
                 <HoverInfo
                     data={data[hoverIndex]}
                     position={data.length > -1 ? coords[hoverIndex] : null}
