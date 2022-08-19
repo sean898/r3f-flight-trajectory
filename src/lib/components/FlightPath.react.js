@@ -13,7 +13,6 @@ import {
     Point,
     Line,
     PointMaterial,
-    Plane,
     OrthographicCamera,
     PerspectiveCamera,
 } from '@react-three/drei';
@@ -22,6 +21,7 @@ import {Canvas, useFrame} from '@react-three/fiber';
 import {Vector3} from 'three';
 import Aircraft from './Aircraft';
 import {PlotControls} from './PlotControls';
+import {BoundingPlane} from './BoundingPlane';
 
 export const initialCameraPosition = [-10, 0, 10];
 
@@ -51,7 +51,7 @@ const Path = ({coords, color, onHover}) => {
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     return (
         <>
-            <Line points={coords} lineWidth={3} color={'lightBlue'} />
+            <Line points={points} lineWidth={3} color={'lightBlue'} />
             <Points>
                 <PointMaterial vertexColors size={0.5} />
                 {points.map((position, i) => (
@@ -84,27 +84,6 @@ const HoverInfo = ({data, position, fields}) => {
         </Html>
     );
 };
-
-/** Draw a plane representing bottom of the 3D area. */
-function BoundingPlane({bounds}) {
-    if (bounds == null || bounds.length === 0) return <></>;
-    const mesh = 10;
-    const xRange = bounds[0][1] - bounds[0][0];
-    const yRange = bounds[1][1] - bounds[1][0];
-    return (
-        <Plane
-            position={[
-                bounds[0][0] + xRange / 2,
-                bounds[2][0],
-                bounds[1][0] + yRange / 2,
-            ]}
-            rotation-x={Math.PI / 2}
-            args={[xRange, bounds[1][1] - bounds[1][0], mesh, mesh]}
-        >
-            <meshPhongMaterial wireframe color="white" />
-        </Plane>
-    );
-}
 
 const hoverInfoFields = [
     'x',
