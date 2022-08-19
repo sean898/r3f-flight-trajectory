@@ -9,11 +9,17 @@
 .hover-info {
     background: #416382cf;
     color: #efefef;
-    padding: 3px;
+    padding: 0.4rem;
     position: absolute;
     bottom: 1rem;
     border-radius: 2px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 0.9rem;
+    width: max-content;
+}
+
+.hover-info-entry {
+    display: block;
 }
 
 .plot-controls-wrapper {

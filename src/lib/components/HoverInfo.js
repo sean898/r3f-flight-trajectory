@@ -5,17 +5,19 @@ export function HoverInfo({data, fields}) {
     if (data == null) return <></>;
     const position = getCoordinates(data);
 
-    const formattedContent = fields
-        .map((k) => `${k}: ${data[k].toFixed(2)}`)
-        .join('\n');
+    const formattedContent = fields.map((k) => `${k}: ${data[k].toFixed(2)}`);
     return (
         <Html
             wrapperClass="hover-info-wrapper"
             position={position}
             center
-            scaleFactor={20}
+            scaleFactor={15}
         >
-            <div className="hover-info">{formattedContent}</div>
+            <div className="hover-info">
+                {formattedContent.map((entry) => (
+                    <div className="hover-info-entry">{entry}</div>
+                ))}
+            </div>
         </Html>
     );
 }
