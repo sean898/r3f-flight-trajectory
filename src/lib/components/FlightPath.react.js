@@ -37,7 +37,7 @@ const hoverInfoFields = [
 const FlightPath = ({id, data, counter, ...props}) => {
     const [index, setIndex] = useState(-1);
     const [hoverIndex, setHoverIndex] = useState(null);
-    const [coords, setCoords] = useState([]);
+    const [coords, setCoords] = useState(null);
     const [bounds, setBounds] = useState(null);
 
     const incrementIndex = () => {
@@ -55,7 +55,7 @@ const FlightPath = ({id, data, counter, ...props}) => {
     }, [data]);
 
     useEffect(() => {
-        if (coords != null) {
+        if (coords != null && coords.length) {
             let axisRanges = [];
             for (let i = 0; i < 3; i++) {
                 axisRanges.push([
@@ -69,7 +69,6 @@ const FlightPath = ({id, data, counter, ...props}) => {
                     ),
                 ]);
             }
-            console.log(axisRanges);
             setBounds(axisRanges);
         }
     }, [coords]);
@@ -89,6 +88,7 @@ const FlightPath = ({id, data, counter, ...props}) => {
                     makeDefault
                     position={initialCameraPosition}
                     far={9000}
+                    minDistance={10}
                 />
                 <OrbitControls zoomSpeed="2" ref={controlsRef} />
                 <PlotControls
@@ -110,11 +110,7 @@ const FlightPath = ({id, data, counter, ...props}) => {
                         onClick={incrementIndex}
                     />
                 </Suspense>
-                <HoverInfo
-                    data={data[hoverIndex]}
-                    position={data.length > -1 ? coords[hoverIndex] : null}
-                    fields={hoverInfoFields}
-                />
+                <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />
                 <BoundingPlane bounds={bounds} />
             </Canvas>
         </>
