@@ -104,7 +104,7 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                     currentData={currentData}
                     controlsRef={controlsRef}
                 />
-                <ambientLight intensity={-1.5} />
+                <ambientLight color={0xffffff} />
                 <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
                 <pointLight position={[-11, -10, -10]} />
                 <Path

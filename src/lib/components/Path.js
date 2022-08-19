@@ -42,7 +42,7 @@ function chooseColors(n, segmentInfo) {
         pointIndex = end;
     });
     if (pointIndex < n)
-        colors.push(...Array(n - pointIndex + 1).fill(defaultColor));
+        colors.push(...Array(n - pointIndex).fill(defaultColor));
 
     console.log('colors', colors);
     return colors;
@@ -63,7 +63,12 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
 
     return (
         <>
-            <Line points={points} lineWidth={1} vertexColors={colors} />
+            <Line
+                points={points}
+                lineWidth={2}
+                vertexColors={colors}
+                color="red"
+            />
             <Points>
                 <PointMaterial vertexColors size={0.5} />
                 {points.map((position, i) => (
