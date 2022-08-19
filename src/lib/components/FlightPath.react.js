@@ -86,7 +86,7 @@ const HoverInfo = ({data, position, fields}) => {
 };
 
 /** Draw a plane representing bottom of the 3D area. */
-const plotBaseline = (bounds) => {
+function BoundingPlane({bounds}) {
     if (bounds == null || bounds.length === 0) return <></>;
     const mesh = 10;
     const xRange = bounds[0][1] - bounds[0][0];
@@ -104,7 +104,7 @@ const plotBaseline = (bounds) => {
             <meshPhongMaterial wireframe color="white" />
         </Plane>
     );
-};
+}
 
 const hoverInfoFields = [
     'x',
@@ -198,7 +198,7 @@ const FlightPath = ({id, data, counter, ...props}) => {
                     position={data.length > -1 ? coords[hoverIndex] : null}
                     fields={hoverInfoFields}
                 />
-                {plotBaseline(bounds)}
+                <BoundingPlane bounds={bounds} />
             </Canvas>
         </>
     );

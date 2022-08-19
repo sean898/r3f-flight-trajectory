@@ -42,7 +42,6 @@ export function PlotControls({
     const snapToAircraft = () => {
         const aircraftPosition = getCoordinates(currentData);
         const cameraPosition = aircraftPosition.clone().add(cameraOffset);
-        console.log(aircraftPosition, cameraPosition);
         setCamera(cameraPosition, aircraftPosition);
     };
 
