@@ -5,14 +5,10 @@
  */
 import PropTypes from 'prop-types';
 /* eslint no-magic-numbers: 0 */
-import * as THREE from 'three';
 import {
     Html,
     OrbitControls,
-    Points,
     Point,
-    Line,
-    PointMaterial,
     OrthographicCamera,
     PerspectiveCamera,
 } from '@react-three/drei';
@@ -22,50 +18,9 @@ import {Vector3} from 'three';
 import Aircraft from './Aircraft';
 import {PlotControls} from './PlotControls';
 import {BoundingPlane} from './BoundingPlane';
+import {Path} from './Path';
 
 export const initialCameraPosition = [-10, 0, 10];
-
-const FlightPoint = ({index, onHover, ...props}) => {
-    const [hovered, setHover] = useState(false);
-    return (
-        <Point
-            {...props}
-            color={hovered ? 'red' : 'blue'}
-            onPointerOver={(e) => {
-                e.stopPropagation();
-                onHover(index);
-                setHover(true);
-            }}
-            onPointerOut={(e) => {
-                e.stopPropagation();
-                setHover(false);
-            }}
-        />
-    );
-};
-
-const Path = ({coords, color, onHover}) => {
-    if (coords == null || coords.length == 0) return <></>;
-
-    const points = coords.map(([x, y, z]) => new THREE.Vector3(x, y, z));
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    return (
-        <>
-            <Line points={points} lineWidth={3} color={'lightBlue'} />
-            <Points>
-                <PointMaterial vertexColors size={0.5} />
-                {points.map((position, i) => (
-                    <FlightPoint
-                        key={i}
-                        index={i}
-                        position={position}
-                        onHover={onHover}
-                    />
-                ))}
-            </Points>
-        </>
-    );
-};
 
 const HoverInfo = ({data, position, fields}) => {
     if (position == null || data == null) return <></>;
