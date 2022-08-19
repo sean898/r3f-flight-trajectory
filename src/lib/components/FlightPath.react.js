@@ -6,7 +6,6 @@
 import PropTypes from 'prop-types';
 /* eslint no-magic-numbers: 0 */
 import {
-    Html,
     OrbitControls,
     Point,
     OrthographicCamera,
@@ -19,26 +18,9 @@ import Aircraft from './Aircraft';
 import {PlotControls} from './PlotControls';
 import {BoundingPlane} from './BoundingPlane';
 import {Path} from './Path';
+import {HoverInfo} from './HoverInfo';
 
 export const initialCameraPosition = [-10, 0, 10];
-
-const HoverInfo = ({data, position, fields}) => {
-    if (position == null || data == null) return <></>;
-
-    const formattedContent = fields
-        .map((k) => `${k}: ${data[k].toFixed(2)}`)
-        .join('\n');
-    return (
-        <Html
-            wrapperClass="hover-info-wrapper"
-            position={position}
-            center
-            scaleFactor={20}
-        >
-            <div className="hover-info">{formattedContent}</div>
-        </Html>
-    );
-};
 
 const hoverInfoFields = [
     'x',
