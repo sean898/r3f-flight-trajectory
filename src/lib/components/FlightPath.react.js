@@ -5,13 +5,7 @@
  */
 import PropTypes from 'prop-types';
 /* eslint no-magic-numbers: 0 */
-import {
-    Html,
-    OrbitControls,
-    Point,
-    OrthographicCamera,
-    PerspectiveCamera,
-} from '@react-three/drei';
+import {Html, OrbitControls, PerspectiveCamera, Stats} from '@react-three/drei';
 import {useRef, Suspense, useState, useEffect} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
 import {Vector3} from 'three';
@@ -36,7 +30,7 @@ const hoverInfoFields = [
     'pitch',
 ];
 
-const FlightPath = ({id, data, counter, ...props}) => {
+const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
     const [index, setIndex] = useState(-1);
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -117,6 +111,7 @@ const FlightPath = ({id, data, counter, ...props}) => {
                     coords={coords}
                     color={'lightblue'}
                     onHover={setHoverIndex}
+                    segmentInfo={segmentInfo}
                 />
                 <Suspense fallback={null}>
                     <Aircraft
@@ -126,6 +121,7 @@ const FlightPath = ({id, data, counter, ...props}) => {
                 </Suspense>
                 <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />
                 <BoundingPlane bounds={bounds} />
+                {/* <Stats /> */}
             </Canvas>
         </>
     );

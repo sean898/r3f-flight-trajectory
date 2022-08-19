@@ -10,7 +10,7 @@ const useData = () => {
         Papa.parse(csvFile, {
             delimiter: ',',
             download: true,
-            preview: 500,
+            preview: 300,
             header: true,
             dynamicTyping: true,
             complete: (result) => setData(result.data),
@@ -23,6 +23,12 @@ function App() {
     const data = useData();
     const [playing, setPlaying] = useState(true);
     const [counter, setCounter] = useState(1);
+
+    const [segmentInfo, setSegmentInfo] = useState([
+        {start: 10, end: 50, maneuver: 'ManeuverA', number: 1},
+        {start: 100, end: 140, maneuver: 'ManeuverB', number: 1},
+        {start: 150, end: 160, maneuver: 'ManeuverA', number: 2},
+    ]);
 
     useEffect(() => {
         if (!playing) return;
@@ -39,7 +45,11 @@ function App() {
     return (
         <>
             <button onClick={togglePlaying}>Toggle</button>
-            <FlightPath counter={counter} data={data} />
+            <FlightPath
+                counter={counter}
+                data={data}
+                segmentInfo={segmentInfo}
+            />
         </>
     );
 }
