@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {useState} from 'react';
+import {useCallback, useEffect, useState, useMemo} from 'react';
 import {Point, Points, Line, PointMaterial} from '@react-three/drei';
 
 function FlightPoint({index, onHover, ...props}) {
@@ -22,9 +22,13 @@ function FlightPoint({index, onHover, ...props}) {
 }
 
 export function Path({coords, color, onHover}) {
+    const points = useMemo(
+        () => coords.map(([x, y, z]) => new THREE.Vector3(x, y, z)),
+        [coords]
+    );
+    const callback = useCallback(onHover);
     if (coords == null || coords.length == 0) return <></>;
 
-    const points = coords.map(([x, y, z]) => new THREE.Vector3(x, y, z));
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     return (
         <>
@@ -36,7 +40,7 @@ export function Path({coords, color, onHover}) {
                         key={i}
                         index={i}
                         position={position}
-                        onHover={onHover}
+                        onHover={callback}
                     />
                 ))}
             </Points>
