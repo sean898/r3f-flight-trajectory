@@ -14,8 +14,10 @@ export function HoverInfo({data, fields}) {
             scaleFactor={15}
         >
             <div className="hover-info">
-                {formattedContent.map((entry) => (
-                    <div className="hover-info-entry">{entry}</div>
+                {formattedContent.map((entry, i) => (
+                    <div key={i} className="hover-info-entry">
+                        {entry}
+                    </div>
                 ))}
             </div>
         </Html>

@@ -2,8 +2,7 @@ import {meshBounds, useGLTF, useHelper} from '@react-three/drei';
 import {useRef, useMemo, useEffect} from 'react';
 import modelFile from '../../assets/F-16.glb';
 import {AxesHelper} from 'three';
-
-const degreesToRadians = Math.PI / 180;
+import {degreesToRadians} from '../util';
 const headingOffset = -120;
 
 export default function Aircraft({positionData, onClick, ...otherProps}) {

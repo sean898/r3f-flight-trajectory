@@ -32,7 +32,16 @@ function App() {
         return () => clearInterval(interval);
     }, [counter, playing]);
 
-    return <FlightPath counter={counter} data={data} />;
+    function togglePlaying() {
+        setPlaying(!playing);
+    }
+
+    return (
+        <>
+            <button onClick={togglePlaying}>Toggle</button>
+            <FlightPath counter={counter} data={data} />
+        </>
+    );
 }
 
 export default App;

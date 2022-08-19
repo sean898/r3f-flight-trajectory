@@ -7,7 +7,6 @@ function RealBoundingPlane({bounds}) {
     const mesh = 10;
     const xRange = bounds[0][1] - bounds[0][0];
     const yRange = bounds[1][1] - bounds[1][0];
-    console.log('bounds', bounds);
     return (
         <Plane
             position={[

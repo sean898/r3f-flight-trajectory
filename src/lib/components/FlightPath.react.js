@@ -20,9 +20,11 @@ import {PlotControls} from './PlotControls';
 import {BoundingPlane} from './BoundingPlane';
 import {Path} from './Path';
 import {HoverInfo} from './HoverInfo';
+import {degreesToRadians} from '../util';
 
 export const initialCameraPosition = [-10, 0, 10];
 
+const maxDistance = 15000;
 const hoverInfoFields = [
     'x',
     'y',
@@ -39,10 +41,15 @@ const FlightPath = ({id, data, counter, ...props}) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
     const [bounds, setBounds] = useState(null);
+    const [followMode, setFollowMode] = useState(false);
 
     const incrementIndex = () => {
         setIndex(index + 1);
     };
+
+    function toggleFollowMode() {
+        setFollowMode(!followMode);
+    }
 
     useEffect(() => {
         incrementIndex();
@@ -87,12 +94,19 @@ const FlightPath = ({id, data, counter, ...props}) => {
                 <PerspectiveCamera
                     makeDefault
                     position={initialCameraPosition}
-                    far={9000}
+                    far={maxDistance}
                     minDistance={10}
                 />
-                <OrbitControls zoomSpeed="2" ref={controlsRef} />
+                <OrbitControls
+                    makeDefault
+                    zoomSpeed="2"
+                    maxDistance={maxDistance}
+                    ref={controlsRef}
+                />
                 <PlotControls
                     incrementIndex={incrementIndex}
+                    followMode={followMode}
+                    toggleFollowMode={toggleFollowMode}
                     currentData={currentData}
                     controlsRef={controlsRef}
                 />

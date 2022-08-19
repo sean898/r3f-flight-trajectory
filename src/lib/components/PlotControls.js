@@ -12,16 +12,13 @@ export function PlotControls({
     currentData,
     incrementIndex,
     controlsRef,
+    followMode,
+    toggleFollowMode,
     ...props
 }) {
-    // useFrame(() => incrementIndex());
     const camera = useThree((state) => state.camera);
     const setCameraPosition = (position) => {
         camera.position.set(...position);
-    };
-
-    const resetControls = () => {
-        controlsRef.current.update();
     };
 
     function setCamera(position, target) {
@@ -41,16 +38,19 @@ export function PlotControls({
         setCamera(cameraPosition, aircraftPosition);
     };
 
+    if (followMode) snapToAircraft();
+
     return (
         <Html
             wrapperClass="plot-controls-wrapper"
             className="plot-controls"
             transform={false}
             center={false}
+            fullScreen
         >
             <button onClick={resetPlot}>Reset</button>
             <button onClick={snapToAircraft}>Snap</button>
-            Controls!
+            <button onClick={toggleFollowMode}>Follow</button>
         </Html>
     );
 }
