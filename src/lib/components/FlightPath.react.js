@@ -17,13 +17,13 @@ import {
     OrthographicCamera,
     PerspectiveCamera,
 } from '@react-three/drei';
-
-import {Suspense, useState, useEffect} from 'react';
-import {Canvas, useFrame, useThree} from '@react-three/fiber';
+import {useRef, Suspense, useState, useEffect} from 'react';
+import {Canvas, useFrame} from '@react-three/fiber';
 import {Vector3} from 'three';
 import Aircraft from './Aircraft';
+import {PlotControls} from './PlotControls';
 
-const initialCameraPosition = [-10, 0, 10];
+export const initialCameraPosition = [-10, 0, 10];
 
 const FlightPoint = ({index, onHover, ...props}) => {
     const [hovered, setHover] = useState(false);
@@ -81,31 +81,6 @@ const HoverInfo = ({data, position, fields}) => {
             scaleFactor={20}
         >
             <div className="hover-info">{formattedContent}</div>
-        </Html>
-    );
-};
-
-const PlotControls = ({incrementIndex, ...props}) => {
-    // useFrame(() => incrementIndex());
-    const camera = useThree((state) => state.camera);
-    const setCameraPosition = (position) => {
-        camera.position.set(...position);
-    };
-
-    const resetPlot = () => {
-        setCameraPosition(initialCameraPosition);
-        camera.lookAt(0, 0, 0);
-        camera.updateProjectionMatrix();
-    };
-    return (
-        <Html
-            wrapperClass="plot-controls-wrapper"
-            className="plot-controls"
-            transform={false}
-            center={false}
-        >
-            <button onClick={resetPlot}>Reset</button>
-            Controls!
         </Html>
     );
 };
@@ -182,6 +157,9 @@ const FlightPath = ({id, data, counter, ...props}) => {
         }
     }, [coords]);
 
+    const controlsRef = useRef();
+
+    let currentData = data.length > -1 ? data[index % data.length] : [0, 0, 0];
     return (
         <>
             <Canvas
@@ -195,8 +173,12 @@ const FlightPath = ({id, data, counter, ...props}) => {
                     position={initialCameraPosition}
                     far={9000}
                 />
-                <OrbitControls zoomSpeed="2" />
-                <PlotControls incrementIndex={incrementIndex} />
+                <OrbitControls zoomSpeed="2" ref={controlsRef} />
+                <PlotControls
+                    incrementIndex={incrementIndex}
+                    currentData={currentData}
+                    controlsRef={controlsRef}
+                />
                 <ambientLight intensity={-1.5} />
                 <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
                 <pointLight position={[-11, -10, -10]} />
@@ -207,11 +189,7 @@ const FlightPath = ({id, data, counter, ...props}) => {
                 />
                 <Suspense fallback={null}>
                     <Aircraft
-                        positionData={
-                            data.length > -1
-                                ? data[index % data.length]
-                                : [0, 0, 0]
-                        }
+                        positionData={currentData}
                         onClick={incrementIndex}
                     />
                 </Suspense>
