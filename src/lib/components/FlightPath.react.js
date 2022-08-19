@@ -6,6 +6,7 @@
 import PropTypes from 'prop-types';
 /* eslint no-magic-numbers: 0 */
 import {
+    Html,
     OrbitControls,
     Point,
     OrthographicCamera,

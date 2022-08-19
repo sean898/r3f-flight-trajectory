@@ -1,7 +1,9 @@
 import {Html} from '@react-three/drei';
+import {getCoordinates} from '../util';
 
-export function HoverInfo({data, position, fields}) {
-    if (position == null || data == null) return <></>;
+export function HoverInfo({data, fields}) {
+    if (data == null) return <></>;
+    const position = getCoordinates(data);
 
     const formattedContent = fields
         .map((k) => `${k}: ${data[k].toFixed(2)}`)

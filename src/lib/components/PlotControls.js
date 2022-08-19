@@ -2,11 +2,7 @@ import {Html} from '@react-three/drei';
 import {useThree} from '@react-three/fiber';
 import {Vector3} from 'three';
 import {initialCameraPosition} from './FlightPath.react';
-
-function getCoordinates(dataObj) {
-    const {x, y, z} = dataObj;
-    return new Vector3(x, y, z);
-}
+import {getCoordinates} from '../util';
 
 const cameraOffset = new Vector3(0, 50, 110);
 const normal = new Vector3(0, 1, 0);
