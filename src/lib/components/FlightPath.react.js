@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import {Html, OrbitControls, PerspectiveCamera, Stats} from '@react-three/drei';
 import {useRef, Suspense, useState, useEffect} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
+import * as THREE from 'three';
 import {Vector3} from 'three';
 import Aircraft from './Aircraft';
 import {PlotControls} from './PlotControls';
@@ -36,7 +37,19 @@ function Legend({segmentInfo}) {
         <Html wrapperClass="plot-legend-wrapper" className="plot-legend">
             <ul>
                 {segmentInfo.map((entry) => {
-                    return <li>{`${entry.maneuver} ${entry.number}`}</li>;
+                    return (
+                        <li>
+                            <span
+                                className="plot-legend-icon"
+                                style={{
+                                    backgroundColor: new THREE.Color(
+                                        ...entry.color
+                                    ).getHexString(),
+                                }}
+                            ></span>
+                            {`${entry.maneuver} ${entry.number}`}
+                        </li>
+                    );
                 })}
             </ul>
         </Html>
