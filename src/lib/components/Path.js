@@ -21,11 +21,11 @@ function FlightPoint({index, onHover, ...props}) {
     );
 }
 
-const defaultColor = [30, 30, 0];
+const defaultColor = 'pink';
 const colorPalette = [
-    [250, 0, 0],
-    [0, 250, 0],
-    [0, 0, 250],
+    [0.9, 0, 0],
+    [0, 0.9, 0],
+    [0, 0, 0.9],
 ];
 function chooseColors(n, segmentInfo) {
     if (n < 2) return null;
@@ -67,7 +67,7 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                 points={points}
                 lineWidth={2}
                 vertexColors={colors}
-                color="red"
+                color={'orange'}
             />
             <Points>
                 <PointMaterial vertexColors size={0.5} />
