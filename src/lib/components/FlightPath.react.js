@@ -30,6 +30,19 @@ const hoverInfoFields = [
     'pitch',
 ];
 
+function Legend({segmentInfo}) {
+    console.log(segmentInfo);
+    return (
+        <Html wrapperClass="plot-legend-wrapper" className="plot-legend">
+            <ul>
+                {segmentInfo.map((entry) => {
+                    return <li>{`${entry.maneuver} ${entry.number}`}</li>;
+                })}
+            </ul>
+        </Html>
+    );
+}
+
 const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
     const [index, setIndex] = useState(-1);
     const [hoverIndex, setHoverIndex] = useState(null);
@@ -120,6 +133,7 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                     />
                 </Suspense>
                 <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />
+                <Legend segmentInfo={segmentInfo} />
                 <BoundingPlane bounds={bounds} />
                 {/* <Stats /> */}
             </Canvas>

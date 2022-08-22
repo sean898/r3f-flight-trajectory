@@ -19,15 +19,40 @@ const useData = () => {
     return data;
 };
 
+const colorPalette = [
+    [0.9, 0, 0],
+    [0, 0.9, 0],
+    [0, 0, 0.9],
+    [0.9, 0, 0.9],
+];
+
 function App() {
     const data = useData();
     const [playing, setPlaying] = useState(true);
     const [counter, setCounter] = useState(1);
 
     const [segmentInfo, setSegmentInfo] = useState([
-        {start: 10, end: 50, maneuver: 'ManeuverA', number: 1},
-        {start: 100, end: 140, maneuver: 'ManeuverB', number: 1},
-        {start: 150, end: 160, maneuver: 'ManeuverA', number: 2},
+        {
+            start: 10,
+            end: 50,
+            maneuver: 'ManeuverA',
+            number: 1,
+            color: colorPalette[0],
+        },
+        {
+            start: 100,
+            end: 140,
+            maneuver: 'ManeuverB',
+            number: 1,
+            color: colorPalette[1],
+        },
+        {
+            start: 150,
+            end: 160,
+            maneuver: 'ManeuverA',
+            number: 2,
+            color: colorPalette[2],
+        },
     ]);
 
     useEffect(() => {

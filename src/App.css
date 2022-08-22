@@ -25,3 +25,43 @@
 .plot-controls-wrapper {
     transform: none !important;
 }
+
+.plot-legend-wrapper {
+    transform: none !important;
+    position: absolute;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+}
+
+.plot-legend {
+    bottom: 0;
+    left: 0;
+    pointer-events: all;
+    border: 1px solid gray;
+    padding: 0.5rem;
+    margin-bottom: 3rem;
+    margin-left: 2rem;
+}
+
+.plot-legend > ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.plot-legend li {
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+}
+
+.plot-legend li::before {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    content: '';
+    border: 2px solid gray;
+    display: inline-block;
+    margin-inline-end: 0.3rem;
+}

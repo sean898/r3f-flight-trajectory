@@ -22,24 +22,16 @@ function FlightPoint({index, onHover, ...props}) {
 }
 
 const defaultColor = [0.7, 0.7, 0.9];
-const colorPalette = [
-    [0.9, 0, 0],
-    [0, 0.9, 0],
-    [0, 0, 0.9],
-    [0.9, 0, 0.9],
-];
 function chooseColors(n, segmentInfo) {
     if (n < 2) return null;
     console.log(n, segmentInfo);
     let colors = new Array();
     let pointIndex = 0;
-    segmentInfo.forEach(({start, end}, i) => {
+    segmentInfo.forEach(({start, end, color}, i) => {
         if (pointIndex < start) {
             colors.push(...Array(start - pointIndex).fill(defaultColor));
         }
-        colors.push(
-            ...Array(end - start).fill(colorPalette[i % colorPalette.length])
-        );
+        colors.push(...Array(end - start).fill(color));
         pointIndex = end;
     });
     if (pointIndex < n)
