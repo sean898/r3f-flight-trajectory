@@ -47,6 +47,7 @@ export function PlotControls({
             transform={false}
             center={false}
             fullScreen
+            onOcclude={() => {}} /* don't occlude */
         >
             <button onClick={resetPlot}>Reset</button>
             <button onClick={snapToAircraft}>Snap</button>
