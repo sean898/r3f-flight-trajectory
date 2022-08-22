@@ -4,7 +4,11 @@ import * as THREE from 'three';
 export function Legend({segmentInfo}) {
     console.log(segmentInfo);
     return (
-        <Html wrapperClass="plot-legend-wrapper" className="plot-legend">
+        <Html
+            wrapperClass="plot-legend-wrapper"
+            onOcclude={() => {}}
+            className="plot-legend"
+        >
             <ul>
                 {segmentInfo.map((entry) => {
                     return (

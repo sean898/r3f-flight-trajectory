@@ -1,4 +1,6 @@
 .flight-trajectory-plot {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 0.9rem;
     background-color: #f0f4ff;
 }
 
@@ -13,8 +15,6 @@
     position: absolute;
     bottom: 1rem;
     border-radius: 2px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 0.9rem;
     width: max-content;
 }
 
@@ -42,6 +42,7 @@
     padding: 0.5rem;
     margin-bottom: 3rem;
     margin-left: 2rem;
+    background: #f7f9ff;
 }
 
 .plot-legend > ul {
