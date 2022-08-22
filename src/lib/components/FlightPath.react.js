@@ -5,10 +5,9 @@
  */
 import PropTypes from 'prop-types';
 /* eslint no-magic-numbers: 0 */
-import {Html, OrbitControls, PerspectiveCamera, Stats} from '@react-three/drei';
+import {OrbitControls, PerspectiveCamera, Stats} from '@react-three/drei';
 import {useRef, Suspense, useState, useEffect} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
-import * as THREE from 'three';
 import {Vector3} from 'three';
 import Aircraft from './Aircraft';
 import {PlotControls} from './PlotControls';
@@ -16,6 +15,7 @@ import {BoundingPlane} from './BoundingPlane';
 import {Path} from './Path';
 import {HoverInfo} from './HoverInfo';
 import {degreesToRadians} from '../util';
+import {Legend} from './Legend';
 
 export const initialCameraPosition = [-10, 0, 10];
 
@@ -30,31 +30,6 @@ const hoverInfoFields = [
     'bank',
     'pitch',
 ];
-
-function Legend({segmentInfo}) {
-    console.log(segmentInfo);
-    return (
-        <Html wrapperClass="plot-legend-wrapper" className="plot-legend">
-            <ul>
-                {segmentInfo.map((entry) => {
-                    return (
-                        <li>
-                            <span
-                                className="plot-legend-icon"
-                                style={{
-                                    backgroundColor: new THREE.Color(
-                                        ...entry.color
-                                    ).getHexString(),
-                                }}
-                            ></span>
-                            {`${entry.maneuver} ${entry.number}`}
-                        </li>
-                    );
-                })}
-            </ul>
-        </Html>
-    );
-}
 
 const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
     const [index, setIndex] = useState(-1);
