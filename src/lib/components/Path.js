@@ -21,11 +21,12 @@ function FlightPoint({index, onHover, ...props}) {
     );
 }
 
-const defaultColor = 'pink';
+const defaultColor = [0.7, 0.7, 0.9];
 const colorPalette = [
     [0.9, 0, 0],
     [0, 0.9, 0],
     [0, 0, 0.9],
+    [0.9, 0, 0.9],
 ];
 function chooseColors(n, segmentInfo) {
     if (n < 2) return null;
@@ -67,10 +68,10 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                 points={points}
                 lineWidth={2}
                 vertexColors={colors}
-                color={'orange'}
+                color={new THREE.Color(...defaultColor)}
             />
             <Points>
-                <PointMaterial vertexColors size={0.5} />
+                <PointMaterial vertexColors size={0.8} />
                 {points.map((position, i) => (
                     <FlightPoint
                         key={i}
