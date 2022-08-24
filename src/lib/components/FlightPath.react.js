@@ -5,7 +5,12 @@
  */
 import PropTypes from 'prop-types';
 /* eslint no-magic-numbers: 0 */
-import {OrbitControls, PerspectiveCamera, Stats} from '@react-three/drei';
+import {
+    OrbitControls,
+    PerspectiveCamera,
+    Stats,
+    Bounds,
+} from '@react-three/drei';
 import {useRef, Suspense, useState, useEffect} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
 import {Box3, Vector3} from 'three';
@@ -29,6 +34,7 @@ const hoverInfoFields = [
     'bank',
     'pitch',
 ];
+const viewDistanceFactor = 3;
 
 const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
     const [index, setIndex] = useState(-1);
@@ -66,12 +72,11 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
     useEffect(() => {
         if (bounds != null) {
             setViewDistance(
-                1.2 *
-                    Math.max(
-                        Math.abs(bounds.max.x - bounds.min.x),
-                        Math.abs(bounds.max.y - bounds.min.y),
-                        Math.abs(bounds.max.z - bounds.min.z)
-                    )
+                Math.max(
+                    Math.abs(bounds.max.x - bounds.min.x),
+                    Math.abs(bounds.max.y - bounds.min.y),
+                    Math.abs(bounds.max.z - bounds.min.z)
+                ) * viewDistanceFactor
             );
         }
     }, [bounds]);
@@ -109,12 +114,14 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                 <ambientLight color={0xffffff} />
                 <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
                 <pointLight position={[-11, -10, -10]} />
-                <Path
-                    coords={coords}
-                    color={'lightblue'}
-                    onHover={setHoverIndex}
-                    segmentInfo={segmentInfo}
-                />
+                <Bounds clip={false} damping={6} margin={1.2}>
+                    <Path
+                        coords={coords}
+                        color={'lightblue'}
+                        onHover={setHoverIndex}
+                        segmentInfo={segmentInfo}
+                    />
+                </Bounds>
                 <Suspense fallback={null}>
                     <Aircraft
                         positionData={currentData}

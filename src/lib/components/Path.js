@@ -1,6 +1,13 @@
 import * as THREE from 'three';
 import {useCallback, useEffect, useState, useMemo, useRef} from 'react';
-import {Point, Points, Line, PointMaterial, useHelper} from '@react-three/drei';
+import {
+    Point,
+    Points,
+    Line,
+    PointMaterial,
+    useHelper,
+    useBounds,
+} from '@react-three/drei';
 import {Box3} from 'three';
 
 function FlightPoint({index, onHover, ...props}) {
@@ -52,12 +59,19 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
         },
         [onHover]
     );
+    const ref = useRef();
+    const bounds = useBounds();
+    useEffect(() => {
+        if (bounds != null && ref.current != null)
+            bounds.refresh(ref.current).fit();
+    }, [coords]);
 
     if (coords == null || coords.length == 0) return <></>;
 
     return (
         <mesh>
             <Line
+                ref={ref}
                 points={coords}
                 lineWidth={2}
                 vertexColors={colors}
@@ -66,6 +80,7 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                     e.stopPropagation();
                     onHover(e.intersections[0].faceIndex);
                 }}
+                onDoubleClick={(e) => console.log('click')}
             />
             {/* <Points limit={coords.length}>
                 <PointMaterial vertexColors size={0.8} />

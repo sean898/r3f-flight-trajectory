@@ -4,7 +4,7 @@ import {Vector3} from 'three';
 import {initialCameraPosition} from './FlightPath.react';
 import {getCoordinates} from '../util';
 
-const cameraOffset = new Vector3(0, 50, 110);
+const cameraOffset = new Vector3(0, 100, 310);
 const normal = new Vector3(0, 1, 0);
 const origin = new Vector3(0, 0, 0);
 
