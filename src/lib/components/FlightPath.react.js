@@ -104,13 +104,6 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                     ref={controlsRef}
                 />
                 <BoundingPlane bounds={bounds} />
-                <PlotControls
-                    incrementIndex={incrementIndex}
-                    followMode={followMode}
-                    toggleFollowMode={toggleFollowMode}
-                    currentData={currentData}
-                    controlsRef={controlsRef}
-                />
                 <ambientLight color={0xffffff} />
                 <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
                 <pointLight position={[-11, -10, -10]} />
@@ -121,13 +114,20 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                         onHover={setHoverIndex}
                         segmentInfo={segmentInfo}
                     />
-                </Bounds>
-                <Suspense fallback={null}>
-                    <Aircraft
-                        positionData={currentData}
-                        onClick={incrementIndex}
+                    <Suspense fallback={null}>
+                        <Aircraft
+                            positionData={currentData}
+                            onClick={incrementIndex}
+                        />
+                    </Suspense>
+                    <PlotControls
+                        incrementIndex={incrementIndex}
+                        followMode={followMode}
+                        toggleFollowMode={toggleFollowMode}
+                        currentData={currentData}
+                        controlsRef={controlsRef}
                     />
-                </Suspense>
+                </Bounds>
                 <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />
                 <Legend segmentInfo={segmentInfo} />
                 {/* <Stats /> */}

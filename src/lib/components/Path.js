@@ -64,7 +64,22 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
     useEffect(() => {
         if (bounds != null && ref.current != null)
             bounds.refresh(ref.current).fit();
+        console.log('refresh');
     }, [coords]);
+
+    function onDoubleClick(e) {
+        console.log('double click');
+        const index = e.intersections[0].faceIndex;
+        const range = 50;
+        const startIndex = Math.max(index - range, 0);
+        const endIndex = Math.min(index + range, coords.length);
+        const box = new Box3().setFromPoints([
+            coords[startIndex],
+            coords[endIndex],
+        ]);
+        console.log(index, box);
+        bounds.refresh(box).fit();
+    }
 
     if (coords == null || coords.length == 0) return <></>;
 
@@ -80,7 +95,7 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                     e.stopPropagation();
                     onHover(e.intersections[0].faceIndex);
                 }}
-                onDoubleClick={(e) => console.log('click')}
+                onDoubleClick={onDoubleClick}
             />
             {/* <Points limit={coords.length}>
                 <PointMaterial vertexColors size={0.8} />
