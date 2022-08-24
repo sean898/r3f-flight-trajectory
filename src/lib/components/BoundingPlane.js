@@ -21,9 +21,6 @@ function RealBoundingPlane({bounds}) {
                     start={[bounds.min.x, 0, z_position]}
                     end={[bounds.max.x, 0, z_position]}
                     color="lightgray"
-                    polygonOffset={true}
-                    polygonOffsetFactor={2}
-                    // opacity={0.5}
                     key={`z-${z_position}`}
                 />
             );
