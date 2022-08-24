@@ -11,6 +11,27 @@ function RealBoundingPlane({bounds}) {
     const center = new Vector3();
     bounds.getCenter(center);
 
+    function xGrid(interval = 100) {
+        const elements = new Array();
+        let z_position = 0;
+        while (z_position <= bounds.max.z) {
+            console.log(z_position);
+            elements.push(
+                <Segment
+                    start={[bounds.min.x, 0, z_position]}
+                    end={[bounds.max.x, 0, z_position]}
+                    color="lightgray"
+                    polygonOffset={true}
+                    polygonOffsetFactor={2}
+                    // opacity={0.5}
+                    key={`z-${z_position}`}
+                />
+            );
+            z_position += interval;
+        }
+        return <>{elements}</>;
+    }
+
     return (
         <>
             <Plane
@@ -18,18 +39,17 @@ function RealBoundingPlane({bounds}) {
                 position={[center.x, 0, center.z]}
                 rotation-x={Math.PI / 2}
             >
-                <meshBasicMaterial color="gray" side={BackSide} opacity={0.5} />
-            </Plane>
-            <Segments>
-                <Segment
-                    start={[bounds.min.x, 0, 0]}
-                    end={[bounds.max.x, 0, 0]}
-                    color="red"
+                <meshBasicMaterial
+                    color="gray"
+                    side={BackSide}
+                    polygonOffset
+                    polygonOffsetFactor={1}
                 />
-            </Segments>
+            </Plane>
+            <Segments>{xGrid()}</Segments>
         </>
     );
 }
 
 // export const BoundingPlane = memo(RealBoundingPlane);
-export const BoundingPlane = RealBoundingPlane;
+export const BoundingPlane = memo(RealBoundingPlane);
