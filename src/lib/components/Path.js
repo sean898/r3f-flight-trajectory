@@ -53,19 +53,16 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
         [onHover]
     );
 
-    const ref = useRef();
-    // useHelper(ref, THREE.BoxHelper, 'red');
-
     if (coords == null || coords.length == 0) return <></>;
 
     return (
         <mesh>
             <Line
-                ref={ref}
                 points={coords}
                 lineWidth={2}
                 vertexColors={colors}
                 color={new THREE.Color(...defaultColor)}
+                onPointerOver={(e) => onHover(e.intersections[0].faceIndex)}
             />
             <Points limit={coords.length}>
                 <PointMaterial vertexColors size={0.8} />
@@ -73,7 +70,7 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                     <Point
                         key={i}
                         position={position}
-                        onPointerOver={callback}
+                        // onPointerOver={callback}
                         color={'blue'}
                     />
                 ))}

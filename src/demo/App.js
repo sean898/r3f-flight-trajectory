@@ -10,7 +10,7 @@ const useData = () => {
         Papa.parse(csvFile, {
             delimiter: ',',
             download: true,
-            preview: 600,
+            preview: 6000,
             header: true,
             dynamicTyping: true,
             complete: (result) => setData(result.data),
