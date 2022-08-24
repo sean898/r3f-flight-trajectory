@@ -1,39 +1,35 @@
-import {Plane, Segments} from '@react-three/drei';
+import {Plane, Segments, Segment} from '@react-three/drei';
 import {memo} from 'react';
-import {LineSegments} from 'three';
+import {BackSide, Box3, FrontSide, LineSegments, Vector3} from 'three';
 
 /** Draw a plane representing bottom of the 3D area. */
 function RealBoundingPlane({bounds}) {
-    if (bounds == null || bounds.length === 0) return <></>;
-    const mesh = 10;
-    const xRange = bounds[0][1] - bounds[0][0];
-    const yRange = bounds[1][1] - bounds[1][0];
-    const zRange = bounds[2][1] - bounds[2][0];
+    if (bounds == null) return <></>;
+
+    const width = bounds.max.x - bounds.min.x;
+    const height = bounds.max.y - bounds.min.y;
+    const center = new Vector3();
+    bounds.getCenter(center);
+
     return (
         <>
-            <gridHelper
-                args={[xRange, 10, 'red']}
-                position={[-xRange / 2, 0, 0]}
-            />
-            <gridHelper
-                args={[yRange, 10, 'green']}
-                position={[-xRange / 2, 0, 0]}
+            <Plane
+                args={[width, bounds.max.z - bounds.min.z]}
+                position={[center.x, 0, center.z]}
                 rotation-x={Math.PI / 2}
-            />
-            <gridHelper args={[zRange, 10, 'blue']} rotation-z={Math.PI / 2} />
-            {/* <Plane
-                position={[
-                    bounds[0][0] + xRange / 2,
-                    bounds[2][0],
-                    bounds[1][0] + yRange / 2,
-                ]}
-                rotation-x={Math.PI / 2}
-                args={[xRange, bounds[1][1] - bounds[1][0], mesh, mesh]}
             >
-                <meshPhongMaterial wireframe color="white" />
-            </Plane> */}
+                <meshBasicMaterial color="gray" side={BackSide} opacity={0.5} />
+            </Plane>
+            <Segments>
+                <Segment
+                    start={[bounds.min.x, 0, 0]}
+                    end={[bounds.max.x, 0, 0]}
+                    color="red"
+                />
+            </Segments>
         </>
     );
 }
 
-export const BoundingPlane = memo(RealBoundingPlane);
+// export const BoundingPlane = memo(RealBoundingPlane);
+export const BoundingPlane = RealBoundingPlane;

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import {useCallback, useEffect, useState, useMemo} from 'react';
-import {Point, Points, Line, PointMaterial} from '@react-three/drei';
+import {useCallback, useEffect, useState, useMemo, useRef} from 'react';
+import {Point, Points, Line, PointMaterial, useHelper} from '@react-three/drei';
+import {Box3} from 'three';
 
 function FlightPoint({index, onHover, ...props}) {
     const [hovered, setHover] = useState(false);
@@ -24,7 +25,6 @@ function FlightPoint({index, onHover, ...props}) {
 const defaultColor = [0.7, 0.7, 0.9];
 function chooseColors(n, segmentInfo) {
     if (n < 2) return null;
-    console.log(n, segmentInfo);
     let colors = new Array();
     let pointIndex = 0;
     segmentInfo.forEach(({start, end, color}, i) => {
@@ -37,7 +37,6 @@ function chooseColors(n, segmentInfo) {
     if (pointIndex < n)
         colors.push(...Array(n - pointIndex).fill(defaultColor));
 
-    console.log('colors', colors);
     return colors;
 }
 
@@ -46,25 +45,25 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
         () => (coords == null ? [] : chooseColors(coords.length, segmentInfo)),
         [coords.length, segmentInfo]
     );
-    const points = useMemo(
-        () => coords.map(([x, y, z]) => new THREE.Vector3(x, y, z)),
-        [coords]
-    );
     const callback = useCallback(onHover, []);
-    if (coords == null || coords.length == 0 || points === undefined)
-        return <></>;
+
+    const ref = useRef();
+    // useHelper(ref, THREE.BoxHelper, 'red');
+
+    if (coords == null || coords.length == 0) return <></>;
 
     return (
-        <>
+        <mesh>
             <Line
-                points={points}
+                ref={ref}
+                points={coords}
                 lineWidth={2}
                 vertexColors={colors}
                 color={new THREE.Color(...defaultColor)}
             />
             <Points>
                 <PointMaterial vertexColors size={0.8} />
-                {points.map((position, i) => (
+                {coords.map((position, i) => (
                     <FlightPoint
                         key={i}
                         index={i}
@@ -73,6 +72,7 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                     />
                 ))}
             </Points>
-        </>
+            <boxHelper args={[ref.current, 'blue']} opacity={0.3} />
+        </mesh>
     );
 }

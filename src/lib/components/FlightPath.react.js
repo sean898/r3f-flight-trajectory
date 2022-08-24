@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import {OrbitControls, PerspectiveCamera, Stats} from '@react-three/drei';
 import {useRef, Suspense, useState, useEffect} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
-import {Vector3} from 'three';
+import {Box3, Vector3} from 'three';
 import Aircraft from './Aircraft';
 import {PlotControls} from './PlotControls';
 import {BoundingPlane} from './BoundingPlane';
@@ -52,26 +52,14 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
 
     useEffect(() => {
         if (data != null) {
-            setCoords(data.map((d) => [d.x, d.y, d.z]));
+            setCoords(data.map((d) => new Vector3(d.x, d.y, d.z)));
         }
     }, [data]);
 
     useEffect(() => {
         if (coords != null && coords.length) {
-            let axisRanges = [];
-            for (let i = 0; i < 3; i++) {
-                axisRanges.push([
-                    Math.min.apply(
-                        Math,
-                        coords.map((d) => d[i])
-                    ),
-                    Math.max.apply(
-                        Math,
-                        coords.map((d) => d[i])
-                    ),
-                ]);
-            }
-            setBounds(axisRanges);
+            const bbox = new Box3().setFromPoints(coords);
+            setBounds(bbox);
         }
     }, [coords]);
 
