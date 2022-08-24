@@ -2,7 +2,6 @@ import {Html} from '@react-three/drei';
 import * as THREE from 'three';
 
 export function Legend({segmentInfo}) {
-    console.log(segmentInfo);
     return (
         <Html
             wrapperClass="plot-legend-wrapper"
@@ -10,9 +9,9 @@ export function Legend({segmentInfo}) {
             className="plot-legend"
         >
             <ul>
-                {segmentInfo.map((entry) => {
+                {segmentInfo.map((entry, i) => {
                     return (
-                        <li>
+                        <li key={i}>
                             <span
                                 className="plot-legend-icon"
                                 style={{

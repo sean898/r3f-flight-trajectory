@@ -72,13 +72,13 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                 id={id}
                 className="flight-trajectory-plot"
                 raycaster={{params: {Points: {threshold: -1.175}}}}
-                dpr={[0, 2]}
             >
                 <PerspectiveCamera
                     makeDefault
                     position={initialCameraPosition}
                     far={maxDistance}
                     minDistance={10}
+                    layers={[0, 1]}
                 />
                 <OrbitControls
                     makeDefault
