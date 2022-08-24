@@ -95,9 +95,10 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                 <OrbitControls
                     makeDefault
                     zoomSpeed="2"
-                    maxDistance={maxDistance}
+                    maxDistance={maxDistance * 0.9}
                     ref={controlsRef}
                 />
+                <BoundingPlane bounds={bounds} />
                 <PlotControls
                     incrementIndex={incrementIndex}
                     followMode={followMode}
@@ -122,7 +123,6 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                 </Suspense>
                 <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />
                 <Legend segmentInfo={segmentInfo} />
-                <BoundingPlane bounds={bounds} />
                 {/* <Stats /> */}
             </Canvas>
         </>
