@@ -19,7 +19,7 @@ import {Legend} from './Legend';
 
 export const initialCameraPosition = [-10, 0, 10];
 
-const maxDistance = 15000;
+const maxDistance = 150000;
 const hoverInfoFields = [
     'x',
     'y',
@@ -78,7 +78,6 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                     position={initialCameraPosition}
                     far={maxDistance}
                     minDistance={10}
-                    layers={[0, 1]}
                 />
                 <OrbitControls
                     makeDefault

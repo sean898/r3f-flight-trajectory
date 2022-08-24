@@ -45,7 +45,13 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
         () => (coords == null ? [] : chooseColors(coords.length, segmentInfo)),
         [coords.length, segmentInfo]
     );
-    const callback = useCallback(onHover, []);
+    const callback = useCallback(
+        (e) => {
+            e.stopPropagation();
+            onHover(e.index);
+        },
+        [onHover]
+    );
 
     const ref = useRef();
     // useHelper(ref, THREE.BoxHelper, 'red');
@@ -61,18 +67,18 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                 vertexColors={colors}
                 color={new THREE.Color(...defaultColor)}
             />
-            <Points>
+            <Points limit={coords.length}>
                 <PointMaterial vertexColors size={0.8} />
                 {coords.map((position, i) => (
-                    <FlightPoint
+                    <Point
                         key={i}
-                        index={i}
                         position={position}
-                        onHover={callback}
+                        onPointerOver={callback}
+                        color={'blue'}
                     />
                 ))}
             </Points>
-            <boxHelper args={[ref.current, 'blue']} opacity={0.3} />
+            {/* <boxHelper args={[ref.current, 'blue']} opacity={0.3} /> */}
         </mesh>
     );
 }
