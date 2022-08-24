@@ -19,7 +19,6 @@ import {Legend} from './Legend';
 
 export const initialCameraPosition = [-10, 0, 10];
 
-const maxDistance = 150000;
 const hoverInfoFields = [
     'x',
     'y',
@@ -37,6 +36,7 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
     const [coords, setCoords] = useState(null);
     const [bounds, setBounds] = useState(null);
     const [followMode, setFollowMode] = useState(false);
+    const [viewDistance, setViewDistance] = useState(150000);
 
     const incrementIndex = () => {
         setIndex(index + 1);
@@ -63,6 +63,19 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
         }
     }, [coords]);
 
+    useEffect(() => {
+        if (bounds != null) {
+            setViewDistance(
+                1.2 *
+                    Math.max(
+                        Math.abs(bounds.max.x - bounds.min.x),
+                        Math.abs(bounds.max.y - bounds.min.y),
+                        Math.abs(bounds.max.z - bounds.min.z)
+                    )
+            );
+        }
+    }, [bounds]);
+
     const controlsRef = useRef();
 
     let currentData = data.length > -1 ? data[index % data.length] : [0, 0, 0];
@@ -76,13 +89,13 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                 <PerspectiveCamera
                     makeDefault
                     position={initialCameraPosition}
-                    far={maxDistance}
+                    far={viewDistance}
                     minDistance={10}
                 />
                 <OrbitControls
                     makeDefault
                     zoomSpeed="2"
-                    maxDistance={maxDistance * 0.9}
+                    maxDistance={viewDistance * 0.8}
                     ref={controlsRef}
                 />
                 <BoundingPlane bounds={bounds} />

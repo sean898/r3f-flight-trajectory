@@ -62,9 +62,12 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                 lineWidth={2}
                 vertexColors={colors}
                 color={new THREE.Color(...defaultColor)}
-                onPointerOver={(e) => onHover(e.intersections[0].faceIndex)}
+                onPointerOver={(e) => {
+                    e.stopPropagation();
+                    onHover(e.intersections[0].faceIndex);
+                }}
             />
-            <Points limit={coords.length}>
+            {/* <Points limit={coords.length}>
                 <PointMaterial vertexColors size={0.8} />
                 {coords.map((position, i) => (
                     <Point
@@ -74,7 +77,7 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                         color={'blue'}
                     />
                 ))}
-            </Points>
+            </Points> */}
             {/* <boxHelper args={[ref.current, 'blue']} opacity={0.3} /> */}
         </mesh>
     );

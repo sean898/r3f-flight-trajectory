@@ -39,7 +39,7 @@ function RealBoundingPlane({bounds}) {
     const center = new Vector3();
     bounds.getCenter(center);
 
-    function xGrid(interval = 1000) {
+    function xGrid(interval = 10000) {
         const elements = new Array();
         const zValues = axisArange(bounds.min.z, bounds.max.z, interval);
         zValues.forEach((z) => {
