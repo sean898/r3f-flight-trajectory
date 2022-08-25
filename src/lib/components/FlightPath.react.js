@@ -19,7 +19,6 @@ import {PlotControls} from './PlotControls';
 import {BoundingPlane} from './BoundingPlane';
 import {Path} from './Path';
 import {HoverInfo} from './HoverInfo';
-import {degreesToRadians} from '../util';
 import {Legend} from './Legend';
 
 export const initialCameraPosition = [-10, 0, 10];
@@ -36,7 +35,8 @@ const hoverInfoFields = [
 ];
 const viewDistanceFactor = 3;
 
-const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
+/** 3D flight trjaectory plot  */
+const FlightPath = ({id, data, counter, segmentInfo}) => {
     const [index, setIndex] = useState(-1);
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -143,7 +143,11 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
         </>
     );
 };
-FlightPath.defaultProps = {};
+FlightPath.defaultProps = {
+    data: [],
+    counter: 0,
+    segmentInfo: [],
+};
 
 FlightPath.propTypes = {
     /**
@@ -156,6 +160,10 @@ FlightPath.propTypes = {
      */
     data: PropTypes.array,
 
+    /** Segment info */
+    segmentInfo: PropTypes.array,
+    /** Numeric index into data */
+    counter: PropTypes.number,
     /**
      * Dash-assigned callback that should be called to report property changes
      * to Dash, to make them available for callbacks.

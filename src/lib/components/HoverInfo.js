@@ -1,9 +1,7 @@
-import {Html, Point, Points, PointMaterial, Sphere} from '@react-three/drei';
+import {Html, Sphere} from '@react-three/drei';
 import {useEffect, useRef} from 'react';
 import {useThree} from '@react-three/fiber';
-import {degreesToRadians, getCoordinates} from '../util';
-
-const screenSize = 30;
+import {getCoordinates} from '../util';
 
 export function HoverInfo({data, fields}) {
     const position = data && getCoordinates(data);
@@ -16,7 +14,6 @@ export function HoverInfo({data, fields}) {
             const distance = camera.position.distanceTo(position);
             ref.current.position.set(position.x, position.y, position.z);
             const scale = distance / 50000;
-            console.log(scale, ref.current.radius);
             ref.current.scale.set(scale, scale, scale);
         }
     });

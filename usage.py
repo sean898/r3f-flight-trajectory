@@ -2,22 +2,24 @@ import flight_path
 import dash
 from dash.dependencies import Input, Output
 import dash_html_components as html
+import pandas as pd
 
 app = dash.Dash(__name__)
+
+data = pd.read_csv('src/demo/data/test.csv', nrows=700).to_dict(orient='records')
+print(data[0])
 
 app.layout = html.Div([
     flight_path.FlightPath(
         id='input',
-        value='my-value',
-        label='my-label'
+        data=data,
+        segmentInfo=[],
+        counter=0
     ),
     html.Div(id='output')
 ])
 
 
-@app.callback(Output('output', 'children'), [Input('input', 'value')])
-def display_output(value):
-    return 'You have entered {}'.format(value)
 
 
 if __name__ == '__main__':
