@@ -1,9 +1,8 @@
-import {meshBounds, useGLTF, useHelper} from '@react-three/drei';
+import {useGLTF} from '@react-three/drei';
 import {useRef, useMemo, useEffect} from 'react';
 import modelFile from '../../assets/F-16.glb';
-import {AxesHelper} from 'three';
 import {degreesToRadians} from '../util';
-import {useFrame, useThree} from '@react-three/fiber';
+import {useThree} from '@react-three/fiber';
 const headingOffset = -120;
 
 function clamp(value, minValue, maxValue) {
@@ -12,13 +11,13 @@ function clamp(value, minValue, maxValue) {
 
 const minModelScale = 0.6;
 const maxModelScale = 30;
+const color = 'green';
 
 export default function Aircraft({positionData, onClick, ...otherProps}) {
     const ref = useRef();
     const modelRef = useRef();
     const {camera} = useThree();
     const model = useGLTF(modelFile, false);
-    const color = 'green';
     useMemo(() => {
         model.materials['Material.002'].color.set(color);
     }, [color]);
@@ -26,9 +25,7 @@ export default function Aircraft({positionData, onClick, ...otherProps}) {
     useEffect(() => {
         if (positionData != null) {
             const {x, y, z, heading, pitch, bank} = positionData;
-            ref.current.position.x = x;
-            ref.current.position.y = y;
-            ref.current.position.z = z;
+            ref.current.position.set(x, y, z);
 
             ref.current.rotation.y =
                 (heading + headingOffset) * degreesToRadians;

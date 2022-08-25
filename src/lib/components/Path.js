@@ -48,6 +48,9 @@ function chooseColors(n, segmentInfo) {
     return colors;
 }
 
+let box = new Box3();
+const range = 30;
+
 export function Path({coords, onHover, segmentInfo, followMode, ...props}) {
     const colors = useMemo(
         () => (coords == null ? [] : chooseColors(coords.length, segmentInfo)),
@@ -70,13 +73,9 @@ export function Path({coords, onHover, segmentInfo, followMode, ...props}) {
 
     function onDoubleClick(e) {
         const index = e.intersections[0].faceIndex;
-        const range = 30;
         const startIndex = Math.max(index - range, 0);
         const endIndex = Math.min(index + range, coords.length);
-        const box = new Box3().setFromPoints([
-            coords[startIndex],
-            coords[endIndex],
-        ]);
+        box = box.setFromPoints([coords[startIndex], coords[endIndex]]);
         bounds.refresh(box).fit();
     }
 
