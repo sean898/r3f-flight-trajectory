@@ -5,7 +5,6 @@ import {initialCameraPosition} from './FlightPath.react';
 import {getCoordinates} from '../util';
 
 const origin = new Vector3(0, 0, 0);
-let target = new Vector3();
 
 function pointBetween(p0, p1, dist) {
     const direction = p1.clone().sub(p0).normalize().multiplyScalar(dist);
@@ -38,30 +37,12 @@ export function PlotControls({
         const targetDiff = aircraftPosition
             .clone()
             .sub(controlsRef.current.target);
-        // const directionVector = camera.position
-        //     .clone()
-        //     .sub(aircraftPosition)
-        //     .normalize()
-        //     .multiplyScalar(200)
-        //     .add(targetDiff);
-        // const goalPosition = camera.position.add(directionVector);
         const goal = pointBetween(aircraftPosition, camera.position, 200).add(
             targetDiff
         );
         camera.position.lerp(goal, 0.7);
-        // const targetDiff = controlsRef.current.target
-        //     .clone()
-        //     .sub(aircraftPosition);
-        // const target = camera.position
-        //     .clone()
-        //     .sub(aircraftPosition)
-        //     .normalize()
-        //     .multiplyScalar(200);
         controlsRef.current.target.copy(aircraftPosition);
-        // camera.position.lerp(target.sub(targetDiff), 0.9);
         controlsRef.current.update();
-        // const cameraPosition = aircraftPosition.clone().add(cameraOffset);
-        // setCamera(cameraPosition, aircraftPosition);
     };
 
     function onDoubleClick(e) {
