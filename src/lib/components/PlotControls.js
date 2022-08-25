@@ -1,12 +1,16 @@
-import {Html} from '@react-three/drei';
+import {Html, useBounds} from '@react-three/drei';
 import {useThree} from '@react-three/fiber';
 import {Vector3} from 'three';
 import {initialCameraPosition} from './FlightPath.react';
 import {getCoordinates} from '../util';
 
-const cameraOffset = new Vector3(0, 100, 310);
-const normal = new Vector3(0, 1, 0);
 const origin = new Vector3(0, 0, 0);
+let target = new Vector3();
+
+function pointBetween(p0, p1, dist) {
+    const direction = p1.clone().sub(p0).normalize().multiplyScalar(dist);
+    return p0.clone().add(direction);
+}
 
 export function PlotControls({
     currentData,
@@ -17,14 +21,11 @@ export function PlotControls({
     ...props
 }) {
     const camera = useThree((state) => state.camera);
-    const setCameraPosition = (position) => {
-        camera.position.set(...position);
-    };
+    const bounds = useBounds();
 
     function setCamera(position, target) {
-        setCameraPosition(position);
-        camera.updateProjectionMatrix();
-        controlsRef.current.target.set(target.x, target.y, target.z);
+        camera.position.copy(position);
+        controlsRef.current.target.copy(target);
         controlsRef.current.update();
     }
 
@@ -34,9 +35,44 @@ export function PlotControls({
 
     const snapToAircraft = () => {
         const aircraftPosition = getCoordinates(currentData);
-        const cameraPosition = aircraftPosition.clone().add(cameraOffset);
-        setCamera(cameraPosition, aircraftPosition);
+        // const targetDiff = controlsRef.current.target
+        //     .clone()
+        //     .sub(aircraftPosition);
+        // const directionVector = camera.position
+        //     .clone()
+        //     .sub(aircraftPosition)
+        //     .normalize()
+        //     .multiplyScalar(200)
+        //     .add(targetDiff);
+        // const goalPosition = camera.position.add(directionVector);
+        const goal = pointBetween(aircraftPosition, camera.position, 200);
+        camera.position.lerp(goal, 0.7);
+        // const targetDiff = controlsRef.current.target
+        //     .clone()
+        //     .sub(aircraftPosition);
+        // const target = camera.position
+        //     .clone()
+        //     .sub(aircraftPosition)
+        //     .normalize()
+        //     .multiplyScalar(200);
+        controlsRef.current.target.copy(aircraftPosition);
+        // camera.position.lerp(target.sub(targetDiff), 0.9);
+        controlsRef.current.update();
+        // const cameraPosition = aircraftPosition.clone().add(cameraOffset);
+        // setCamera(cameraPosition, aircraftPosition);
     };
+
+    function onDoubleClick(e) {
+        const index = e.intersections[0].faceIndex;
+        const range = 30;
+        const startIndex = Math.max(index - range, 0);
+        const endIndex = Math.min(index + range, coords.length);
+        const box = new Box3().setFromPoints([
+            coords[startIndex],
+            coords[endIndex],
+        ]);
+        bounds.refresh(box).fit();
+    }
 
     if (followMode) snapToAircraft();
 

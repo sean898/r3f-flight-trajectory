@@ -69,7 +69,6 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
             coords[startIndex],
             coords[endIndex],
         ]);
-        console.log(index, box);
         bounds.refresh(box).fit();
     }
 

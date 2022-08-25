@@ -107,6 +107,8 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                     zoomSpeed="2"
                     maxDistance={viewDistance * 0.8}
                     ref={controlsRef}
+                    enableDamping
+                    dampingFactor={0.05}
                 />
                 <BoundingPlane bounds={bounds} />
                 <ambientLight color={0xffffff} />

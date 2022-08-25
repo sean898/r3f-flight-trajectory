@@ -17,7 +17,6 @@ export default function Aircraft({positionData, onClick, ...otherProps}) {
     const ref = useRef();
     const modelRef = useRef();
     const {camera} = useThree();
-    // useHelper(ref, AxesHelper, 1000);
     const model = useGLTF(modelFile, false);
     const color = 'green';
     useMemo(() => {
