@@ -35,9 +35,9 @@ export function PlotControls({
 
     const snapToAircraft = () => {
         const aircraftPosition = getCoordinates(currentData);
-        // const targetDiff = controlsRef.current.target
-        //     .clone()
-        //     .sub(aircraftPosition);
+        const targetDiff = aircraftPosition
+            .clone()
+            .sub(controlsRef.current.target);
         // const directionVector = camera.position
         //     .clone()
         //     .sub(aircraftPosition)
@@ -45,7 +45,9 @@ export function PlotControls({
         //     .multiplyScalar(200)
         //     .add(targetDiff);
         // const goalPosition = camera.position.add(directionVector);
-        const goal = pointBetween(aircraftPosition, camera.position, 200);
+        const goal = pointBetween(aircraftPosition, camera.position, 200).add(
+            targetDiff
+        );
         camera.position.lerp(goal, 0.7);
         // const targetDiff = controlsRef.current.target
         //     .clone()
