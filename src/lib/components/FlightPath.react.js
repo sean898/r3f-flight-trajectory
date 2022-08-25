@@ -89,7 +89,12 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
             <Canvas
                 id={id}
                 className="flight-trajectory-plot"
-                raycaster={{params: {Points: {threshold: -1.175}}}}
+                raycaster={{
+                    params: {
+                        Line: {threshold: 10},
+                        Points: {threshold: -1.175},
+                    },
+                }}
             >
                 <PerspectiveCamera
                     makeDefault
