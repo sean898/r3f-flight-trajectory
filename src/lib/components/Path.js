@@ -48,10 +48,18 @@ function chooseColors(n, segmentInfo) {
     return colors;
 }
 
-export function Path({coords, onHover, segmentInfo, ...props}) {
+export function Path({coords, onHover, segmentInfo, followMode, ...props}) {
     const colors = useMemo(
         () => (coords == null ? [] : chooseColors(coords.length, segmentInfo)),
         [coords.length, segmentInfo]
+    );
+    const hoverCallback = useCallback(
+        (e) => {
+            if (followMode) return {};
+            e.stopPropagation();
+            onHover(e.intersections[0].faceIndex);
+        },
+        [followMode]
     );
     const ref = useRef();
     const bounds = useBounds();
@@ -82,10 +90,7 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                 lineWidth={2}
                 vertexColors={colors}
                 color={defaultColorObj}
-                onPointerMove={(e) => {
-                    e.stopPropagation();
-                    onHover(e.intersections[0].faceIndex);
-                }}
+                onPointerMove={hoverCallback}
                 onDoubleClick={onDoubleClick}
             />
             {/* <Points limit={coords.length}>

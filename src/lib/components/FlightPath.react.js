@@ -120,6 +120,7 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                         color={'lightblue'}
                         onHover={setHoverIndex}
                         segmentInfo={segmentInfo}
+                        followMode={followMode}
                     />
                     <Suspense fallback={null}>
                         <Aircraft
