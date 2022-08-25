@@ -12,8 +12,9 @@ function clamp(value, minValue, maxValue) {
 const minModelScale = 0.6;
 const maxModelScale = 30;
 const color = 'green';
+let scale;
 
-export default function Aircraft({positionData, onClick, ...otherProps}) {
+export default function Aircraft({positionData, ...otherProps}) {
     const ref = useRef();
     const modelRef = useRef();
     const {camera} = useThree();
@@ -24,16 +25,18 @@ export default function Aircraft({positionData, onClick, ...otherProps}) {
 
     useEffect(() => {
         if (positionData != null) {
+            /* Position */
             const {x, y, z, heading, pitch, bank} = positionData;
             ref.current.position.set(x, y, z);
 
+            /* Rotation */
             ref.current.rotation.y =
                 (heading + headingOffset) * degreesToRadians;
             ref.current.rotation.z = pitch * degreesToRadians;
             ref.current.rotation.x = bank * degreesToRadians;
 
+            /* Scale */
             const distance = camera.position.distanceTo(ref.current.position);
-            let scale;
             if (distance > 10000) {
                 scale = maxModelScale;
             } else if (distance > 5000) {
@@ -54,10 +57,6 @@ export default function Aircraft({positionData, onClick, ...otherProps}) {
                 ref={modelRef}
                 object={model.scene}
                 scale={minModelScale}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onClick();
-                }}
                 {...otherProps}
             />
             <axesHelper args={[20]} setColors={['red', 'green', 'blue']} />
