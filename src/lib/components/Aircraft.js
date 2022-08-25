@@ -5,10 +5,6 @@ import {degreesToRadians} from '../util';
 import {useThree} from '@react-three/fiber';
 const headingOffset = -120;
 
-function clamp(value, minValue, maxValue) {
-    return Math.max(Math.min(value, maxValue), minValue);
-}
-
 const minModelScale = 0.6;
 const maxModelScale = 30;
 const color = 'green';

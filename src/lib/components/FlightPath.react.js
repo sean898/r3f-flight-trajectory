@@ -129,10 +129,7 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                         followMode={followMode}
                     />
                     <Suspense fallback={null}>
-                        <Aircraft
-                            positionData={currentData}
-                            onClick={incrementIndex}
-                        />
+                        <Aircraft positionData={currentData} />
                     </Suspense>
                     <PlotControls
                         incrementIndex={incrementIndex}
