@@ -25,12 +25,13 @@ export function HoverInfo({data, fields}) {
     const formattedContent = fields.map((k) => `${k}: ${data[k].toFixed(2)}`);
     return (
         <>
-            <Sphere
-                ref={ref}
-                args={[100, 12, 12]}
-                color="pink"
-                sizeAttenuation={false}
-            />
+            <Sphere ref={ref} args={[100, 12, 12]} sizeAttenuation={false}>
+                <meshBasicMaterial
+                    color="red"
+                    polygonOffset
+                    polygonOffsetFactor={-2}
+                />
+            </Sphere>
             {/* <Points>
                 <PointMaterial
                     vertexColors
