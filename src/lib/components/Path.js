@@ -70,7 +70,7 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
     function onDoubleClick(e) {
         console.log('double click');
         const index = e.intersections[0].faceIndex;
-        const range = 50;
+        const range = 20;
         const startIndex = Math.max(index - range, 0);
         const endIndex = Math.min(index + range, coords.length);
         const box = new Box3().setFromPoints([
