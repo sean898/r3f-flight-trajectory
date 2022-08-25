@@ -1,25 +1,51 @@
-import {Html} from '@react-three/drei';
+import {Html, Point, Points, PointMaterial} from '@react-three/drei';
+import {useEffect, useRef} from 'react';
+import {useThree} from '@react-three/fiber';
 import {getCoordinates} from '../util';
 
 export function HoverInfo({data, fields}) {
-    if (data == null) return <></>;
-    const position = getCoordinates(data);
+    const position = data && getCoordinates(data);
 
+    const pointRef = useRef();
+    const pointMaterialRef = useRef();
+    const {camera} = useThree();
+    useEffect(() => {
+        if (position != null && pointRef.current != null) {
+            const distance = camera.position.distanceTo(position);
+            const fov = (camera.fov * Math.PI) / 180;
+            const size = 0.05 * Math.tan(fov / 2) * distance;
+            pointRef.current.position.set(position.x, position.y, position.z);
+            pointMaterialRef.current.size = size;
+        }
+    });
+
+    if (data == null) return <></>;
     const formattedContent = fields.map((k) => `${k}: ${data[k].toFixed(2)}`);
     return (
-        <Html
-            wrapperClass="hover-info-wrapper"
-            position={position}
-            center
-            scaleFactor={15}
-        >
-            <div className="hover-info">
-                {formattedContent.map((entry, i) => (
-                    <div key={i} className="hover-info-entry">
-                        {entry}
-                    </div>
-                ))}
-            </div>
-        </Html>
+        <>
+            <Points>
+                <PointMaterial
+                    vertexColors
+                    color={'pink'}
+                    size={30}
+                    ref={pointMaterialRef}
+                />
+                <Point position={position} ref={pointRef} />
+            </Points>
+            <Html
+                wrapperClass="hover-info-wrapper"
+                position={position}
+                center
+                scaleFactor={15}
+            >
+                <div className="hover-info">
+                    {formattedContent.map((entry, i) => (
+                        <div key={i} className="hover-info-entry">
+                            {entry}
+                        </div>
+                    ))}
+                </div>
+            </Html>
+        </>
     );
 }
