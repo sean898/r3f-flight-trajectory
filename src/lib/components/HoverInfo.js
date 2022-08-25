@@ -3,13 +3,16 @@ import {useEffect, useRef} from 'react';
 import {useThree} from '@react-three/fiber';
 import {getCoordinates} from '../util';
 import {MeshBasicMaterial} from 'three';
+import PropTypes from 'prop-types';
 
 const sphereMaterial = new MeshBasicMaterial({
     color: 'red',
     polygonOffset: true,
     polygonOffsetFactor: -2,
 });
-export function HoverInfo({data, fields}) {
+
+/** Show information about currently hovered point. */
+function HoverInfo({data, fields}) {
     const position = data && getCoordinates(data);
 
     const {camera} = useThree();
@@ -51,3 +54,13 @@ export function HoverInfo({data, fields}) {
         </>
     );
 }
+
+HoverInfo.propTypes = {
+    /** Data of current point containing at least x, y, and z, plus `fields */
+    data: PropTypes.object,
+
+    /** Names of fields to show from `data` */
+    fields: PropTypes.array,
+};
+
+export {HoverInfo};

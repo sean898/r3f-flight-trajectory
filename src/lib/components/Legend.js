@@ -1,7 +1,8 @@
 import {Html} from '@react-three/drei';
 import * as THREE from 'three';
+import PropTypes from 'prop-types';
 
-export function Legend({segmentInfo}) {
+function Legend({segmentInfo}) {
     return (
         <Html
             wrapperClass="plot-legend-wrapper"
@@ -28,3 +29,10 @@ export function Legend({segmentInfo}) {
         </Html>
     );
 }
+
+Legend.propTypes = {
+    /** Array of information about segments. */
+    segmentInfo: PropTypes.array,
+};
+
+export {Legend};

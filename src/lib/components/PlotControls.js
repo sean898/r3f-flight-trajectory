@@ -4,6 +4,7 @@ import {useThree} from '@react-three/fiber';
 import {Vector3} from 'three';
 import {initialCameraPosition} from './FlightPath.react';
 import {getCoordinates} from '../util';
+import PropTypes from 'prop-types';
 
 const origin = new Vector3(0, 0, 0);
 
@@ -12,7 +13,8 @@ function pointBetween(p0, p1, dist) {
     return p0.clone().add(direction);
 }
 
-export function PlotControls({
+/** Controls for the plot */
+function PlotControls({
     currentData,
     incrementIndex,
     controlsRef,
@@ -66,3 +68,22 @@ export function PlotControls({
         </Html>
     );
 }
+
+PlotControls.propTypes = {
+    // Data of current point
+    currentData: PropTypes.array,
+
+    /**Function to increment index */
+    incrementIndex: PropTypes.func,
+
+    /** Reference to controls object */
+    controlsRef: PropTypes.any,
+
+    /** Follow mode enabled */
+    followMode: PropTypes.bool,
+
+    /** Callback to toggle follow mode */
+    toggleFollowMode: PropTypes.func,
+};
+
+export {PlotControls};

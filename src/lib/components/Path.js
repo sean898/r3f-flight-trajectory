@@ -9,25 +9,26 @@ import {
     useBounds,
 } from '@react-three/drei';
 import {Box3} from 'three';
+import PropTypes from 'prop-types';
 
-function FlightPoint({index, onHover, ...props}) {
-    const [hovered, setHover] = useState(false);
-    return (
-        <Point
-            {...props}
-            color={hovered ? 'red' : 'blue'}
-            onPointerOver={(e) => {
-                e.stopPropagation();
-                onHover(index);
-                setHover(true);
-            }}
-            onPointerOut={(e) => {
-                e.stopPropagation();
-                setHover(false);
-            }}
-        />
-    );
-}
+// function FlightPoint({index, onHover, ...props}) {
+//     const [hovered, setHover] = useState(false);
+//     return (
+//         <Point
+//             {...props}
+//             color={hovered ? 'red' : 'blue'}
+//             onPointerOver={(e) => {
+//                 e.stopPropagation();
+//                 onHover(index);
+//                 setHover(true);
+//             }}
+//             onPointerOut={(e) => {
+//                 e.stopPropagation();
+//                 setHover(false);
+//             }}
+//         />
+//     );
+// }
 
 const defaultColor = [0.7, 0.7, 0.9];
 const defaultColorObj = new THREE.Color(...defaultColor);
@@ -51,7 +52,8 @@ function chooseColors(n, segmentInfo) {
 let box = new Box3();
 const range = 30;
 
-export function Path({coords, onHover, segmentInfo, followMode, ...props}) {
+/** The flight path */
+function Path({coords, onHover, segmentInfo, followMode}) {
     const colors = useMemo(
         () => (coords == null ? [] : chooseColors(coords.length, segmentInfo)),
         [coords.length, segmentInfo]
@@ -107,3 +109,25 @@ export function Path({coords, onHover, segmentInfo, followMode, ...props}) {
         </mesh>
     );
 }
+
+Path.propTypes = {
+    /** Coordinates Vector3 */
+    coords: PropTypes.array,
+
+    /** Function for hovering on path line */
+    onHover: PropTypes.func,
+
+    /** Segment info */
+    segmentInfo: PropTypes.array,
+
+    /** Follow mode enabled */
+    followMode: PropTypes.bool,
+};
+
+Path.defaultProps = {
+    coords: [],
+    segmentInfo: [],
+    followMode: false,
+};
+
+export {Path};

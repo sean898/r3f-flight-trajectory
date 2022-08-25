@@ -3,13 +3,15 @@ import {useRef, useMemo, useEffect} from 'react';
 import modelFile from '../../assets/F-16.glb';
 import {degreesToRadians} from '../util';
 import {useThree} from '@react-three/fiber';
-const headingOffset = -120;
+import PropTypes from 'prop-types';
 
+const headingOffset = -120;
 const minModelScale = 0.6;
 const maxModelScale = 30;
 const color = 'green';
 let scale;
 
+/** Aircraft model */
 export default function Aircraft({positionData, ...otherProps}) {
     const ref = useRef();
     const modelRef = useRef();
@@ -59,3 +61,14 @@ export default function Aircraft({positionData, ...otherProps}) {
         </group>
     );
 }
+
+Aircraft.propTypes = {
+    positionData: PropTypes.shape({
+        x: PropTypes.number,
+        y: PropTypes.number,
+        z: PropTypes.number,
+        heading: PropTypes.number,
+        pitch: PropTypes.number,
+        bank: PropTypes.number,
+    }),
+};

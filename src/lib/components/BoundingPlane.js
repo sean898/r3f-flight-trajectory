@@ -1,7 +1,8 @@
-import {Plane, Segments, Segment} from '@react-three/drei';
-import {memo, useRef} from 'react';
+import {Segments, Segment} from '@react-three/drei';
+import {useRef, memo} from 'react';
 import {useFrame, useThree} from '@react-three/fiber';
-import {BackSide, Box3, FrontSide, LineSegments, Vector3} from 'three';
+import {Vector3} from 'three';
+import PropTypes from 'prop-types';
 
 /** Version of numpy.arange */
 function arange(start, stop, step) {
@@ -34,8 +35,6 @@ function RealBoundingPlane({bounds}) {
 
     if (bounds == null) return <></>;
 
-    const width = bounds.max.x - bounds.min.x;
-    const height = bounds.max.y - bounds.min.y;
     const center = new Vector3();
     bounds.getCenter(center);
 
@@ -73,5 +72,13 @@ function RealBoundingPlane({bounds}) {
     );
 }
 
-// export const BoundingPlane = memo(RealBoundingPlane);
-export const BoundingPlane = RealBoundingPlane;
+RealBoundingPlane.propTypes = {
+    bounds: PropTypes.any,
+};
+
+RealBoundingPlane.defaultProps = {
+    bounds: null,
+};
+
+export const BoundingPlane = memo(RealBoundingPlane);
+// export const BoundingPlane = RealBoundingPlane;

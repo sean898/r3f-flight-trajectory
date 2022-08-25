@@ -1,4 +1,16 @@
 # AUTO GENERATED FILE - DO NOT EDIT
 
+export(Aircraft)
+export(BoundingPlane)
 export(FlightPath)
+export(HoverInfo)
+export(Legend)
+export(Path)
+export(PlotControls)
+export(path)
+export(legend)
+export(plotControls)
+export(boundingPlane)
 export(flightPath)
+export(hoverInfo)
+export(aircraft)
