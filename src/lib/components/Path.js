@@ -30,6 +30,7 @@ function FlightPoint({index, onHover, ...props}) {
 }
 
 const defaultColor = [0.7, 0.7, 0.9];
+const defaultColorObj = new THREE.Color(...defaultColor);
 function chooseColors(n, segmentInfo) {
     if (n < 2) return null;
     let colors = new Array();
@@ -52,25 +53,16 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
         () => (coords == null ? [] : chooseColors(coords.length, segmentInfo)),
         [coords.length, segmentInfo]
     );
-    const callback = useCallback(
-        (e) => {
-            e.stopPropagation();
-            onHover(e.index);
-        },
-        [onHover]
-    );
     const ref = useRef();
     const bounds = useBounds();
     useEffect(() => {
         if (bounds != null && ref.current != null)
             bounds.refresh(ref.current).fit();
-        console.log('refresh');
     }, [coords]);
 
     function onDoubleClick(e) {
-        console.log('double click');
         const index = e.intersections[0].faceIndex;
-        const range = 20;
+        const range = 30;
         const startIndex = Math.max(index - range, 0);
         const endIndex = Math.min(index + range, coords.length);
         const box = new Box3().setFromPoints([
@@ -90,7 +82,7 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                 points={coords}
                 lineWidth={2}
                 vertexColors={colors}
-                color={new THREE.Color(...defaultColor)}
+                color={defaultColorObj}
                 onPointerOver={(e) => {
                     e.stopPropagation();
                     onHover(e.intersections[0].faceIndex);

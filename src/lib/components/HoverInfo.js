@@ -1,21 +1,23 @@
-import {Html, Point, Points, PointMaterial} from '@react-three/drei';
+import {Html, Point, Points, PointMaterial, Sphere} from '@react-three/drei';
 import {useEffect, useRef} from 'react';
 import {useThree} from '@react-three/fiber';
-import {getCoordinates} from '../util';
+import {degreesToRadians, getCoordinates} from '../util';
+
+const screenSize = 30;
 
 export function HoverInfo({data, fields}) {
     const position = data && getCoordinates(data);
 
-    const pointRef = useRef();
-    const pointMaterialRef = useRef();
     const {camera} = useThree();
+    const ref = useRef();
     useEffect(() => {
-        if (position != null && pointRef.current != null) {
+        if (position != null && ref.current != null) {
+            camera.updateProjectionMatrix();
             const distance = camera.position.distanceTo(position);
-            const fov = (camera.fov * Math.PI) / 180;
-            const size = 0.05 * Math.tan(fov / 2) * distance;
-            pointRef.current.position.set(position.x, position.y, position.z);
-            pointMaterialRef.current.size = size;
+            ref.current.position.set(position.x, position.y, position.z);
+            const scale = distance / 50000;
+            console.log(scale, ref.current.radius);
+            ref.current.scale.set(scale, scale, scale);
         }
     });
 
@@ -23,15 +25,23 @@ export function HoverInfo({data, fields}) {
     const formattedContent = fields.map((k) => `${k}: ${data[k].toFixed(2)}`);
     return (
         <>
-            <Points>
+            <Sphere
+                ref={ref}
+                args={[100, 12, 12]}
+                color="pink"
+                sizeAttenuation={false}
+            />
+            {/* <Points>
                 <PointMaterial
                     vertexColors
                     color={'pink'}
                     size={30}
                     ref={pointMaterialRef}
+                    depthWrite={false}
+                    sizeAttenuation={false}
                 />
                 <Point position={position} ref={pointRef} />
-            </Points>
+            </Points> */}
             <Html
                 wrapperClass="hover-info-wrapper"
                 position={position}
