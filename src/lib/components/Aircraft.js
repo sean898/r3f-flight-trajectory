@@ -40,6 +40,8 @@ export default function Aircraft({positionData, onClick, ...otherProps}) {
             let scale;
             if (distance > 10000) {
                 scale = maxModelScale;
+            } else if (distance > 5000) {
+                scale = maxModelScale / 2;
             } else {
                 scale = minModelScale;
             }
