@@ -32,7 +32,7 @@ export function PlotControls({
         setCamera(initialCameraPosition, origin);
     };
 
-    const snapToAircraft = () => {
+    function snapToAircraft(alpha = 0.9, ...args) {
         const aircraftPosition = getCoordinates(currentData);
         const targetDiff = aircraftPosition
             .clone()
@@ -40,24 +40,12 @@ export function PlotControls({
         const goal = pointBetween(aircraftPosition, camera.position, 200).add(
             targetDiff
         );
-        camera.position.lerp(goal, 0.7);
+        camera.position.lerp(goal, alpha);
         controlsRef.current.target.copy(aircraftPosition);
         controlsRef.current.update();
-    };
-
-    function onDoubleClick(e) {
-        const index = e.intersections[0].faceIndex;
-        const range = 30;
-        const startIndex = Math.max(index - range, 0);
-        const endIndex = Math.min(index + range, coords.length);
-        const box = new Box3().setFromPoints([
-            coords[startIndex],
-            coords[endIndex],
-        ]);
-        bounds.refresh(box).fit();
     }
 
-    if (followMode) snapToAircraft();
+    if (followMode) snapToAircraft(0.3);
 
     return (
         <Html
@@ -69,7 +57,7 @@ export function PlotControls({
             onOcclude={() => {}} /* don't occlude */
         >
             <button onClick={resetPlot}>Reset</button>
-            <button onClick={snapToAircraft}>Snap</button>
+            <button onClick={() => snapToAircraft()}>Snap</button>
             <button onClick={toggleFollowMode}>Follow</button>
         </Html>
     );
