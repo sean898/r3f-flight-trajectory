@@ -2,7 +2,13 @@ import {Html, Sphere} from '@react-three/drei';
 import {useEffect, useRef} from 'react';
 import {useThree} from '@react-three/fiber';
 import {getCoordinates} from '../util';
+import {MeshBasicMaterial} from 'three';
 
+const sphereMaterial = new MeshBasicMaterial({
+    color: 'red',
+    polygonOffset: true,
+    polygonOffsetFactor: -2,
+});
 export function HoverInfo({data, fields}) {
     const position = data && getCoordinates(data);
 
@@ -22,13 +28,12 @@ export function HoverInfo({data, fields}) {
     const formattedContent = fields.map((k) => `${k}: ${data[k].toFixed(2)}`);
     return (
         <>
-            <Sphere ref={ref} args={[100, 12, 12]} sizeAttenuation={false}>
-                <meshBasicMaterial
-                    color="red"
-                    polygonOffset
-                    polygonOffsetFactor={-2}
-                />
-            </Sphere>
+            <Sphere
+                material={sphereMaterial}
+                ref={ref}
+                args={[100, 12, 12]}
+                sizeAttenuation={false}
+            ></Sphere>
             <Html
                 wrapperClass="hover-info-wrapper"
                 position={position}

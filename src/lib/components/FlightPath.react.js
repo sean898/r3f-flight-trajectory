@@ -36,7 +36,7 @@ const hoverInfoFields = [
 const viewDistanceFactor = 3;
 
 /** 3D flight trjaectory plot  */
-const FlightPath = ({id, data, counter, segmentInfo}) => {
+const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
     const [index, setIndex] = useState(-1);
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -82,6 +82,12 @@ const FlightPath = ({id, data, counter, segmentInfo}) => {
     }, [bounds]);
 
     const controlsRef = useRef();
+    if (coords == null || coords.length == 0)
+        return (
+            <>
+                <p>No data</p>
+            </>
+        );
 
     let currentData = data.length > -1 ? data[index % data.length] : [0, 0, 0];
     return (
