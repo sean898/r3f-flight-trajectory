@@ -1,3 +1,4 @@
+import {useCallback} from 'react';
 import {Html, useBounds} from '@react-three/drei';
 import {useThree} from '@react-three/fiber';
 import {Vector3} from 'three';
@@ -20,7 +21,10 @@ export function PlotControls({
     ...props
 }) {
     const camera = useThree((state) => state.camera);
-    const bounds = useBounds();
+    const snapCallback = useCallback((e) => {
+        e.stopPropagation();
+        snapToAircraft();
+    });
 
     function setCamera(position, target) {
         camera.position.copy(position);
@@ -57,7 +61,7 @@ export function PlotControls({
             onOcclude={() => {}} /* don't occlude */
         >
             <button onClick={resetPlot}>Reset</button>
-            <button onClick={() => snapToAircraft()}>Snap</button>
+            <button onClick={snapCallback}>Snap</button>
             <button onClick={toggleFollowMode}>Follow</button>
         </Html>
     );
