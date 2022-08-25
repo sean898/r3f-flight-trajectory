@@ -82,7 +82,7 @@ export function Path({coords, onHover, segmentInfo, ...props}) {
                 lineWidth={2}
                 vertexColors={colors}
                 color={defaultColorObj}
-                onPointerOver={(e) => {
+                onPointerMove={(e) => {
                     e.stopPropagation();
                     onHover(e.intersections[0].faceIndex);
                 }}

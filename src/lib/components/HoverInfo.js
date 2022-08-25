@@ -32,17 +32,6 @@ export function HoverInfo({data, fields}) {
                     polygonOffsetFactor={-2}
                 />
             </Sphere>
-            {/* <Points>
-                <PointMaterial
-                    vertexColors
-                    color={'pink'}
-                    size={30}
-                    ref={pointMaterialRef}
-                    depthWrite={false}
-                    sizeAttenuation={false}
-                />
-                <Point position={position} ref={pointRef} />
-            </Points> */}
             <Html
                 wrapperClass="hover-info-wrapper"
                 position={position}

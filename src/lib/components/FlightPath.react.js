@@ -91,8 +91,8 @@ const FlightPath = ({id, data, counter, segmentInfo, ...props}) => {
                 className="flight-trajectory-plot"
                 raycaster={{
                     params: {
-                        Line: {threshold: 10},
-                        Points: {threshold: -1.175},
+                        Line2: {threshold: 3},
+                        Line: {threshold: 3},
                     },
                 }}
             >
