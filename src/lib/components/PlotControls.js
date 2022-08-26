@@ -16,7 +16,6 @@ function pointBetween(p0, p1, dist) {
 /** Controls for the plot */
 function PlotControls({
     currentData,
-    incrementIndex,
     controlsRef,
     followMode,
     toggleFollowMode,
@@ -72,9 +71,6 @@ function PlotControls({
 PlotControls.propTypes = {
     // Data of current point
     currentData: PropTypes.object,
-
-    /**Function to increment index */
-    incrementIndex: PropTypes.func,
 
     /** Reference to controls object */
     controlsRef: PropTypes.any,

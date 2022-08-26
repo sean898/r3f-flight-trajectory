@@ -37,24 +37,15 @@ const viewDistanceFactor = 3;
 
 /** 3D flight trjaectory plot  */
 const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
-    const [index, setIndex] = useState(-1);
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
     const [bounds, setBounds] = useState(null);
     const [followMode, setFollowMode] = useState(false);
     const [viewDistance, setViewDistance] = useState(150000);
 
-    const incrementIndex = () => {
-        setIndex(index + 1);
-    };
-
     function toggleFollowMode() {
         setFollowMode(!followMode);
     }
-
-    useEffect(() => {
-        incrementIndex();
-    }, [counter]);
 
     useEffect(() => {
         if (data != null) {
@@ -89,7 +80,7 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
             </>
         );
 
-    let currentData = data.length > -1 ? data[index % data.length] : [0, 0, 0];
+    const currentData = data.length > -1 ? data[counter % data.length] : {};
     return (
         <>
             <Canvas
@@ -135,7 +126,6 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
                         />
                     </Suspense>
                     <PlotControls
-                        incrementIndex={incrementIndex}
                         followMode={followMode}
                         toggleFollowMode={toggleFollowMode}
                         currentData={currentData}
