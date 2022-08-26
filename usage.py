@@ -7,7 +7,7 @@ import pandas as pd
 
 app = dash.Dash(__name__)
 
-flight_data = pd.read_csv('src/demo/data/test.csv', nrows=700)
+flight_data = pd.read_csv('src/demo/data/test.csv')
 
 app.layout = html.Div(style={'display': 'flex', 'height': '100vh', 'flexDirection': 'column'}, children=[
     flight_path.FlightPath(
