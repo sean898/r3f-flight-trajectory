@@ -9,15 +9,19 @@ app = dash.Dash(__name__)
 
 flight_data = pd.read_csv('src/demo/data/test.csv', nrows=700)
 
-app.layout = html.Div(style={'display': 'flex', 'height': '100vh'}, children=[
+app.layout = html.Div(style={'display': 'flex', 'height': '100vh', 'flexDirection': 'column'}, children=[
     flight_path.FlightPath(
         id='path',
         segmentInfo=[],
         modelFile=app.get_asset_url('F-16.glb'),
         counter=0
     ),
-    html.Button(id='play-toggle', children='Play/pause'),
-    dcc.Slider(id='time-slider', marks=None, min=0, max=len(flight_data), step=1, updatemode='drag', tooltip={'placement': 'bottom', 'always_visible': True}),
+    html.Div(style={'display': 'flex', 'padding': '1em', 'background': 'gray'}, children=[
+        html.Button(id='play-toggle', children='Play/pause'),
+        html.Div(style={'flex': '1'}, children=[
+            dcc.Slider( id='time-slider', marks=None, min=0, max=len(flight_data), value=0, step=1, updatemode='drag', tooltip={'placement': 'bottom', 'always_visible': True}),
+        ]),
+    ]),
     html.Div(id='output'),
     dcc.Store(id='flight-data', data=flight_data.to_dict(orient='records')),
     dcc.Interval(id='playback-interval', interval=100),
