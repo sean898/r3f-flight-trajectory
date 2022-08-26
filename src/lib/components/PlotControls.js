@@ -71,7 +71,7 @@ function PlotControls({
 
 PlotControls.propTypes = {
     // Data of current point
-    currentData: PropTypes.array,
+    currentData: PropTypes.object,
 
     /**Function to increment index */
     incrementIndex: PropTypes.func,
