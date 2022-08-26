@@ -74,7 +74,7 @@ function App() {
                 counter={counter}
                 data={data}
                 segmentInfo={segmentInfo}
-                modelFile="public/basic/scene.gltf"
+                modelFile="public/F-16.glb"
             />
         </>
     );

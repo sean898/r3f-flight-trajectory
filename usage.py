@@ -14,7 +14,7 @@ app.layout = html.Div([
         id='input',
         data=data,
         segmentInfo=[],
-        modelFile=app.get_asset_url('basic/scene.gltf'),
+        modelFile=app.get_asset_url('F-16.glb'),
         counter=0
     ),
     html.Div(id='output')

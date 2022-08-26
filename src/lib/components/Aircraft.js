@@ -16,9 +16,10 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
     const modelRef = useRef();
     const {camera} = useThree();
     const model = useGLTF(modelFile, false);
-    // useMemo(() => {
-    //     model.materials['Material.002'].color.set(color);
-    // }, [color]);
+    useMemo(() => {
+        if (modelFile && modelFile.endsWith('F-16.glb'))
+            model.materials['Material.002'].color.set(color);
+    }, [color, modelFile]);
 
     useEffect(() => {
         if (positionData != null) {
