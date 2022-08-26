@@ -55,6 +55,7 @@ module.exports = (env, argv) => {
             filename,
             library: dashLibraryName,
             libraryTarget: 'window',
+            publicPath: 'public/',
         },
         devtool,
         externals,
@@ -82,7 +83,7 @@ module.exports = (env, argv) => {
                     // ],
                 },
                 {
-                    test: /\.(glb|txt|csv|mmdb)$/,
+                    test: /\.(txt|csv|mmdb)$/,
 
                     use: [
                         {
@@ -99,13 +100,13 @@ module.exports = (env, argv) => {
         optimization: {
             minimizer: [
                 new TerserPlugin({
-                    // sourceMap: true,
-                    // parallel: true,
-                    // // cache: './.build_cache/terser',
-                    // terserOptions: {
-                    //     warnings: false,
-                    //     ie8: false,
-                    // },
+                    sourceMap: true,
+                    parallel: true,
+                    // cache: './.build_cache/terser',
+                    terserOptions: {
+                        warnings: false,
+                        ie8: false,
+                    },
                 }),
             ],
             // splitChunks:

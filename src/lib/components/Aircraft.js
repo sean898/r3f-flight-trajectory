@@ -1,6 +1,5 @@
 import {useGLTF} from '@react-three/drei';
 import {useRef, useMemo, useEffect} from 'react';
-import modelFile from '../../assets/F-16.glb';
 import {degreesToRadians} from '../util';
 import {useThree} from '@react-three/fiber';
 import PropTypes from 'prop-types';
@@ -16,7 +15,7 @@ export default function Aircraft({positionData, ...otherProps}) {
     const ref = useRef();
     const modelRef = useRef();
     const {camera} = useThree();
-    const model = useGLTF(modelFile, false);
+    const model = useGLTF('/public/F-16.glb', false);
     useMemo(() => {
         model.materials['Material.002'].color.set(color);
     }, [color]);
