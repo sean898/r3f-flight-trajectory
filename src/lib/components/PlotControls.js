@@ -26,16 +26,17 @@ function PlotControls({
         e.stopPropagation();
         snapToAircraft();
     });
+    const resetCallback = useCallback((e) => {
+        console.log(initialCameraPosition, origin, camera.position);
+        e.stopPropagation();
+        setCamera(initialCameraPosition, origin);
+    });
 
     function setCamera(position, target) {
-        camera.position.copy(position);
+        camera.position.set(position.x, position.y, position.z);
         controlsRef.current.target.copy(target);
         controlsRef.current.update();
     }
-
-    const resetPlot = () => {
-        setCamera(initialCameraPosition, origin);
-    };
 
     function snapToAircraft(alpha = 0.9, ...args) {
         const aircraftPosition = getCoordinates(currentData);
@@ -61,7 +62,7 @@ function PlotControls({
             fullScreen
             onOcclude={() => {}} /* don't occlude */
         >
-            <button onClick={resetPlot}>Reset</button>
+            <button onClick={resetCallback}>Reset</button>
             <button onClick={snapCallback}>Snap</button>
             <button onClick={toggleFollowMode}>Follow</button>
         </Html>

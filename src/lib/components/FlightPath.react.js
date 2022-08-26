@@ -21,7 +21,7 @@ import {Path} from './Path';
 import {HoverInfo} from './HoverInfo';
 import {Legend} from './Legend';
 
-export const initialCameraPosition = [-10, 0, 10];
+export const initialCameraPosition = new Vector3(0, 0, 100);
 
 const hoverInfoFields = [
     'x',
