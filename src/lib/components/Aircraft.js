@@ -63,6 +63,7 @@ export default function Aircraft({positionData, ...otherProps}) {
 }
 
 Aircraft.propTypes = {
+    /** Current position */
     positionData: PropTypes.shape({
         x: PropTypes.number,
         y: PropTypes.number,

@@ -2,6 +2,7 @@ import {Html} from '@react-three/drei';
 import * as THREE from 'three';
 import PropTypes from 'prop-types';
 
+/** Plot  legend */
 function Legend({segmentInfo}) {
     return (
         <Html

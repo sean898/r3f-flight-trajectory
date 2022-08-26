@@ -73,6 +73,7 @@ function RealBoundingPlane({bounds}) {
 }
 
 RealBoundingPlane.propTypes = {
+    //** Box3 object bounding plot data */
     bounds: PropTypes.any,
 };
 
