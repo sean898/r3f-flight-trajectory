@@ -11,14 +11,14 @@ const color = 'green';
 let scale;
 
 /** Aircraft model */
-export default function Aircraft({positionData, ...otherProps}) {
+export default function Aircraft({positionData, modelFile, ...otherProps}) {
     const ref = useRef();
     const modelRef = useRef();
     const {camera} = useThree();
-    const model = useGLTF('/public/F-16.glb', false);
-    useMemo(() => {
-        model.materials['Material.002'].color.set(color);
-    }, [color]);
+    const model = useGLTF(modelFile, false);
+    // useMemo(() => {
+    //     model.materials['Material.002'].color.set(color);
+    // }, [color]);
 
     useEffect(() => {
         if (positionData != null) {
@@ -71,4 +71,6 @@ Aircraft.propTypes = {
         pitch: PropTypes.number,
         bank: PropTypes.number,
     }),
+    /** Path to aircraft model file (gltf/glb) */
+    modelFile: PropTypes.string,
 };

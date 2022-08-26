@@ -36,7 +36,7 @@ const hoverInfoFields = [
 const viewDistanceFactor = 3;
 
 /** 3D flight trjaectory plot  */
-const FlightPath = ({id, data, counter, segmentInfo}) => {
+const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
     const [index, setIndex] = useState(-1);
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -129,7 +129,10 @@ const FlightPath = ({id, data, counter, segmentInfo}) => {
                         followMode={followMode}
                     />
                     <Suspense fallback={null}>
-                        <Aircraft positionData={currentData} />
+                        <Aircraft
+                            positionData={currentData}
+                            modelFile={modelFile}
+                        />
                     </Suspense>
                     <PlotControls
                         incrementIndex={incrementIndex}
@@ -172,6 +175,9 @@ FlightPath.propTypes = {
      * to Dash, to make them available for callbacks.
      */
     setProps: PropTypes.func,
+
+    /** Path to aircraft model file (gltf/glb) */
+    modelFile: PropTypes.string,
 };
 
 export default FlightPath;

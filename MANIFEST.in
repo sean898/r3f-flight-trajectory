@@ -9,4 +9,3 @@ include flight_path/package-info.json
 include README.md
 include LICENSE
 include package.json
-include public/F-16.glb

@@ -74,6 +74,7 @@ function App() {
                 counter={counter}
                 data={data}
                 segmentInfo={segmentInfo}
+                modelFile="public/basic/scene.gltf"
             />
         </>
     );

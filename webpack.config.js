@@ -83,7 +83,7 @@ module.exports = (env, argv) => {
                     // ],
                 },
                 {
-                    test: /\.(txt|csv|mmdb)$/,
+                    test: /\.(glb|txt|csv|mmdb)$/,
 
                     use: [
                         {
