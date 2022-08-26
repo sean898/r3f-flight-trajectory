@@ -11,7 +11,8 @@
         "build:backends": "dash-generate-components ./src/lib/components flight_path -p package-info.json --r-prefix '' --jl-prefix '' --ignore \\.test\\.",
         "build:backends-activated": "(. venv/bin/activate || venv\\scripts\\activate && npm run build:py_and_r)",
         "build": "npm run build:js && npm run build:backends",
-        "build:activated": "npm run build:js && npm run build:backends-activated"
+        "build:activated": "npm run build:js && npm run build:backends-activated",
+        "py": "npm run build && python usage.py"
     },
     "author": "Sean Reedy <15895395+sean898@users.noreply.github.com>",
     "license": "",
