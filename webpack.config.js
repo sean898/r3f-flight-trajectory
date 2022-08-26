@@ -109,24 +109,24 @@ module.exports = (env, argv) => {
                     },
                 }),
             ],
-            // splitChunks:
-            //     name: true,
-            //     cacheGroups: {
-            //         async: {
-            //             chunks: 'async',
-            //             minSize: 0,
-            //             name(module, chunks, cacheGroupKey) {
-            //                 return `${cacheGroupKey}-${chunks[0].name}`;
-            //             },
-            //         },
-            //         shared: {
-            //             chunks: 'all',
-            //             minSize: 0,
-            //             minChunks: 2,
-            //             name: 'flight_path-shared',
-            //         },
-            //     },
-            // },
+            splitChunks: {
+                name: true,
+                cacheGroups: {
+                    async: {
+                        chunks: 'async',
+                        minSize: 0,
+                        name(module, chunks, cacheGroupKey) {
+                            return `${cacheGroupKey}-${chunks[0].name}`;
+                        },
+                    },
+                    shared: {
+                        chunks: 'all',
+                        minSize: 0,
+                        minChunks: 2,
+                        name: 'flight_path-shared',
+                    },
+                },
+            },
         },
         plugins: [
             new WebpackDashDynamicImport(),
