@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import PropTypes from 'prop-types';
 
 /** Plot  legend */
+let color = new THREE.Color();
 function Legend({segmentInfo}) {
     return (
         <Html
@@ -17,9 +18,10 @@ function Legend({segmentInfo}) {
                             <span
                                 className="plot-legend-icon"
                                 style={{
-                                    backgroundColor: new THREE.Color(
-                                        ...entry.color
-                                    ).getHexString(),
+                                    backgroundColor: `#${color
+                                        .clone()
+                                        .fromArray(entry.color)
+                                        .getHexString()}`,
                                 }}
                             ></span>
                             {`${entry.maneuver} ${entry.number}`}
