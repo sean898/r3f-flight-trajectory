@@ -3,12 +3,14 @@ import {useRef, useMemo, useEffect} from 'react';
 import {degreesToRadians} from '../util';
 import {useThree} from '@react-three/fiber';
 import PropTypes from 'prop-types';
+import {Euler} from 'three';
 
 const headingOffset = -120;
 const minModelScale = 0.6;
 const maxModelScale = 30;
 const color = 'green';
-let scale;
+let scale, xRot, yRot, zRot;
+let euler = new Euler();
 
 /** Aircraft model */
 export default function Aircraft({positionData, modelFile, ...otherProps}) {
@@ -28,10 +30,11 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
             ref.current.position.set(x, y, z);
 
             /* Rotation */
-            ref.current.rotation.y =
-                (heading + headingOffset) * degreesToRadians;
-            ref.current.rotation.z = pitch * degreesToRadians;
-            ref.current.rotation.x = bank * degreesToRadians;
+            yRot = (heading + headingOffset) * degreesToRadians;
+            zRot = pitch * degreesToRadians;
+            xRot = bank * degreesToRadians;
+            euler.set(xRot, yRot, zRot, 'XYZ');
+            ref.current.setRotationFromEuler(euler);
 
             /* Scale */
             const distance = camera.position.distanceTo(ref.current.position);

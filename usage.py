@@ -18,6 +18,7 @@ app.layout = html.Div(style={'display': 'flex', 'height': '100vh', 'flexDirectio
     ),
     html.Div(style={'display': 'flex', 'padding': '1em', 'background': 'gray'}, children=[
         html.Button(id='play-toggle', children='Play/pause'),
+        dcc.Input(id='playback-rate', value=100, type='number', min=1, max=100000),
         html.Div(style={'flex': '1'}, children=[
             dcc.Slider( id='time-slider', marks=None, min=0, max=len(flight_data), value=0, step=1, updatemode='drag', tooltip={'placement': 'bottom', 'always_visible': True}),
         ]),
@@ -27,6 +28,11 @@ app.layout = html.Div(style={'display': 'flex', 'height': '100vh', 'flexDirectio
     dcc.Interval(id='playback-interval', interval=100),
 ])
 
+app.clientside_callback(
+    """function(value) { return value}""",
+    Output('playback-interval', 'interval'),
+    Input('playback-rate', 'value'),
+)
 
 app.clientside_callback(
     """function(data) {
