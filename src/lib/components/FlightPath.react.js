@@ -32,6 +32,7 @@ const hoverInfoFields = [
     'heading',
     'bank',
     'pitch',
+    'wow',
 ];
 const viewDistanceFactor = 3;
 
