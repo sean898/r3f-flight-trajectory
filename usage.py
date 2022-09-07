@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import pandas as pd
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, update_title=None)
 
 flight_data = pd.read_csv('src/demo/data/test.csv')
 

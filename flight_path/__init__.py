@@ -79,7 +79,8 @@ _js_dist.extend(
     ]
 )
 
-_css_dist = []
+_css_dist = [{
+    'relative_package_path': 'flight_path.css', 'namespace': package_name}]
 
 
 for _component in __all__:
