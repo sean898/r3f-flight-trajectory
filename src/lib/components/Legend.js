@@ -12,14 +12,13 @@ function Legend({segmentInfo}) {
         >
             <ul>
                 {segmentInfo.map((entry, i) => {
+                    const color = new THREE.Color(...entry.color).getHexString();
                     return (
                         <li key={i}>
                             <span
                                 className="plot-legend-icon"
                                 style={{
-                                    backgroundColor: new THREE.Color(
-                                        ...entry.color
-                                    ).getHexString(),
+                                    backgroundColor: `#${color}`,
                                 }}
                             ></span>
                             {`${entry.maneuver} ${entry.number}`}

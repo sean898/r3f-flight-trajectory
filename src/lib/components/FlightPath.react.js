@@ -11,7 +11,7 @@ import {
     Stats,
     Bounds,
 } from '@react-three/drei';
-import {useRef, Suspense, useState, useEffect} from 'react';
+import {useRef, Suspense, useState, useEffect, useCallback} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
 import {Box3, Vector3} from 'three';
 import Aircraft from './Aircraft';
@@ -73,6 +73,8 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
         }
     }, [bounds]);
 
+    const wheelCallback = useCallback()
+
     const controlsRef = useRef();
     if (coords == null || coords.length == 0)
         return (
@@ -93,6 +95,7 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
                         Line: {threshold: 3},
                     },
                 }}
+                onWheel={wheelCallback}
             >
                 <PerspectiveCamera
                     makeDefault
