@@ -20,6 +20,7 @@ import {BoundingPlane} from './BoundingPlane';
 import {Path} from './Path';
 import {HoverInfo} from './HoverInfo';
 import {Legend} from './Legend';
+import cssFile from '../../../flight_path/flight_path.css';
 
 export const initialCameraPosition = new Vector3(0, 0, 100);
 
@@ -101,7 +102,7 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
                 />
                 <OrbitControls
                     makeDefault
-                    zoomSpeed="2"
+                    zoomSpeed="1.2"
                     maxDistance={viewDistance * 0.8}
                     ref={controlsRef}
                     enableDamping
