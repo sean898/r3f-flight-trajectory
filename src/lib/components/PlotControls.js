@@ -62,10 +62,7 @@ function PlotControls({
         }
         const callbackEnd = (e) => {
             current.dragging = false
-            if (followMode) {
-                current.camera.copy(camera.position)
-                invalidate()
-            }
+            
         }
         controlsRef.current.addEventListener('start', callback)
         controlsRef.current.addEventListener('end', callbackEnd)
@@ -105,15 +102,9 @@ function PlotControls({
     }
 
     function snapToAircraft(alpha = 0.9, ...args) {
-        const aircraftPosition = getCoordinates(currentData);
-        const targetDiff = aircraftPosition
-            .clone()
-            .sub(controlsRef.current.target);
-        const goal = pointBetween(aircraftPosition, camera.position, 20).add(
-            targetDiff
-        );
-        camera.position.lerp(goal, alpha);
-        controlsRef.current.target.copy(aircraftPosition);
+        setGoal()
+        camera.position.lerp(goal.camera, alpha);
+        controlsRef.current.target.copy(goal.focus);
         controlsRef.current.update();
     }
 
@@ -122,9 +113,9 @@ function PlotControls({
         const targetDiff = aircraftPosition
             .clone()
             .sub(controlsRef.current.target);
-        goal.camera.copy(pointBetween(aircraftPosition, current.camera, 200).add(
-            targetDiff
-        ));
+        goal.camera.copy(pointBetween(aircraftPosition, camera.position, 200))//.add(
+        //     targetDiff
+        // ));
         goal.focus.copy(aircraftPosition);
         current.animating = true;
     }
@@ -132,9 +123,9 @@ function PlotControls({
     useEffect(() => {
         if (followMode) {
             setGoal()
-            // snapToAircraft(0.3);
         }
     }, [currentData])
+
     return (
         <Html
             wrapperClass="plot-controls-wrapper"
