@@ -5,27 +5,11 @@ import {MathUtils, Vector3} from 'three';
 import {initialCameraPosition} from './FlightPath.react';
 import {getCoordinates} from '../util';
 import PropTypes from 'prop-types';
+import { equals, damp, pointBetween } from '../util/vectors';
 
 const origin = new Vector3(0, 0, 0);
 const damping = 7
 const eps =  10
-
-
-function pointBetween(p0, p1, dist) {
-    const direction = p1.clone().sub(p0).normalize().multiplyScalar(dist);
-    return p0.clone().add(direction);
-}
-
-/** source: https://github.com/pmndrs/drei/blob/350544b726d6c623e9068bf4ec6f8d6209326701/src/core/Bounds.tsx */
-function damp(v, t, lambda, delta) {
-    v.x = MathUtils.damp(v.x, t.x, lambda, delta)
-    v.y = MathUtils.damp(v.y, t.y, lambda, delta)
-    v.z = MathUtils.damp(v.z, t.z, lambda, delta)
-}
-
-function equals(a, b) {
-    return Math.abs(a.x - b.x) < eps && Math.abs(a.y - b.y) < eps && Math.abs(a.z - b.z) < eps
-}
 
 /** Controls for the plot */
 function PlotControls({
@@ -90,8 +74,8 @@ function PlotControls({
             controlsRef.current.update()
 
             invalidate()
-            if (!equals(camera.position, goal.camera)) return
-            if (!equals(current.focus, goal.focus)) return
+            if (!equals(camera.position, goal.camera, eps)) return
+            if (!equals(current.focus, goal.focus, eps)) return
             current.animating = false
         }
     })
