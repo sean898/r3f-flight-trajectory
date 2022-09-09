@@ -62,8 +62,10 @@ function PlotControls({
         }
         const callbackEnd = (e) => {
             current.dragging = false
-            if (current.animating)
+            if (followMode) {
                 current.camera.copy(camera.position)
+                invalidate()
+            }
         }
         controlsRef.current.addEventListener('start', callback)
         controlsRef.current.addEventListener('end', callbackEnd)
@@ -75,14 +77,16 @@ function PlotControls({
 
     useFrame((state, delta) => {
         console.log('animating', current.animating)
-        if (current.animating) {
+        if (followMode && current.animating) {
             // current.focus.lerp(goal.focus, delta)
             // current.camera.lerp(goal.camera, delta)
             damp(current.focus, goal.focus, damping, delta)
-            damp(current.camera, goal.camera, damping, delta)
             if (!current.dragging) {
+                damp(current.camera, goal.camera, damping, delta)
                 camera.position.copy(current.camera)
                 camera.updateProjectionMatrix()
+            } else {
+                current.camera.copy(state.camera.position)
             }
             controlsRef.current.target.copy(current.focus)
             controlsRef.current.update()
@@ -105,7 +109,7 @@ function PlotControls({
         const targetDiff = aircraftPosition
             .clone()
             .sub(controlsRef.current.target);
-        const goal = pointBetween(aircraftPosition, camera.position, 200).add(
+        const goal = pointBetween(aircraftPosition, camera.position, 20).add(
             targetDiff
         );
         camera.position.lerp(goal, alpha);
