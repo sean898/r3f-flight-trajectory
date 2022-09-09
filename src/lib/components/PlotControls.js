@@ -7,8 +7,8 @@ import {getCoordinates} from '../util';
 import PropTypes from 'prop-types';
 
 const origin = new Vector3(0, 0, 0);
-const damping = 6
-const eps = 0.1
+const damping = 7
+const eps =  10
 
 
 function pointBetween(p0, p1, dist) {
@@ -76,6 +76,8 @@ function PlotControls({
     useFrame((state, delta) => {
         console.log('animating', current.animating)
         if (current.animating) {
+            // current.focus.lerp(goal.focus, delta)
+            // current.camera.lerp(goal.camera, delta)
             damp(current.focus, goal.focus, damping, delta)
             damp(current.camera, goal.camera, damping, delta)
             if (!current.dragging) {
@@ -123,10 +125,12 @@ function PlotControls({
         current.animating = true;
     }
 
-    if (followMode) {
-        setGoal()
-        // snapToAircraft(0.3);
-    }
+    useEffect(() => {
+        if (followMode) {
+            setGoal()
+            // snapToAircraft(0.3);
+        }
+    }, [currentData])
     return (
         <Html
             wrapperClass="plot-controls-wrapper"
