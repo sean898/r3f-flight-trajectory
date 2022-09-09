@@ -23,13 +23,14 @@ function damp(v, t, lambda, delta) {
 /** Controls for the plot */
 function PlotControls({
     currentData,
-    controlsRef,
+    controlsRef, 
     followMode,
     toggleFollowMode,
     ...props
 }) {
     const [current] = useState({
         animating: false,
+        dragging: false,
         camera: new Vector3(),
         focus: new Vector3(),
     })
@@ -48,27 +49,39 @@ function PlotControls({
         setCamera(initialCameraPosition, origin);
     });
 
+    useEffect(() => {
+        const callback = (e) => {
+            current.dragging = true
+        }
+        const callbackEnd = (e) => {
+            current.dragging = false
+            current.camera.copy(camera.position)
+        }
+        controlsRef.current.addEventListener('start', callback)
+        controlsRef.current.addEventListener('end', callbackEnd)
+        return () => {
+            controlsRef.current.removeEventListener('start', callback)
+            controlsRef.current.removeEventListener('end', callbackEnd)
+        }
+    }, [controlsRef.current])
     const damping = 6
     const eps = 0.01
 
-    useEffect(() => {
-        const callback = () => (current.animating = false)
-        controlsRef.current.addEventListener('start', callback)
-        return () => controlsRef.current.removeEventListener('start', callback)
-    }, [controlsRef])
 
     useFrame((state, delta) => {
         console.log('animating', current.animating)
         if (current.animating) {
             damp(current.focus, goal.focus, damping, delta)
             damp(current.camera, goal.camera, damping, delta)
-            camera.position.copy(current.camera)
-            camera.updateProjectionMatrix
+            if (!current.dragging) {
+                camera.position.copy(current.camera)
+                camera.updateProjectionMatrix()
+            }
             controlsRef.current.target.copy(current.focus)
             controlsRef.current.update()
 
             invalidate()
-            if (current.camera != goal.camera) return
+            if (camera.position != goal.camera) return
             if (current.focus != goal.focus) return
             current.animating = false
         }
@@ -98,7 +111,7 @@ function PlotControls({
         const targetDiff = aircraftPosition
             .clone()
             .sub(controlsRef.current.target);
-        goal.camera.copy(pointBetween(aircraftPosition, camera.position, 200).add(
+        goal.camera.copy(pointBetween(aircraftPosition, current.camera, 200).add(
             targetDiff
         ));
         goal.focus.copy(aircraftPosition);
