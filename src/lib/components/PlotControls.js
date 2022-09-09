@@ -1,7 +1,7 @@
-import {useCallback} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {Html, useBounds} from '@react-three/drei';
-import {useThree} from '@react-three/fiber';
-import {Vector3} from 'three';
+import {useFrame, useThree} from '@react-three/fiber';
+import {MathUtils, Vector3} from 'three';
 import {initialCameraPosition} from './FlightPath.react';
 import {getCoordinates} from '../util';
 import PropTypes from 'prop-types';
@@ -13,6 +13,13 @@ function pointBetween(p0, p1, dist) {
     return p0.clone().add(direction);
 }
 
+/** source: https://github.com/pmndrs/drei/blob/350544b726d6c623e9068bf4ec6f8d6209326701/src/core/Bounds.tsx */
+function damp(v, t, lambda, delta) {
+    v.x = MathUtils.damp(v.x, t.x, lambda, delta)
+    v.y = MathUtils.damp(v.y, t.y, lambda, delta)
+    v.z = MathUtils.damp(v.z, t.z, lambda, delta)
+}
+
 /** Controls for the plot */
 function PlotControls({
     currentData,
@@ -21,7 +28,16 @@ function PlotControls({
     toggleFollowMode,
     ...props
 }) {
-    const camera = useThree((state) => state.camera);
+    const [current] = useState({
+        animating: false,
+        camera: new Vector3(),
+        focus: new Vector3(),
+    })
+    const [goal] = useState({
+        camera: new Vector3(),
+        focus: new Vector3(),
+    })
+    const {camera, invalidate} = useThree()
     const snapCallback = useCallback((e) => {
         e.stopPropagation();
         snapToAircraft();
@@ -31,6 +47,32 @@ function PlotControls({
         e.stopPropagation();
         setCamera(initialCameraPosition, origin);
     });
+
+    const damping = 6
+    const eps = 0.01
+
+    useEffect(() => {
+        const callback = () => (current.animating = false)
+        controlsRef.current.addEventListener('start', callback)
+        return () => controlsRef.current.removeEventListener('start', callback)
+    }, [controlsRef])
+
+    useFrame((state, delta) => {
+        console.log('animating', current.animating)
+        if (current.animating) {
+            damp(current.focus, goal.focus, damping, delta)
+            damp(current.camera, goal.camera, damping, delta)
+            camera.position.copy(current.camera)
+            camera.updateProjectionMatrix
+            controlsRef.current.target.copy(current.focus)
+            controlsRef.current.update()
+
+            invalidate()
+            if (current.camera != goal.camera) return
+            if (current.focus != goal.focus) return
+            current.animating = false
+        }
+    })
 
     function setCamera(position, target) {
         camera.position.set(position.x, position.y, position.z);
@@ -51,8 +93,22 @@ function PlotControls({
         controlsRef.current.update();
     }
 
-    if (followMode) snapToAircraft(0.3);
+    function setGoal() {
+        const aircraftPosition = getCoordinates(currentData);
+        const targetDiff = aircraftPosition
+            .clone()
+            .sub(controlsRef.current.target);
+        goal.camera.copy(pointBetween(aircraftPosition, camera.position, 200).add(
+            targetDiff
+        ));
+        goal.focus.copy(aircraftPosition);
+        current.animating = true;
+    }
 
+    if (followMode) {
+        setGoal()
+        // snapToAircraft(0.3);
+    }
     return (
         <Html
             wrapperClass="plot-controls-wrapper"
