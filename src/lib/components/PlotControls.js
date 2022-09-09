@@ -44,6 +44,7 @@ function PlotControls({
     const [goal] = useState({
         camera: new Vector3(),
         focus: new Vector3(),
+        targetDiff: new Vector3()
     })
     const {camera, invalidate} = useThree()
     const snapCallback = useCallback((e) => {
@@ -110,12 +111,12 @@ function PlotControls({
 
     function setGoal() {
         const aircraftPosition = getCoordinates(currentData);
-        const targetDiff = aircraftPosition
+        goal.targetDiff.copy(current.focus
             .clone()
-            .sub(controlsRef.current.target);
-        goal.camera.copy(pointBetween(aircraftPosition, camera.position, 200))//.add(
-        //     targetDiff
-        // ));
+            .sub(aircraftPosition)
+            .normalize())
+
+        goal.camera.copy(pointBetween(aircraftPosition.addScaledVector(goal.targetDiff, 10), camera.position, 200))
         goal.focus.copy(aircraftPosition);
         current.animating = true;
     }
