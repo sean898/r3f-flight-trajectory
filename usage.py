@@ -6,7 +6,7 @@ from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import pandas as pd
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, update_title=None)
 
 flight_data = 'src/demo/data/'
 
@@ -111,5 +111,5 @@ app.clientside_callback(
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True, update_tile=None)
+    app.run_server(debug=True)
 
