@@ -1,6 +1,7 @@
 /**
  * TODO
  * - https://threejs.org/docs/#examples/en/utils/CameraUtils.frameCorners
+ * - damping using 
  *
  */
 import PropTypes from 'prop-types';

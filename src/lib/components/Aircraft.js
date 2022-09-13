@@ -4,6 +4,7 @@ import {degreesToRadians} from '../util';
 import {useFrame, useThree} from '@react-three/fiber';
 import PropTypes from 'prop-types';
 import {Euler, Vector3} from 'three';
+import { equals } from '../util/vectors';
 
 const headingOffset = -120;
 const minModelScale = 0.6;
@@ -18,7 +19,7 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
     const modelRef = useRef();
     const {camera} = useThree();
     const model = useGLTF(modelFile, false);
-    const [goal] = useState(new Vector3())
+    const [goalPosition] = useState(new Vector3())
 
     useMemo(() => {
         if (modelFile && modelFile.endsWith('F-16.glb'))
@@ -29,7 +30,7 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
         if (positionData != null) {
             /* Position */
             const {x, y, z, heading, pitch, bank} = positionData;
-            ref.current.position.set(x, y, z);
+            goalPosition.set(x, y, z)
 
             /* Rotation */
             yRot = (heading + headingOffset) * degreesToRadians;
@@ -53,6 +54,14 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
             }
         }
     }, [positionData]);
+
+    useFrame((state, delta) => {
+        if (!equals(ref.current.position, goalPosition, .1)) {
+            ref.current.position.lerp(goalPosition, delta)
+        } else {
+            console.log('near')
+        }
+    })
 
 
     return (
