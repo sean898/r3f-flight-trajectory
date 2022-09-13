@@ -66,3 +66,7 @@
     display: inline-block;
     margin-inline-end: 0.3rem;
 }
+
+button.selected {
+    font-weight: bold;
+}
