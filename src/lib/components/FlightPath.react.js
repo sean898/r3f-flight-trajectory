@@ -11,7 +11,7 @@ import {
     Stats,
     Bounds,
 } from '@react-three/drei';
-import {useRef, Suspense, useState, useEffect} from 'react';
+import {useRef, Suspense, useState, useEffect, useMemo} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
 import {Box3, Vector3} from 'three';
 import Aircraft from './Aircraft';
@@ -39,39 +39,28 @@ const viewDistanceFactor = 3;
 /** 3D flight trjaectory plot  */
 const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
     const [hoverIndex, setHoverIndex] = useState(null);
-    const [coords, setCoords] = useState(null);
-    const [bounds, setBounds] = useState(null);
     const [followMode, setFollowMode] = useState(false);
-    const [viewDistance, setViewDistance] = useState(150000);
 
     function toggleFollowMode() {
         setFollowMode(!followMode);
     }
 
-    useEffect(() => {
-        if (data != null) {
-            setCoords(data.map((d) => new Vector3(d.x, d.y, d.z)));
-        }
+    const [coords, bounds, viewDistance] = useMemo(() => {
+        console.log('memo miss');
+        console.log('data', data);
+        if (data == null) return [null, null, null];
+        const coordinates = data.map((a) =>
+            a.map((d) => new Vector3(d.x, d.y, d.z))
+        );
+        const bbox = new Box3().setFromPoints(coordinates.flat(1));
+        const viewDist =
+            Math.max(
+                Math.abs(bbox.max.x - bbox.min.x),
+                Math.abs(bbox.max.y - bbox.min.y),
+                Math.abs(bbox.max.z - bbox.min.z)
+            ) * viewDistanceFactor;
+        return [coordinates, bbox, viewDist];
     }, [data]);
-
-    useEffect(() => {
-        if (coords != null && coords.length) {
-            const bbox = new Box3().setFromPoints(coords);
-            setBounds(bbox);
-        }
-    }, [coords]);
-
-    useEffect(() => {
-        if (bounds != null) {
-            setViewDistance(
-                Math.max(
-                    Math.abs(bounds.max.x - bounds.min.x),
-                    Math.abs(bounds.max.y - bounds.min.y),
-                    Math.abs(bounds.max.z - bounds.min.z)
-                ) * viewDistanceFactor
-            );
-        }
-    }, [bounds]);
 
     const controlsRef = useRef();
     if (coords == null || coords.length == 0)
@@ -81,7 +70,10 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
             </>
         );
 
-    const currentData = data.length > -1 ? data[counter % data.length] : {};
+    // const currentData = data.length > -1 ? data[counter % data.length] : {};
+    const traceIndex = 0;
+    let currentData;
+    console.log(coords, 'cooords');
     return (
         <>
             <Canvas
@@ -113,27 +105,42 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
                 <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
                 <pointLight position={[-11, -10, -10]} />
                 <Bounds clip={false} damping={6} margin={1.2}>
-                    <Path
-                        coords={coords}
-                        color={'lightblue'}
-                        onHover={setHoverIndex}
-                        segmentInfo={segmentInfo}
-                        followMode={followMode}
-                    />
-                    <Suspense fallback={null}>
-                        <Aircraft
-                            positionData={currentData}
-                            modelFile={modelFile}
-                        />
-                    </Suspense>
+                    {data == null || coords == null ? (
+                        <></>
+                    ) : (
+                        data.map((traceData, i) => {
+                            currentData = traceData[counter];
+                            console.log(i, currentData);
+                            return (
+                                <group key={`trace-${i}`}>
+                                    <Path
+                                        coords={coords[i]}
+                                        color={'lightblue'}
+                                        onHover={setHoverIndex}
+                                        segmentInfo={segmentInfo}
+                                        followMode={followMode}
+                                    />
+                                    <Suspense fallback={null}>
+                                        <Aircraft
+                                            positionData={currentData}
+                                            modelFile={modelFile}
+                                        />
+                                    </Suspense>
+                                </group>
+                            );
+                        })
+                    )}
                     <PlotControls
                         followMode={followMode}
                         toggleFollowMode={toggleFollowMode}
-                        currentData={currentData}
+                        currentData={data[traceIndex][counter]} // todo set with traceIndex
                         controlsRef={controlsRef}
                     />
                 </Bounds>
-                <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />
+                <HoverInfo
+                    data={data[traceIndex][hoverIndex]}
+                    fields={hoverInfoFields}
+                />
                 <Legend segmentInfo={segmentInfo} />
                 {/* <Stats /> */}
             </Canvas>

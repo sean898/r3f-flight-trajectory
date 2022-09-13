@@ -16,7 +16,7 @@ const useData = () => {
             complete: (result) => setData(result.data),
         });
     }, []);
-    return data;
+    return [data];
 };
 
 const colorPalette = [
@@ -28,7 +28,7 @@ const colorPalette = [
 
 function App() {
     const data = useData();
-    const [playing, setPlaying] = useState(true);
+    const [playing, setPlaying] = useState(false);
     const [counter, setCounter] = useState(1);
 
     const [segmentInfo, setSegmentInfo] = useState([
