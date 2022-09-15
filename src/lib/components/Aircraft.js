@@ -1,9 +1,10 @@
 import {useGLTF} from '@react-three/drei';
-import {useRef, useMemo, useEffect} from 'react';
+import {useRef, useMemo, useEffect, useState} from 'react';
 import {degreesToRadians} from '../util';
-import {useThree} from '@react-three/fiber';
+import {useFrame, useThree} from '@react-three/fiber';
 import PropTypes from 'prop-types';
-import {Euler} from 'three';
+import {Euler, Vector3} from 'three';
+import {vectorEquals} from '../util/vectors';
 
 const headingOffset = -120;
 const minModelScale = 0.6;
@@ -18,6 +19,9 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
     const modelRef = useRef();
     const {camera} = useThree();
     const model = useGLTF(modelFile, false);
+    const [goalPosition, setGoalPosition] = useState(new Vector3());
+    const [animating, setAnimating] = useState(false);
+
     useMemo(() => {
         if (modelFile && modelFile.endsWith('F-16.glb'))
             model.materials['Material.002'].color.set(color);
@@ -27,7 +31,8 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
         if (positionData != null) {
             /* Position */
             const {x, y, z, heading, pitch, bank} = positionData;
-            ref.current.position.set(x, y, z);
+            setGoalPosition(goalPosition.set(x, y, z));
+            setAnimating(true);
 
             /* Rotation */
             yRot = (heading + headingOffset) * degreesToRadians;
@@ -51,6 +56,15 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
             }
         }
     }, [positionData]);
+
+    useFrame((state, delta) => {
+        if (animating) {
+            console.log(delta);
+            ref.current.position.lerp(goalPosition, delta);
+            if (vectorEquals(ref.current.position, goalPosition, 1))
+                setAnimating(false);
+        }
+    });
 
     return (
         <group ref={ref}>
