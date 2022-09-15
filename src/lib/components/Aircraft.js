@@ -14,7 +14,12 @@ let scale, xRot, yRot, zRot;
 let euler = new Euler();
 
 /** Aircraft model */
-export default function Aircraft({positionData, modelFile, ...otherProps}) {
+export default function Aircraft({
+    positionData,
+    modelFile,
+    playing,
+    ...otherProps
+}) {
     const ref = useRef();
     const modelRef = useRef();
     const {camera} = useThree();
@@ -31,8 +36,14 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
         if (positionData != null) {
             /* Position */
             const {x, y, z, heading, pitch, bank} = positionData;
-            setGoalPosition(goalPosition.set(x, y, z));
-            setAnimating(true);
+
+            if (playing) {
+                setGoalPosition(goalPosition.set(x, y, z));
+                setAnimating(true);
+            } else {
+                setAnimating(false);
+                ref.current.position.set(x, y, z);
+            }
 
             /* Rotation */
             yRot = (heading + headingOffset) * degreesToRadians;
@@ -55,11 +66,10 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
                 modelRef.current.updateMatrix();
             }
         }
-    }, [positionData]);
+    }, [playing, positionData]);
 
-    useFrame((state, delta) => {
+    useFrame(({clock}, delta) => {
         if (animating) {
-            console.log(delta);
             ref.current.position.lerp(goalPosition, delta);
             if (vectorEquals(ref.current.position, goalPosition, 1))
                 setAnimating(false);

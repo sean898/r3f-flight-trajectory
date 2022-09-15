@@ -37,7 +37,7 @@ const hoverInfoFields = [
 const viewDistanceFactor = 3;
 
 /** 3D flight trjaectory plot  */
-const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
+const FlightPath = ({id, data, counter, segmentInfo, modelFile, playing}) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
     const [bounds, setBounds] = useState(null);
@@ -124,6 +124,7 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
                         <Aircraft
                             positionData={currentData}
                             modelFile={modelFile}
+                            playing={playing}
                         />
                     </Suspense>
                     <PlotControls

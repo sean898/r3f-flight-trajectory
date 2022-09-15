@@ -75,6 +75,7 @@ function App() {
                 data={data}
                 segmentInfo={segmentInfo}
                 modelFile="public/F-16.glb"
+                playing={playing}
             />
         </>
     );
