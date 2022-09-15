@@ -30,7 +30,7 @@ import PropTypes from 'prop-types';
 //     );
 // }
 
-const defaultColor = [0.7, 0.7, 0.9];
+const defaultColor = [0.5, 0.6, 0.9];
 const defaultColorObj = new THREE.Color(...defaultColor);
 function chooseColors(n, segmentInfo) {
     if (n < 2) return null;
