@@ -170,6 +170,9 @@ FlightPath.propTypes = {
 
     /** Path to aircraft model file (gltf/glb) */
     modelFile: PropTypes.string,
+
+    /** Set to true to animate playback. */
+    playing: PropTypes.bool,
 };
 
 export default FlightPath;

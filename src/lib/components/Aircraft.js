@@ -101,4 +101,7 @@ Aircraft.propTypes = {
     }),
     /** Path to aircraft model file (gltf/glb) */
     modelFile: PropTypes.string,
+
+    /** Whether playback is active. */
+    playing: PropTypes.bool,
 };

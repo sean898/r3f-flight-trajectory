@@ -91,6 +91,12 @@ app.clientside_callback(
 )
 
 app.clientside_callback(
+    """function(disabled) { return !disabled }""",
+    Output('path', 'playing'),
+    Input('playback-interval', 'disabled'),
+)
+
+app.clientside_callback(
     """function(interval, state) {
         return state + 1;
     }""",
