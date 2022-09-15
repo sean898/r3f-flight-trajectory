@@ -37,7 +37,15 @@ const hoverInfoFields = [
 const viewDistanceFactor = 3;
 
 /** 3D flight trjaectory plot  */
-const FlightPath = ({id, data, counter, segmentInfo, modelFile, playing}) => {
+const FlightPath = ({
+    id,
+    data,
+    counter,
+    segmentInfo,
+    modelFile,
+    playing,
+    playbackSpeed,
+}) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
     const [bounds, setBounds] = useState(null);
@@ -125,6 +133,7 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile, playing}) => {
                             positionData={currentData}
                             modelFile={modelFile}
                             playing={playing}
+                            playbackSpeed={playbackSpeed}
                         />
                     </Suspense>
                     <PlotControls
@@ -145,6 +154,7 @@ FlightPath.defaultProps = {
     data: [],
     counter: 0,
     segmentInfo: [],
+    playbackSpeed: 1000,
 };
 
 FlightPath.propTypes = {
@@ -173,6 +183,9 @@ FlightPath.propTypes = {
 
     /** Set to true to animate playback. */
     playing: PropTypes.bool,
+
+    /** Playback speed in ms. Value should be synchronized with interval component which updates counter. */
+    playbackSpeed: PropTypes.number,
 };
 
 export default FlightPath;

@@ -18,6 +18,7 @@ export default function Aircraft({
     positionData,
     modelFile,
     playing,
+    playbackSpeed,
     ...otherProps
 }) {
     const ref = useRef();
@@ -68,9 +69,13 @@ export default function Aircraft({
         }
     }, [playing, positionData]);
 
-    useFrame(({clock}, delta) => {
+    useFrame((state, delta) => {
         if (animating) {
-            ref.current.position.lerp(goalPosition, delta);
+            console.log(playbackSpeed, delta);
+            ref.current.position.lerp(
+                goalPosition,
+                delta * (10000 / playbackSpeed)
+            );
             if (vectorEquals(ref.current.position, goalPosition, 1))
                 setAnimating(false);
         }
@@ -104,4 +109,6 @@ Aircraft.propTypes = {
 
     /** Whether playback is active. */
     playing: PropTypes.bool,
+
+    playbackSpeed: PropTypes.number,
 };
