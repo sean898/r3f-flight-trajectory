@@ -17,12 +17,13 @@
     "author": "Sean Reedy <15895395+sean898@users.noreply.github.com>",
     "license": "",
     "dependencies": {
+        "@react-spring/three": "^9.5.4",
         "@react-three/drei": "8.20.2",
         "@react-three/fiber": "7.0.29",
         "file-loader": "^6.2.0",
         "ramda": "^0.28.0",
-        "three": "^0.138.3",
-        "react": "^17.0.2"
+        "react": "^17.0.2",
+        "three": "^0.138.3"
     },
     "devDependencies": {
         "@babel/core": "^7.18.10",
