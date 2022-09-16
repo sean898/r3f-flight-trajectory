@@ -1,9 +1,11 @@
 import {useGLTF} from '@react-three/drei';
-import {useRef, useMemo, useEffect} from 'react';
+import {useRef, useMemo, useEffect, useState} from 'react';
 import {degreesToRadians} from '../util';
 import {useThree} from '@react-three/fiber';
 import PropTypes from 'prop-types';
-import {Euler} from 'three';
+import {Euler, Vector3} from 'three';
+import {vectorEquals} from '../util/vectors';
+import {useSpring, animated} from '@react-spring/three';
 
 const headingOffset = -120;
 const minModelScale = 0.6;
@@ -13,11 +15,26 @@ let scale, xRot, yRot, zRot;
 let euler = new Euler();
 
 /** Aircraft model */
-export default function Aircraft({positionData, modelFile, ...otherProps}) {
-    const ref = useRef();
+export default function Aircraft({
+    positionData,
+    modelFile,
+    playing,
+    playbackSpeed,
+    aircraftRef,
+    ...otherProps
+}) {
     const modelRef = useRef();
     const {camera} = useThree();
     const model = useGLTF(modelFile, false);
+
+    const [{springPosition}, api] = useSpring(
+        {
+            springPosition: new Vector3(),
+            config: {duration: playbackSpeed},
+        },
+        []
+    );
+
     useMemo(() => {
         if (modelFile && modelFile.endsWith('F-16.glb'))
             model.materials['Material.002'].color.set(color);
@@ -25,19 +42,30 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
 
     useEffect(() => {
         if (positionData != null) {
-            /* Position */
             const {x, y, z, heading, pitch, bank} = positionData;
-            ref.current.position.set(x, y, z);
+
+            /* Position */
+            if (playing) {
+                api.start({
+                    from: {springPosition: [...aircraftRef.current.position]},
+                    springPosition: [x, y, z],
+                    config: {duration: playbackSpeed},
+                });
+            } else {
+                aircraftRef.current.position.set(x, y, z);
+            }
 
             /* Rotation */
             yRot = (heading + headingOffset) * degreesToRadians;
             zRot = pitch * degreesToRadians;
             xRot = bank * degreesToRadians;
             euler.set(xRot, yRot, zRot, 'XYZ');
-            ref.current.setRotationFromEuler(euler);
+            aircraftRef.current.setRotationFromEuler(euler);
 
             /* Scale */
-            const distance = camera.position.distanceTo(ref.current.position);
+            const distance = camera.position.distanceTo(
+                aircraftRef.current.position
+            );
             if (distance > 10000) {
                 scale = maxModelScale;
             } else if (distance > 5000) {
@@ -50,10 +78,10 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
                 modelRef.current.updateMatrix();
             }
         }
-    }, [positionData]);
+    }, [playing, positionData, playbackSpeed]);
 
     return (
-        <group ref={ref}>
+        <animated.group ref={aircraftRef} position={springPosition}>
             <primitive
                 ref={modelRef}
                 object={model.scene}
@@ -61,7 +89,7 @@ export default function Aircraft({positionData, modelFile, ...otherProps}) {
                 {...otherProps}
             />
             <axesHelper args={[20]} setColors={['red', 'green', 'blue']} />
-        </group>
+        </animated.group>
     );
 }
 
@@ -77,4 +105,13 @@ Aircraft.propTypes = {
     }),
     /** Path to aircraft model file (gltf/glb) */
     modelFile: PropTypes.string,
+
+    /** Whether playback is active. */
+    playing: PropTypes.bool,
+
+    /** Interval in milliseconds */
+    playbackSpeed: PropTypes.number,
+
+    /** Reference to aircraft, created in parent. */
+    aircraftRef: PropTypes.any,
 };

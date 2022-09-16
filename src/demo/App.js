@@ -30,7 +30,7 @@ function App() {
     const data = useData();
     const [playing, setPlaying] = useState(true);
     const [counter, setCounter] = useState(1);
-
+    const playbackSpeed = 1000;
     const [segmentInfo, setSegmentInfo] = useState([
         {
             start: 10,
@@ -59,7 +59,7 @@ function App() {
         if (!playing) return;
         let interval = setInterval(() => {
             setCounter((x) => x + 1);
-        }, 1000);
+        }, playbackSpeed);
         return () => clearInterval(interval);
     }, [counter, playing]);
 
@@ -75,6 +75,8 @@ function App() {
                 data={data}
                 segmentInfo={segmentInfo}
                 modelFile="public/F-16.glb"
+                playing={playing}
+                playbackSpeed={playbackSpeed}
             />
         </>
     );

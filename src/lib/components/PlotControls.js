@@ -1,6 +1,6 @@
-import {useCallback} from 'react';
+import {useState, useCallback, useEffect} from 'react';
 import {Html, useBounds} from '@react-three/drei';
-import {useThree} from '@react-three/fiber';
+import {useFrame, useThree} from '@react-three/fiber';
 import {Vector3} from 'three';
 import {initialCameraPosition} from './FlightPath.react';
 import {getCoordinates} from '../util';
@@ -17,8 +17,10 @@ function pointBetween(p0, p1, dist) {
 function PlotControls({
     currentData,
     controlsRef,
+    aircraftRef,
     followMode,
     toggleFollowMode,
+    playing,
     ...props
 }) {
     const camera = useThree((state) => state.camera);
@@ -31,6 +33,8 @@ function PlotControls({
         e.stopPropagation();
         setCamera(initialCameraPosition, origin);
     });
+    const [goalPosition, setGoalPosition] = useState(new Vector3());
+    const [dragging, setDragging] = useState(false);
 
     function setCamera(position, target) {
         camera.position.set(position.x, position.y, position.z);
@@ -51,7 +55,49 @@ function PlotControls({
         controlsRef.current.update();
     }
 
-    if (followMode) snapToAircraft(0.3);
+    function setGoal() {
+        const aircraftPosition = getCoordinates(currentData);
+        const targetDiff = aircraftPosition
+            .clone()
+            .sub(controlsRef.current.target);
+        const goal = pointBetween(aircraftPosition, camera.position, 200).add(
+            targetDiff
+        );
+        setGoalPosition(goal);
+    }
+
+    useEffect(() => {
+        if (playing && followMode && controlsRef.current != null) {
+            controlsRef.current.update();
+            setGoal();
+        }
+    }, [controlsRef.current, followMode, currentData]);
+
+    useFrame((state, delta) => {
+        if (playing && followMode) {
+            if (!dragging) camera.position.lerp(goalPosition, delta);
+            controlsRef.current.target.copy(aircraftRef.current.position);
+            controlsRef.current.update();
+        }
+    });
+
+    /** Prevent drag hijacking */
+    useEffect(() => {
+        const callbackStart = (e) => {
+            setDragging(true);
+        };
+        const callbackEnd = (e) => {
+            setDragging(false);
+            controlsRef.current.update();
+        };
+
+        controlsRef.current.addEventListener('start', callbackStart);
+        controlsRef.current.addEventListener('end', callbackEnd);
+        return () => {
+            controlsRef.current.removeEventListener('start', callbackStart);
+            controlsRef.current.removeEventListener('end', callbackEnd);
+        };
+    }, [controlsRef.current]);
 
     return (
         <Html
@@ -81,11 +127,17 @@ PlotControls.propTypes = {
     /** Reference to controls object */
     controlsRef: PropTypes.any,
 
+    /** Reference to aircraft object */
+    aircraftRef: PropTypes.any,
+
     /** Follow mode enabled */
     followMode: PropTypes.bool,
 
     /** Callback to toggle follow mode */
     toggleFollowMode: PropTypes.func,
+
+    /** Whether playback is ongoing */
+    playing: PropTypes.bool,
 };
 
 export {PlotControls};

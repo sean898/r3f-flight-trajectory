@@ -37,12 +37,23 @@ const hoverInfoFields = [
 const viewDistanceFactor = 3;
 
 /** 3D flight trjaectory plot  */
-const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
+const FlightPath = ({
+    id,
+    data,
+    counter,
+    segmentInfo,
+    modelFile,
+    playing,
+    playbackSpeed,
+}) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
     const [bounds, setBounds] = useState(null);
     const [followMode, setFollowMode] = useState(false);
     const [viewDistance, setViewDistance] = useState(150000);
+
+    const controlsRef = useRef();
+    const aircraftRef = useRef();
 
     function toggleFollowMode() {
         setFollowMode(!followMode);
@@ -73,7 +84,6 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
         }
     }, [bounds]);
 
-    const controlsRef = useRef();
     if (coords == null || coords.length == 0)
         return (
             <>
@@ -124,6 +134,9 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
                         <Aircraft
                             positionData={currentData}
                             modelFile={modelFile}
+                            playing={playing}
+                            playbackSpeed={playbackSpeed}
+                            aircraftRef={aircraftRef}
                         />
                     </Suspense>
                     <PlotControls
@@ -131,6 +144,8 @@ const FlightPath = ({id, data, counter, segmentInfo, modelFile}) => {
                         toggleFollowMode={toggleFollowMode}
                         currentData={currentData}
                         controlsRef={controlsRef}
+                        playing={playing}
+                        aircraftRef={aircraftRef}
                     />
                 </Bounds>
                 <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />
@@ -144,6 +159,7 @@ FlightPath.defaultProps = {
     data: [],
     counter: 0,
     segmentInfo: [],
+    playbackSpeed: 1000,
 };
 
 FlightPath.propTypes = {
@@ -169,6 +185,12 @@ FlightPath.propTypes = {
 
     /** Path to aircraft model file (gltf/glb) */
     modelFile: PropTypes.string,
+
+    /** Set to true to animate playback. */
+    playing: PropTypes.bool,
+
+    /** Playback speed in ms. Value should be synchronized with interval component which updates counter. */
+    playbackSpeed: PropTypes.number,
 };
 
 export default FlightPath;
