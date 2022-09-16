@@ -34,8 +34,7 @@ function RealBoundingPlane({bounds}) {
     });
 
     if (bounds == null) return <></>;
-    console.log('bounds', bounds);
-    return <></>;
+
     const center = new Vector3();
     bounds.getCenter(center);
 

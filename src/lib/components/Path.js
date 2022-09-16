@@ -69,10 +69,8 @@ function Path({coords, onHover, segmentInfo, followMode}) {
     const ref = useRef();
     const bounds = useBounds();
     useEffect(() => {
-        if (bounds != null && ref.current != null) {
-            console.log('fit');
+        if (bounds != null && ref.current != null)
             bounds.refresh(ref.current).fit();
-        }
     }, [coords]);
 
     function onDoubleClick(e) {
@@ -83,7 +81,6 @@ function Path({coords, onHover, segmentInfo, followMode}) {
         bounds.refresh(box).fit();
     }
 
-    console.log('coords', coords);
     if (coords == null || coords.length == 0) return <></>;
 
     return (
