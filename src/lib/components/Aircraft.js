@@ -1,7 +1,7 @@
 import {useGLTF} from '@react-three/drei';
 import {useRef, useMemo, useEffect, useState} from 'react';
 import {degreesToRadians} from '../util';
-import {useFrame, useThree} from '@react-three/fiber';
+import {useThree} from '@react-three/fiber';
 import PropTypes from 'prop-types';
 import {Euler, Vector3} from 'three';
 import {vectorEquals} from '../util/vectors';
@@ -13,8 +13,6 @@ const maxModelScale = 30;
 const color = 'green';
 let scale, xRot, yRot, zRot;
 let euler = new Euler();
-
-const springConfig = {duration: 1000};
 
 /** Aircraft model */
 export default function Aircraft({
@@ -28,13 +26,11 @@ export default function Aircraft({
     const modelRef = useRef();
     const {camera} = useThree();
     const model = useGLTF(modelFile, false);
-    const [goalPosition, setGoalPosition] = useState(new Vector3());
-    const [animating, setAnimating] = useState(false);
 
     const [{springPosition}, api] = useSpring(
         {
             springPosition: new Vector3(),
-            config: springConfig,
+            config: {duration: playbackSpeed},
         },
         []
     );
@@ -46,19 +42,16 @@ export default function Aircraft({
 
     useEffect(() => {
         if (positionData != null) {
-            /* Position */
             const {x, y, z, heading, pitch, bank} = positionData;
 
+            /* Position */
             if (playing) {
                 api.start({
                     from: {springPosition: [...ref.current.position]},
                     springPosition: [x, y, z],
-                    duration: playbackSpeed,
+                    config: {duration: playbackSpeed},
                 });
-                // setGoalPosition(goalPosition.set(x, y, z));
-                setAnimating(true);
             } else {
-                setAnimating(false);
                 ref.current.position.set(x, y, z);
             }
 
@@ -83,23 +76,7 @@ export default function Aircraft({
                 modelRef.current.updateMatrix();
             }
         }
-    }, [playing, positionData]);
-
-    // useFrame((state, delta) => {
-    //     console.log(ref.current.position, springPosition);
-    // });
-
-    // useFrame((state, delta) => {
-    //     if (animating) {
-    //         console.log(playbackSpeed, delta);
-    //         ref.current.position.lerp(
-    //             goalPosition,
-    //             delta * (10000 / playbackSpeed)
-    //         );
-    //         if (vectorEquals(ref.current.position, goalPosition, 1))
-    //             setAnimating(false);
-    //     }
-    // });
+    }, [playing, positionData, playbackSpeed]);
 
     return (
         <animated.group ref={ref} position={springPosition}>
