@@ -141,6 +141,7 @@ const FlightPath = ({
                         toggleFollowMode={toggleFollowMode}
                         currentData={currentData}
                         controlsRef={controlsRef}
+                        playing={playing}
                     />
                 </Bounds>
                 <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />

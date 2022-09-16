@@ -107,5 +107,6 @@ Aircraft.propTypes = {
     /** Whether playback is active. */
     playing: PropTypes.bool,
 
+    /** Interval in milliseconds */
     playbackSpeed: PropTypes.number,
 };

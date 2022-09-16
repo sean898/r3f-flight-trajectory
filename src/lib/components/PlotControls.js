@@ -1,6 +1,6 @@
-import {useCallback} from 'react';
+import {useState, useCallback, useEffect} from 'react';
 import {Html, useBounds} from '@react-three/drei';
-import {useThree} from '@react-three/fiber';
+import {useFrame, useThree} from '@react-three/fiber';
 import {Vector3} from 'three';
 import {initialCameraPosition} from './FlightPath.react';
 import {getCoordinates} from '../util';
@@ -19,6 +19,7 @@ function PlotControls({
     controlsRef,
     followMode,
     toggleFollowMode,
+    playing,
     ...props
 }) {
     const camera = useThree((state) => state.camera);
@@ -31,6 +32,8 @@ function PlotControls({
         e.stopPropagation();
         setCamera(initialCameraPosition, origin);
     });
+    const [goalPosition, setGoalPosition] = useState(new Vector3());
+    const [goalTarget, setGoalTarget] = useState(new Vector3());
 
     function setCamera(position, target) {
         camera.position.set(position.x, position.y, position.z);
@@ -51,7 +54,33 @@ function PlotControls({
         controlsRef.current.update();
     }
 
-    if (followMode) snapToAircraft(0.3);
+    function setGoal() {
+        const aircraftPosition = getCoordinates(currentData);
+        const targetDiff = aircraftPosition
+            .clone()
+            .sub(controlsRef.current.target);
+        const goal = pointBetween(aircraftPosition, camera.position, 200).add(
+            targetDiff
+        );
+        setGoalPosition(goal);
+        setGoalTarget(aircraftPosition);
+    }
+
+    useEffect(() => {
+        if (playing && followMode && controlsRef.current != null) {
+            controlsRef.current.update();
+            setGoal();
+            // controlsRef.current.target.lerp(goalTarget, 0.59);
+        }
+    }, [controlsRef.current, followMode, currentData]);
+
+    useFrame((state, delta) => {
+        if (playing && followMode) {
+            camera.position.lerp(goalPosition, delta);
+            controlsRef.current.target.lerp(goalTarget, delta);
+            controlsRef.current.update();
+        }
+    });
 
     return (
         <Html
@@ -86,6 +115,9 @@ PlotControls.propTypes = {
 
     /** Callback to toggle follow mode */
     toggleFollowMode: PropTypes.func,
+
+    /** Whether playback is ongoing */
+    playing: PropTypes.bool,
 };
 
 export {PlotControls};
