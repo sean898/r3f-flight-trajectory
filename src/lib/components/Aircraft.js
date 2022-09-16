@@ -20,9 +20,9 @@ export default function Aircraft({
     modelFile,
     playing,
     playbackSpeed,
+    aircraftRef,
     ...otherProps
 }) {
-    const ref = useRef();
     const modelRef = useRef();
     const {camera} = useThree();
     const model = useGLTF(modelFile, false);
@@ -47,12 +47,12 @@ export default function Aircraft({
             /* Position */
             if (playing) {
                 api.start({
-                    from: {springPosition: [...ref.current.position]},
+                    from: {springPosition: [...aircraftRef.current.position]},
                     springPosition: [x, y, z],
                     config: {duration: playbackSpeed},
                 });
             } else {
-                ref.current.position.set(x, y, z);
+                aircraftRef.current.position.set(x, y, z);
             }
 
             /* Rotation */
@@ -60,10 +60,12 @@ export default function Aircraft({
             zRot = pitch * degreesToRadians;
             xRot = bank * degreesToRadians;
             euler.set(xRot, yRot, zRot, 'XYZ');
-            ref.current.setRotationFromEuler(euler);
+            aircraftRef.current.setRotationFromEuler(euler);
 
             /* Scale */
-            const distance = camera.position.distanceTo(ref.current.position);
+            const distance = camera.position.distanceTo(
+                aircraftRef.current.position
+            );
             if (distance > 10000) {
                 scale = maxModelScale;
             } else if (distance > 5000) {
@@ -79,7 +81,7 @@ export default function Aircraft({
     }, [playing, positionData, playbackSpeed]);
 
     return (
-        <animated.group ref={ref} position={springPosition}>
+        <animated.group ref={aircraftRef} position={springPosition}>
             <primitive
                 ref={modelRef}
                 object={model.scene}
@@ -109,4 +111,7 @@ Aircraft.propTypes = {
 
     /** Interval in milliseconds */
     playbackSpeed: PropTypes.number,
+
+    /** Reference to aircraft, created in parent. */
+    aircraftRef: PropTypes.any,
 };

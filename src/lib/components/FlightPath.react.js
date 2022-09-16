@@ -52,6 +52,9 @@ const FlightPath = ({
     const [followMode, setFollowMode] = useState(false);
     const [viewDistance, setViewDistance] = useState(150000);
 
+    const controlsRef = useRef();
+    const aircraftRef = useRef();
+
     function toggleFollowMode() {
         setFollowMode(!followMode);
     }
@@ -81,7 +84,6 @@ const FlightPath = ({
         }
     }, [bounds]);
 
-    const controlsRef = useRef();
     if (coords == null || coords.length == 0)
         return (
             <>
@@ -134,6 +136,7 @@ const FlightPath = ({
                             modelFile={modelFile}
                             playing={playing}
                             playbackSpeed={playbackSpeed}
+                            aircraftRef={aircraftRef}
                         />
                     </Suspense>
                     <PlotControls
@@ -142,6 +145,7 @@ const FlightPath = ({
                         currentData={currentData}
                         controlsRef={controlsRef}
                         playing={playing}
+                        aircraftRef={aircraftRef}
                     />
                 </Bounds>
                 <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />

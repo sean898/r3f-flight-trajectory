@@ -17,6 +17,7 @@ function pointBetween(p0, p1, dist) {
 function PlotControls({
     currentData,
     controlsRef,
+    aircraftRef,
     followMode,
     toggleFollowMode,
     playing,
@@ -77,7 +78,8 @@ function PlotControls({
     useFrame((state, delta) => {
         if (playing && followMode) {
             camera.position.lerp(goalPosition, delta);
-            controlsRef.current.target.lerp(goalTarget, delta);
+            controlsRef.current.target.copy(aircraftRef.current.position);
+            // controlsRef.current.target.lerp(goalTarget, delta);
             controlsRef.current.update();
         }
     });
@@ -109,6 +111,9 @@ PlotControls.propTypes = {
 
     /** Reference to controls object */
     controlsRef: PropTypes.any,
+
+    /** Reference to aircraft object */
+    aircraftRef: PropTypes.any,
 
     /** Follow mode enabled */
     followMode: PropTypes.bool,
