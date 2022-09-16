@@ -13,10 +13,10 @@ const useData = () => {
             preview: 6000,
             header: true,
             dynamicTyping: true,
-            complete: (result) => setData(result.data),
+            complete: (result) => setData([result.data]),
         });
-    }, []);
-    return [data];
+    }, [csvFile]);
+    return data;
 };
 
 const colorPalette = [
