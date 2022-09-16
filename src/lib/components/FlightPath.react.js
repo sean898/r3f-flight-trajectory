@@ -61,6 +61,7 @@ const FlightPath = ({
 
     useEffect(() => {
         if (data != null) {
+            console.log('set coords');
             setCoords(
                 data.map((traceData) =>
                     traceData.map((d) => new Vector3(d.x, d.y, d.z))
@@ -99,7 +100,6 @@ const FlightPath = ({
     // let currentData;
     const currentData =
         data.length > -1 ? data[0][counter % data[0].length] : {};
-    console.log('currentData', currentData);
     return (
         <Canvas
             id={id}
@@ -133,7 +133,7 @@ const FlightPath = ({
                 {data == null || coords == null ? (
                     <></>
                 ) : (
-                    data.map((traceData, i) => {
+                    [...Array(data.length).keys()].map((i) => {
                         return (
                             <group key={`trace-${i}`}>
                                 <Path
@@ -142,14 +142,16 @@ const FlightPath = ({
                                     onHover={setHoverIndex}
                                     segmentInfo={segmentInfo}
                                     followMode={followMode}
+                                    key={`path-${i}`}
                                 />
-                                <Suspense fallback={null}>
+                                <Suspense key={`suspense-${i}`} fallback={null}>
                                     <Aircraft
                                         positionData={currentData}
                                         modelFile={modelFile}
                                         playing={playing}
                                         playbackSpeed={playbackSpeed}
                                         aircraftRef={aircraftRef}
+                                        key={`aircraft-${i}`}
                                     />
                                 </Suspense>
                             </group>
