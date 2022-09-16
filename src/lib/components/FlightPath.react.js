@@ -93,66 +93,64 @@ const FlightPath = ({
 
     const currentData = data.length > -1 ? data[counter % data.length] : {};
     return (
-        <>
-            <Canvas
-                id={id}
-                className="flight-trajectory-plot"
-                raycaster={{
-                    params: {
-                        Line2: {threshold: 3},
-                        Line: {threshold: 3},
-                    },
-                }}
-            >
-                <PerspectiveCamera
-                    makeDefault
-                    position={initialCameraPosition}
-                    far={viewDistance}
-                    minDistance={10}
+        <Canvas
+            id={id}
+            className="flight-trajectory-plot"
+            raycaster={{
+                params: {
+                    Line2: {threshold: 3},
+                    Line: {threshold: 3},
+                },
+            }}
+        >
+            <PerspectiveCamera
+                makeDefault
+                position={initialCameraPosition}
+                far={viewDistance}
+                minDistance={10}
+            />
+            <OrbitControls
+                makeDefault
+                zoomSpeed="2"
+                maxDistance={viewDistance * 0.8}
+                ref={controlsRef}
+                enableDamping
+                dampingFactor={0.05}
+            />
+            <BoundingPlane bounds={bounds} />
+            <ambientLight color={0xffffff} />
+            <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
+            <pointLight position={[-11, -10, -10]} />
+            <Bounds clip={false} damping={6} margin={1.2}>
+                <Path
+                    coords={coords}
+                    color={'lightblue'}
+                    onHover={setHoverIndex}
+                    segmentInfo={segmentInfo}
+                    followMode={followMode}
                 />
-                <OrbitControls
-                    makeDefault
-                    zoomSpeed="2"
-                    maxDistance={viewDistance * 0.8}
-                    ref={controlsRef}
-                    enableDamping
-                    dampingFactor={0.05}
-                />
-                <BoundingPlane bounds={bounds} />
-                <ambientLight color={0xffffff} />
-                <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
-                <pointLight position={[-11, -10, -10]} />
-                <Bounds clip={false} damping={6} margin={1.2}>
-                    <Path
-                        coords={coords}
-                        color={'lightblue'}
-                        onHover={setHoverIndex}
-                        segmentInfo={segmentInfo}
-                        followMode={followMode}
-                    />
-                    <Suspense fallback={null}>
-                        <Aircraft
-                            positionData={currentData}
-                            modelFile={modelFile}
-                            playing={playing}
-                            playbackSpeed={playbackSpeed}
-                            aircraftRef={aircraftRef}
-                        />
-                    </Suspense>
-                    <PlotControls
-                        followMode={followMode}
-                        toggleFollowMode={toggleFollowMode}
-                        currentData={currentData}
-                        controlsRef={controlsRef}
+                <Suspense fallback={null}>
+                    <Aircraft
+                        positionData={currentData}
+                        modelFile={modelFile}
                         playing={playing}
+                        playbackSpeed={playbackSpeed}
                         aircraftRef={aircraftRef}
                     />
-                </Bounds>
-                <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />
-                <Legend segmentInfo={segmentInfo} />
-                {/* <Stats /> */}
-            </Canvas>
-        </>
+                </Suspense>
+                <PlotControls
+                    followMode={followMode}
+                    toggleFollowMode={toggleFollowMode}
+                    currentData={currentData}
+                    controlsRef={controlsRef}
+                    playing={playing}
+                    aircraftRef={aircraftRef}
+                />
+            </Bounds>
+            <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />
+            <Legend segmentInfo={segmentInfo} />
+            {/* <Stats /> */}
+        </Canvas>
     );
 };
 FlightPath.defaultProps = {
