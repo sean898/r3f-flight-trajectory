@@ -81,6 +81,7 @@ function Path({coords, onHover, segmentInfo, followMode}) {
         bounds.refresh(box).fit();
     }
 
+    console.log('coords', coords);
     if (coords == null || coords.length == 0) return <></>;
 
     return (
