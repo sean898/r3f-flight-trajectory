@@ -34,6 +34,7 @@ function PlotControls({
         setCamera(initialCameraPosition, origin);
     });
     const [goalPosition, setGoalPosition] = useState(new Vector3());
+    const [dragging, setDragging] = useState(false);
 
     function setCamera(position, target) {
         camera.position.set(position.x, position.y, position.z);
@@ -74,11 +75,29 @@ function PlotControls({
 
     useFrame((state, delta) => {
         if (playing && followMode) {
-            camera.position.lerp(goalPosition, delta);
+            if (!dragging) camera.position.lerp(goalPosition, delta);
             controlsRef.current.target.copy(aircraftRef.current.position);
             controlsRef.current.update();
         }
     });
+
+    /** Prevent drag hijacking */
+    useEffect(() => {
+        const callbackStart = (e) => {
+            setDragging(true);
+        };
+        const callbackEnd = (e) => {
+            setDragging(false);
+            controlsRef.current.update();
+        };
+
+        controlsRef.current.addEventListener('start', callbackStart);
+        controlsRef.current.addEventListener('end', callbackEnd);
+        return () => {
+            controlsRef.current.removeEventListener('start', callbackStart);
+            controlsRef.current.removeEventListener('end', callbackEnd);
+        };
+    }, [controlsRef.current]);
 
     return (
         <Html
