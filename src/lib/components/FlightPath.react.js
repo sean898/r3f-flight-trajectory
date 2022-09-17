@@ -51,12 +51,18 @@ const FlightPath = ({
     const [bounds, setBounds] = useState(null);
     const [followMode, setFollowMode] = useState(false);
     const [viewDistance, setViewDistance] = useState(150000);
+    const [traceIndex, setTraceIndex] = useState(0);
 
     const controlsRef = useRef();
     const aircraftRef = useRef();
 
     function toggleFollowMode() {
         setFollowMode(!followMode);
+    }
+
+    function onTraceHover(timeIndex, traceIndex) {
+        setHoverIndex(timeIndex);
+        setTraceIndex(traceIndex);
     }
 
     useEffect(() => {
@@ -94,7 +100,6 @@ const FlightPath = ({
                 <p>No data</p>
             </>
         );
-    const traceIndex = 0;
     // let currentData;
     const currentData =
         data.length > -1 ? data[traceIndex][counter % data[0].length] : {};
@@ -137,10 +142,11 @@ const FlightPath = ({
                                 <Path
                                     coords={coords[i]}
                                     color={'lightblue'}
-                                    onHover={setHoverIndex}
+                                    onHover={onTraceHover}
                                     segmentInfo={segmentInfo}
                                     followMode={followMode}
                                     key={`path-${i}`}
+                                    index={i}
                                 />
                                 <Suspense key={`suspense-${i}`} fallback={null}>
                                     <Aircraft

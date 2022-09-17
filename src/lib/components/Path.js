@@ -53,7 +53,7 @@ let box = new Box3();
 const range = 30;
 
 /** The flight path */
-function Path({coords, onHover, segmentInfo, followMode}) {
+function Path({coords, onHover, segmentInfo, followMode, index}) {
     const colors = useMemo(
         () => (coords == null ? [] : chooseColors(coords.length, segmentInfo)),
         [coords.length, segmentInfo]
@@ -62,7 +62,7 @@ function Path({coords, onHover, segmentInfo, followMode}) {
         (e) => {
             if (followMode) return {};
             e.stopPropagation();
-            onHover(e.intersections[0].faceIndex);
+            onHover(e.intersections[0].faceIndex, index);
         },
         [followMode]
     );
@@ -122,6 +122,9 @@ Path.propTypes = {
 
     /** Follow mode enabled */
     followMode: PropTypes.bool,
+
+    /** Index of traces drawn. */
+    index: PropTypes.number,
 };
 
 Path.defaultProps = {
