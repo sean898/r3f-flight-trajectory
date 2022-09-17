@@ -61,7 +61,6 @@ const FlightPath = ({
 
     useEffect(() => {
         if (data != null) {
-            console.log('set coords');
             setCoords(
                 data.map((traceData) =>
                     traceData.map((d) => new Vector3(d.x, d.y, d.z))
@@ -95,11 +94,10 @@ const FlightPath = ({
                 <p>No data</p>
             </>
         );
-
     const traceIndex = 0;
     // let currentData;
     const currentData =
-        data.length > -1 ? data[0][counter % data[0].length] : {};
+        data.length > -1 ? data[traceIndex][counter % data[0].length] : {};
     return (
         <Canvas
             id={id}
