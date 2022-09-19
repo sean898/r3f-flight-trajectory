@@ -27,10 +27,14 @@ export default function Aircraft({
 }) {
     const modelRef = useRef();
     const {camera} = useThree();
-    const [{scene, materials}, setModel] = useState({scene: null, materials: null})
+    const [model, setModel] = useState()
 
     useLayoutEffect(() => {
-        new GLTFLoader().load(modelFile, setModel)
+        new GLTFLoader().load(modelFile, (response) => {
+            console.log(response)
+            // response.materials['Material.002']['color'] = 'blue';
+            setModel(response)
+        })
     }, [modelFile])
 
     const [{springPosition}, api] = useSpring(
@@ -41,10 +45,11 @@ export default function Aircraft({
         []
     );
 
-    useMemo(() => {
-        if (modelFile && modelFile.endsWith('F-16.glb') && materials != null && materials['Material.002'] != null)
-            materials['Material.002'].color.set(color);
-    }, [index, color, materials]);
+    useEffect(() => {
+        if (modelFile && modelFile.endsWith('F-16.glb') && model != null && model.materials != null)
+            model.materials['Material.002'].color.set(color);
+            console.log(index, color)
+    }, [index, color, model]);
 
     useEffect(() => {
         if (aircraftRef.current != null && positionData != null) {
@@ -86,13 +91,15 @@ export default function Aircraft({
         }
     }, [playing, positionData, playbackSpeed]);
 
+    console.log(model)
+
     return (
         <animated.group ref={aircraftRef} position={springPosition}>
-            {scene ? <primitive
+            {model ? <primitive
                 ref={modelRef}
-                object={scene}
+                object={model.scene}
+                materials={model.materials}
                 scale={minModelScale}
-                {...otherProps}
             /> : <></>}
             <axesHelper args={[20]} setColors={['red', 'green', 'blue']} />
         </animated.group>

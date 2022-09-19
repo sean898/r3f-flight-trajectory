@@ -93,11 +93,12 @@ const FlightPath = ({
             );
         }
     }, [bounds]);
-    
+   
+    /** Reference:  
+     *  https://stackoverflow.com/questions/54633690/how-can-i-use-multiple-refs-for-an-array-of-elements-with-hooks/ */
     if (coords != null && aircraftRefs.current.length !== coords.length) {
         aircraftRefs.current = Array(coords.length).fill().map((_, i) => aircraftRefs.current[i] || createRef());
     }
-    console.log('refs', aircraftRefs)
     const traces = data == null || coords == null ? (
                     <></>
                 ) : (
