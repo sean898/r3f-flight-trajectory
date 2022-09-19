@@ -1,11 +1,12 @@
 import {useGLTF} from '@react-three/drei';
-import {useRef, useMemo, useEffect, useState} from 'react';
+import {useRef, useMemo, useEffect, useState, useLayoutEffect} from 'react';
 import {degreesToRadians} from '../util';
 import {useThree} from '@react-three/fiber';
 import PropTypes from 'prop-types';
 import {Euler, Vector3} from 'three';
 import {vectorEquals} from '../util/vectors';
 import {useSpring, animated} from '@react-spring/three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const headingOffset = -120;
 const minModelScale = 0.6;
@@ -26,7 +27,12 @@ export default function Aircraft({
 }) {
     const modelRef = useRef();
     const {camera} = useThree();
-    const model = useGLTF(modelFile, false);
+    const [{scene, materials}, setModel] = useState({scene: null, materials: null})
+
+    useLayoutEffect(() => {
+        new GLTFLoader().load(modelFile, setModel)
+    }, [modelFile])
+
     const [{springPosition}, api] = useSpring(
         {
             springPosition: new Vector3(),
@@ -36,9 +42,9 @@ export default function Aircraft({
     );
 
     useMemo(() => {
-        if (modelFile && modelFile.endsWith('F-16.glb'))
-            model.materials['Material.002'].color.set(color);
-    }, [index, color, modelFile]);
+        if (modelFile && modelFile.endsWith('F-16.glb') && materials != null && materials['Material.002'] != null)
+            materials['Material.002'].color.set(color);
+    }, [index, color, materials]);
 
     useEffect(() => {
         if (aircraftRef.current != null && positionData != null) {
@@ -73,7 +79,7 @@ export default function Aircraft({
             } else {
                 scale = minModelScale;
             }
-            if (scale && scale != modelRef.current.scale) {
+            if (scale && modelRef.current != null && scale != modelRef.current.scale) {
                 modelRef.current.scale.set(scale, scale, scale);
                 modelRef.current.updateMatrix();
             }
@@ -82,12 +88,12 @@ export default function Aircraft({
 
     return (
         <animated.group ref={aircraftRef} position={springPosition}>
-            <primitive
+            {scene ? <primitive
                 ref={modelRef}
-                object={model.scene}
+                object={scene}
                 scale={minModelScale}
                 {...otherProps}
-            />
+            /> : <></>}
             <axesHelper args={[20]} setColors={['red', 'green', 'blue']} />
         </animated.group>
     );
