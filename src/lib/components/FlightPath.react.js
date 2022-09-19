@@ -94,15 +94,44 @@ const FlightPath = ({
         }
     }, [bounds]);
 
+    const traces = data == null || coords == null ? (
+                    <></>
+                ) : (
+                    [...Array(data.length).keys()].map((i) => {
+                        return (
+                            <group key={`trace-${i}`}>
+                                <Path
+                                    coords={coords[i]}
+                                    color={'lightblue'}
+                                    onHover={onTraceHover}
+                                    segmentInfo={segmentInfo}
+                                    followMode={followMode}
+                                    key={`path-${i}`}
+                                    index={i}
+                                />
+                                <Suspense key={`suspense-${i}`} fallback={null}>
+                                    <Aircraft
+                                        positionData={data[i][counter]}
+                                        modelFile={modelFile}
+                                        playing={playing}
+                                        playbackSpeed={playbackSpeed}
+                                        followedAircraftRef={i === traceIndex ? aircraftRef : null}
+                                        index={i}
+                                        color={i===0 ? 'green' : 'pink'}
+                                        key={`aircraft-${i}`}
+                                    />
+                                </Suspense>
+                            </group>
+                        );
+                    })
+                )
+
     if (coords == null || coords.length == 0)
         return (
             <>
                 <p>No data</p>
             </>
         );
-    // let currentData;
-    const currentData =
-        data.length > -1 ? data[traceIndex][counter % data[0].length] : {};
     return (
         <Canvas
             id={id}
@@ -133,35 +162,7 @@ const FlightPath = ({
             <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
             <pointLight position={[-11, -10, -10]} />
             <Bounds fit={true} clip={false} damping={6} margin={1.2}>
-                {data == null || coords == null ? (
-                    <></>
-                ) : (
-                    [...Array(data.length).keys()].map((i) => {
-                        return (
-                            <group key={`trace-${i}`}>
-                                <Path
-                                    coords={coords[i]}
-                                    color={'lightblue'}
-                                    onHover={onTraceHover}
-                                    segmentInfo={segmentInfo}
-                                    followMode={followMode}
-                                    key={`path-${i}`}
-                                    index={i}
-                                />
-                                <Suspense key={`suspense-${i}`} fallback={null}>
-                                    <Aircraft
-                                        positionData={currentData}
-                                        modelFile={modelFile}
-                                        playing={playing}
-                                        playbackSpeed={playbackSpeed}
-                                        aircraftRef={aircraftRef}
-                                        key={`aircraft-${i}`}
-                                    />
-                                </Suspense>
-                            </group>
-                        );
-                    })
-                )}
+                {traces}
                 <PlotControls
                     followMode={followMode}
                     toggleFollowMode={toggleFollowMode}

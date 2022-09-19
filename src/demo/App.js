@@ -88,7 +88,7 @@ function App() {
                 counter={counter}
                 data={data}
                 segmentInfo={segmentInfo}
-                modelFile="public/F-16.glb"
+                modelFile="assets/F-16.glb"
                 playing={playing}
                 playbackSpeed={playbackSpeed}
             />

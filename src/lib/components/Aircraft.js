@@ -10,7 +10,6 @@ import {useSpring, animated} from '@react-spring/three';
 const headingOffset = -120;
 const minModelScale = 0.6;
 const maxModelScale = 30;
-const color = 'green';
 let scale, xRot, yRot, zRot;
 let euler = new Euler();
 
@@ -20,13 +19,15 @@ export default function Aircraft({
     modelFile,
     playing,
     playbackSpeed,
-    aircraftRef,
+    followedAircraftRef,
+    index,
+    color,
     ...otherProps
 }) {
+    const aircraftRef = useRef();
     const modelRef = useRef();
     const {camera} = useThree();
     const model = useGLTF(modelFile, false);
-
     const [{springPosition}, api] = useSpring(
         {
             springPosition: new Vector3(),
@@ -38,7 +39,7 @@ export default function Aircraft({
     useMemo(() => {
         if (modelFile && modelFile.endsWith('F-16.glb'))
             model.materials['Material.002'].color.set(color);
-    }, [color, modelFile]);
+    }, [index, color, modelFile]);
 
     useEffect(() => {
         if (positionData != null) {
@@ -80,6 +81,8 @@ export default function Aircraft({
         }
     }, [playing, positionData, playbackSpeed]);
 
+    console.log(index, followedAircraftRef, followedAircraftRef == null || followedAircraftRef.current == null ? 'none' : followedAircraftRef.current.position)
+
     return (
         <animated.group ref={aircraftRef} position={springPosition}>
             <primitive
@@ -88,7 +91,7 @@ export default function Aircraft({
                 scale={minModelScale}
                 {...otherProps}
             />
-            <axesHelper args={[20]} setColors={['red', 'green', 'blue']} />
+            <axesHelper ref={followedAircraftRef} args={[20]} setColors={['red', 'green', 'blue']} />
         </animated.group>
     );
 }
@@ -112,6 +115,12 @@ Aircraft.propTypes = {
     /** Interval in milliseconds */
     playbackSpeed: PropTypes.number,
 
-    /** Reference to aircraft, created in parent. */
-    aircraftRef: PropTypes.any,
+    /** Reference to followed aircraft, created in parent. */
+    followedAircraftRef: PropTypes.any,
+
+    /** Color to use for aircraft model */
+    color: PropTypes.any,
+
+    /** Index of aircraft in scene */
+    index: PropTypes.number,
 };
