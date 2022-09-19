@@ -19,12 +19,11 @@ export default function Aircraft({
     modelFile,
     playing,
     playbackSpeed,
-    followedAircraftRef,
+    aircraftRef,
     index,
     color,
     ...otherProps
 }) {
-    const aircraftRef = useRef();
     const modelRef = useRef();
     const {camera} = useThree();
     const model = useGLTF(modelFile, false);
@@ -42,7 +41,7 @@ export default function Aircraft({
     }, [index, color, modelFile]);
 
     useEffect(() => {
-        if (positionData != null) {
+        if (aircraftRef.current != null && positionData != null) {
             const {x, y, z, heading, pitch, bank} = positionData;
 
             /* Position */
@@ -81,8 +80,6 @@ export default function Aircraft({
         }
     }, [playing, positionData, playbackSpeed]);
 
-    console.log(index, followedAircraftRef, followedAircraftRef == null || followedAircraftRef.current == null ? 'none' : followedAircraftRef.current.position)
-
     return (
         <animated.group ref={aircraftRef} position={springPosition}>
             <primitive
@@ -91,7 +88,7 @@ export default function Aircraft({
                 scale={minModelScale}
                 {...otherProps}
             />
-            <axesHelper ref={followedAircraftRef} args={[20]} setColors={['red', 'green', 'blue']} />
+            <axesHelper args={[20]} setColors={['red', 'green', 'blue']} />
         </animated.group>
     );
 }
@@ -115,8 +112,8 @@ Aircraft.propTypes = {
     /** Interval in milliseconds */
     playbackSpeed: PropTypes.number,
 
-    /** Reference to followed aircraft, created in parent. */
-    followedAircraftRef: PropTypes.any,
+    /** Reference to aircraft, created in parent. */
+    aircraftRef: PropTypes.any,
 
     /** Color to use for aircraft model */
     color: PropTypes.any,

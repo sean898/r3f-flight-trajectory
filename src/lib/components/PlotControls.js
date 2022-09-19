@@ -74,7 +74,7 @@ function PlotControls({
     }, [controlsRef.current, followMode, currentData]);
 
     useFrame((state, delta) => {
-        if (playing && followMode) {
+        if (playing && followMode && aircraftRef != null) {
             if (!dragging) camera.position.lerp(goalPosition, delta);
             controlsRef.current.target.copy(aircraftRef.current.position);
             controlsRef.current.update();

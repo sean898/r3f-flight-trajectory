@@ -11,7 +11,7 @@ import {
     Stats,
     Bounds,
 } from '@react-three/drei';
-import {useRef, Suspense, useState, useEffect} from 'react';
+import {useRef, Suspense, useState, useEffect, createRef} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
 import {Box3, Vector3} from 'three';
 import Aircraft from './Aircraft';
@@ -54,7 +54,7 @@ const FlightPath = ({
     const [traceIndex, setTraceIndex] = useState(0);
 
     const controlsRef = useRef();
-    const aircraftRef = useRef();
+    const aircraftRefs = useRef([]);
 
     function toggleFollowMode() {
         setFollowMode(!followMode);
@@ -93,7 +93,11 @@ const FlightPath = ({
             );
         }
     }, [bounds]);
-
+    
+    if (coords != null && aircraftRefs.current.length !== coords.length) {
+        aircraftRefs.current = Array(coords.length).fill().map((_, i) => aircraftRefs.current[i] || createRef());
+    }
+    console.log('refs', aircraftRefs)
     const traces = data == null || coords == null ? (
                     <></>
                 ) : (
@@ -115,7 +119,7 @@ const FlightPath = ({
                                         modelFile={modelFile}
                                         playing={playing}
                                         playbackSpeed={playbackSpeed}
-                                        followedAircraftRef={i === traceIndex ? aircraftRef : null}
+                                        aircraftRef={aircraftRefs.current[i]}
                                         index={i}
                                         color={i===0 ? 'green' : 'pink'}
                                         key={`aircraft-${i}`}
@@ -169,7 +173,7 @@ const FlightPath = ({
                     currentData={data[traceIndex][counter]} // todo
                     controlsRef={controlsRef}
                     playing={playing}
-                    aircraftRef={aircraftRef}
+                    aircraftRef={aircraftRefs.current[traceIndex]}
                 />
             </Bounds>
             <HoverInfo
