@@ -4,7 +4,27 @@ import PropTypes from 'prop-types';
 
 /** Plot  legend */
 let color = new THREE.Color();
-function Legend({segmentInfo}) {
+
+function traceLegend(segmentInfo) {
+    return segmentInfo.map((entry, i) => {
+        return (
+            <li key={i}>
+                <span
+                    className="plot-legend-icon"
+                    style={{
+                        backgroundColor: `#${color
+                            .clone()
+                            .fromArray(entry.color)
+                            .getHexString()}`,
+                    }}
+                ></span>
+                {`${entry.maneuver} ${entry.number}`}
+            </li>
+        );
+    });
+}
+
+function Legend({segmentInfo, traceTitles}) {
     return (
         <Html
             wrapperClass="plot-legend-wrapper"
@@ -12,20 +32,12 @@ function Legend({segmentInfo}) {
             className="plot-legend"
         >
             <ul>
-                {segmentInfo.map((entry, i) => {
+                {segmentInfo.map((traceSegmentInfo, traceIndex) => {
                     return (
-                        <li key={i}>
-                            <span
-                                className="plot-legend-icon"
-                                style={{
-                                    backgroundColor: `#${color
-                                        .clone()
-                                        .fromArray(entry.color)
-                                        .getHexString()}`,
-                                }}
-                            ></span>
-                            {`${entry.maneuver} ${entry.number}`}
-                        </li>
+                        <div>
+                            <div>{traceTitles[traceIndex]}</div>
+                            <ul>{traceLegend(traceSegmentInfo)}</ul>
+                        </div>
                     );
                 })}
             </ul>

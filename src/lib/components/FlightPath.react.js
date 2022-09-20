@@ -129,7 +129,7 @@ const FlightPath = ({
                             color={'lightblue'}
                             onHover={onTraceHover}
                             onClick={onTraceClick}
-                            segmentInfo={segmentInfo}
+                            segmentInfo={segmentInfo[i]}
                             followMode={followMode}
                             key={`path-${i}`}
                             index={i}
@@ -202,7 +202,7 @@ const FlightPath = ({
                 fields={hoverInfoFields}
                 traceTitle={traceTitles[hoverTraceIndex]}
             />
-            <Legend segmentInfo={segmentInfo} />
+            <Legend segmentInfo={segmentInfo} traceTitles={traceTitles} />
             {/* <Stats /> */}
         </Canvas>
     );
