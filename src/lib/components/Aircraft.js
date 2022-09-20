@@ -3,10 +3,10 @@ import {useRef, useMemo, useEffect, useState, useLayoutEffect} from 'react';
 import {degreesToRadians} from '../util';
 import {useThree} from '@react-three/fiber';
 import PropTypes from 'prop-types';
-import {Euler, Vector3} from 'three';
+import {Euler, Material, MeshStandardMaterial, Vector3} from 'three';
 import {vectorEquals} from '../util/vectors';
 import {useSpring, animated} from '@react-spring/three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 
 const headingOffset = -120;
 const minModelScale = 0.6;
@@ -27,15 +27,17 @@ export default function Aircraft({
 }) {
     const modelRef = useRef();
     const {camera} = useThree();
-    const [model, setModel] = useState()
+    const [model, setModel] = useState();
 
     useLayoutEffect(() => {
         new GLTFLoader().load(modelFile, (response) => {
-            console.log(response)
-            // response.materials['Material.002']['color'] = 'blue';
-            setModel(response)
-        })
-    }, [modelFile])
+            const material = new MeshStandardMaterial({color: color});
+            response.scene.traverse((o) => {
+                if (o.isMesh) o.material = material;
+            });
+            setModel(response);
+        });
+    }, [modelFile, color]);
 
     const [{springPosition}, api] = useSpring(
         {
@@ -44,12 +46,6 @@ export default function Aircraft({
         },
         []
     );
-
-    useEffect(() => {
-        if (modelFile && modelFile.endsWith('F-16.glb') && model != null && model.materials != null)
-            model.materials['Material.002'].color.set(color);
-            console.log(index, color)
-    }, [index, color, model]);
 
     useEffect(() => {
         if (aircraftRef.current != null && positionData != null) {
@@ -84,23 +80,29 @@ export default function Aircraft({
             } else {
                 scale = minModelScale;
             }
-            if (scale && modelRef.current != null && scale != modelRef.current.scale) {
+            if (
+                scale &&
+                modelRef.current != null &&
+                scale != modelRef.current.scale
+            ) {
                 modelRef.current.scale.set(scale, scale, scale);
                 modelRef.current.updateMatrix();
             }
         }
     }, [playing, positionData, playbackSpeed]);
 
-    console.log(model)
-
     return (
         <animated.group ref={aircraftRef} position={springPosition}>
-            {model ? <primitive
-                ref={modelRef}
-                object={model.scene}
-                materials={model.materials}
-                scale={minModelScale}
-            /> : <></>}
+            {model ? (
+                <primitive
+                    ref={modelRef}
+                    object={model.scene}
+                    materials={model.materials}
+                    scale={minModelScale}
+                />
+            ) : (
+                <></>
+            )}
             <axesHelper args={[20]} setColors={['red', 'green', 'blue']} />
         </animated.group>
     );

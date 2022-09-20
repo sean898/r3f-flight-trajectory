@@ -93,43 +93,46 @@ const FlightPath = ({
             );
         }
     }, [bounds]);
-   
-    /** Reference:  
+
+    /** Reference:
      *  https://stackoverflow.com/questions/54633690/how-can-i-use-multiple-refs-for-an-array-of-elements-with-hooks/ */
     if (coords != null && aircraftRefs.current.length !== coords.length) {
-        aircraftRefs.current = Array(coords.length).fill().map((_, i) => aircraftRefs.current[i] || createRef());
+        aircraftRefs.current = Array(coords.length)
+            .fill()
+            .map((_, i) => aircraftRefs.current[i] || createRef());
     }
-    const traces = data == null || coords == null ? (
-                    <></>
-                ) : (
-                    [...Array(data.length).keys()].map((i) => {
-                        return (
-                            <group key={`trace-${i}`}>
-                                <Path
-                                    coords={coords[i]}
-                                    color={'lightblue'}
-                                    onHover={onTraceHover}
-                                    segmentInfo={segmentInfo}
-                                    followMode={followMode}
-                                    key={`path-${i}`}
-                                    index={i}
-                                />
-                                <Suspense key={`suspense-${i}`} fallback={null}>
-                                    <Aircraft
-                                        positionData={data[i][counter]}
-                                        modelFile={modelFile}
-                                        playing={playing}
-                                        playbackSpeed={playbackSpeed}
-                                        aircraftRef={aircraftRefs.current[i]}
-                                        index={i}
-                                        color={i===0 ? 'green' : 'pink'}
-                                        key={`aircraft-${i}`}
-                                    />
-                                </Suspense>
-                            </group>
-                        );
-                    })
-                )
+    const traces =
+        data == null || coords == null ? (
+            <></>
+        ) : (
+            [...Array(data.length).keys()].map((i) => {
+                return (
+                    <group key={`trace-${i}`}>
+                        <Path
+                            coords={coords[i]}
+                            color={'lightblue'}
+                            onHover={onTraceHover}
+                            segmentInfo={segmentInfo}
+                            followMode={followMode}
+                            key={`path-${i}`}
+                            index={i}
+                        />
+                        <Suspense key={`suspense-${i}`} fallback={null}>
+                            <Aircraft
+                                positionData={data[i][counter]}
+                                modelFile={modelFile}
+                                playing={playing}
+                                playbackSpeed={playbackSpeed}
+                                aircraftRef={aircraftRefs.current[i]}
+                                index={i}
+                                color={i === 0 ? 'green' : 'orange'}
+                                key={`aircraft-${i}`}
+                            />
+                        </Suspense>
+                    </group>
+                );
+            })
+        );
 
     if (coords == null || coords.length == 0)
         return (
