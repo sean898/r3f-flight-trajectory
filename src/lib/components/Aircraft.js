@@ -62,11 +62,13 @@ export default function Aircraft({
             }
 
             /* Rotation */
-            xRot = (bank + 90) * degreesToRadians; // roll
-            yRot = pitch * degreesToRadians; // pitch
-            zRot = (heading + headingOffset) * degreesToRadians; // yaw
-            euler.set(xRot, yRot, zRot, 'YZX');
-            aircraftRef.current.setRotationFromEuler(euler);
+            if (bank != null && pitch != null && heading != null) {
+                xRot = (bank + 90) * degreesToRadians; // roll
+                yRot = pitch * degreesToRadians; // pitch
+                zRot = (heading + headingOffset) * degreesToRadians; // yaw
+                euler.set(xRot, yRot, zRot, 'YZX');
+                aircraftRef.current.setRotationFromEuler(euler);
+            }
 
             /* Scale */
             const distance = camera.position.distanceTo(
