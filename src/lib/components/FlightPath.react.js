@@ -11,7 +11,7 @@ import {
     Stats,
     Bounds,
 } from '@react-three/drei';
-import {useRef, Suspense, useState, useEffect} from 'react';
+import {useRef, Suspense, useState, useEffect, createRef} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
 import {Box3, Vector3} from 'three';
 import Aircraft from './Aircraft';
@@ -51,23 +51,33 @@ const FlightPath = ({
     const [bounds, setBounds] = useState(null);
     const [followMode, setFollowMode] = useState(false);
     const [viewDistance, setViewDistance] = useState(150000);
+    const [traceIndex, setTraceIndex] = useState(0);
 
     const controlsRef = useRef();
-    const aircraftRef = useRef();
+    const aircraftRefs = useRef([]);
 
     function toggleFollowMode() {
         setFollowMode(!followMode);
     }
 
+    function onTraceHover(timeIndex, traceIndex) {
+        setHoverIndex(timeIndex);
+        setTraceIndex(traceIndex);
+    }
+
     useEffect(() => {
         if (data != null) {
-            setCoords(data.map((d) => new Vector3(d.x, d.y, d.z)));
+            setCoords(
+                data.map((traceData) =>
+                    traceData.map((d) => new Vector3(d.x, d.y, d.z))
+                )
+            );
         }
     }, [data]);
 
     useEffect(() => {
         if (coords != null && coords.length) {
-            const bbox = new Box3().setFromPoints(coords);
+            const bbox = new Box3().setFromPoints(coords.flat(1));
             setBounds(bbox);
         }
     }, [coords]);
@@ -84,75 +94,99 @@ const FlightPath = ({
         }
     }, [bounds]);
 
+    /** Reference:
+     *  https://stackoverflow.com/questions/54633690/how-can-i-use-multiple-refs-for-an-array-of-elements-with-hooks/ */
+    if (coords != null && aircraftRefs.current.length !== coords.length) {
+        aircraftRefs.current = Array(coords.length)
+            .fill()
+            .map((_, i) => aircraftRefs.current[i] || createRef());
+    }
+    const traces =
+        data == null || coords == null ? (
+            <></>
+        ) : (
+            [...Array(data.length).keys()].map((i) => {
+                return (
+                    <group key={`trace-${i}`}>
+                        <Path
+                            coords={coords[i]}
+                            color={'lightblue'}
+                            onHover={onTraceHover}
+                            segmentInfo={segmentInfo}
+                            followMode={followMode}
+                            key={`path-${i}`}
+                            index={i}
+                        />
+                        <Suspense key={`suspense-${i}`} fallback={null}>
+                            <Aircraft
+                                positionData={data[i][counter]}
+                                modelFile={modelFile}
+                                playing={playing}
+                                playbackSpeed={playbackSpeed}
+                                aircraftRef={aircraftRefs.current[i]}
+                                index={i}
+                                color={i === 0 ? 'green' : 'orange'}
+                                key={`aircraft-${i}`}
+                            />
+                        </Suspense>
+                    </group>
+                );
+            })
+        );
+
     if (coords == null || coords.length == 0)
         return (
             <>
                 <p>No data</p>
             </>
         );
-
-    const currentData = data.length > -1 ? data[counter % data.length] : {};
     return (
-        <>
-            <Canvas
-                id={id}
-                className="flight-trajectory-plot"
-                raycaster={{
-                    params: {
-                        Line2: {threshold: 3},
-                        Line: {threshold: 3},
-                    },
-                }}
-            >
-                <PerspectiveCamera
-                    makeDefault
-                    position={initialCameraPosition}
-                    far={viewDistance}
-                    minDistance={10}
+        <Canvas
+            id={id}
+            className="flight-trajectory-plot"
+            raycaster={{
+                params: {
+                    Line2: {threshold: 3},
+                    Line: {threshold: 3},
+                },
+            }}
+        >
+            <PerspectiveCamera
+                makeDefault
+                position={initialCameraPosition}
+                far={viewDistance}
+                minDistance={10}
+            />
+            <OrbitControls
+                makeDefault
+                zoomSpeed="2"
+                maxDistance={viewDistance * 0.8}
+                ref={controlsRef}
+                enableDamping
+                dampingFactor={0.05}
+            />
+            <BoundingPlane bounds={bounds} />
+            <ambientLight color={0xffffff} />
+            <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
+            <pointLight position={[-11, -10, -10]} />
+            <Bounds fit={true} clip={false} damping={6} margin={1.2}>
+                {traces}
+                <PlotControls
+                    followMode={followMode}
+                    toggleFollowMode={toggleFollowMode}
+                    currentData={data[traceIndex][counter]} // todo
+                    controlsRef={controlsRef}
+                    playing={playing}
+                    aircraftRef={aircraftRefs.current[traceIndex]}
                 />
-                <OrbitControls
-                    makeDefault
-                    zoomSpeed="2"
-                    maxDistance={viewDistance * 0.8}
-                    ref={controlsRef}
-                    enableDamping
-                    dampingFactor={0.05}
-                />
-                <BoundingPlane bounds={bounds} />
-                <ambientLight color={0xffffff} />
-                <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
-                <pointLight position={[-11, -10, -10]} />
-                <Bounds clip={false} damping={6} margin={1.2}>
-                    <Path
-                        coords={coords}
-                        color={'lightblue'}
-                        onHover={setHoverIndex}
-                        segmentInfo={segmentInfo}
-                        followMode={followMode}
-                    />
-                    <Suspense fallback={null}>
-                        <Aircraft
-                            positionData={currentData}
-                            modelFile={modelFile}
-                            playing={playing}
-                            playbackSpeed={playbackSpeed}
-                            aircraftRef={aircraftRef}
-                        />
-                    </Suspense>
-                    <PlotControls
-                        followMode={followMode}
-                        toggleFollowMode={toggleFollowMode}
-                        currentData={currentData}
-                        controlsRef={controlsRef}
-                        playing={playing}
-                        aircraftRef={aircraftRef}
-                    />
-                </Bounds>
-                <HoverInfo data={data[hoverIndex]} fields={hoverInfoFields} />
-                <Legend segmentInfo={segmentInfo} />
-                {/* <Stats /> */}
-            </Canvas>
-        </>
+            </Bounds>
+            <HoverInfo
+                data={data[traceIndex][hoverIndex]}
+                fields={hoverInfoFields}
+            />
+            <Legend segmentInfo={segmentInfo} />
+            {/* <Stats /> */}
+        </Canvas>
     );
 };
 FlightPath.defaultProps = {

@@ -1,5 +1,5 @@
 import {useState, useCallback, useEffect} from 'react';
-import {Html, useBounds} from '@react-three/drei';
+import {Html} from '@react-three/drei';
 import {useFrame, useThree} from '@react-three/fiber';
 import {Vector3} from 'three';
 import {initialCameraPosition} from './FlightPath.react';
@@ -74,7 +74,7 @@ function PlotControls({
     }, [controlsRef.current, followMode, currentData]);
 
     useFrame((state, delta) => {
-        if (playing && followMode) {
+        if (playing && followMode && aircraftRef != null) {
             if (!dragging) camera.position.lerp(goalPosition, delta);
             controlsRef.current.target.copy(aircraftRef.current.position);
             controlsRef.current.update();

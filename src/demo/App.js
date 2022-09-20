@@ -3,6 +3,14 @@ import {useRef, useState, useEffect} from 'react';
 import csvFile from './data/test.csv';
 import Papa from 'papaparse';
 
+function shifted(d) {
+    const e = {...d};
+
+    e.x += 100;
+    e.z += 50;
+    return e;
+}
+
 const useData = () => {
     const [data, setData] = useState([]);
 
@@ -13,9 +21,15 @@ const useData = () => {
             preview: 6000,
             header: true,
             dynamicTyping: true,
-            complete: (result) => setData(result.data),
+            complete: (result) => {
+                const dataArray = result.data;
+                let data2 = new Array(...result.data);
+                data2 = data2.map(shifted);
+                setData(new Array(dataArray, data2));
+            },
         });
-    }, []);
+    }, [csvFile]);
+
     return data;
 };
 
@@ -28,7 +42,7 @@ const colorPalette = [
 
 function App() {
     const data = useData();
-    const [playing, setPlaying] = useState(true);
+    const [playing, setPlaying] = useState(false);
     const [counter, setCounter] = useState(1);
     const playbackSpeed = 1000;
     const [segmentInfo, setSegmentInfo] = useState([
@@ -74,7 +88,7 @@ function App() {
                 counter={counter}
                 data={data}
                 segmentInfo={segmentInfo}
-                modelFile="public/F-16.glb"
+                modelFile="assets/F-16.glb"
                 playing={playing}
                 playbackSpeed={playbackSpeed}
             />
