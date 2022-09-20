@@ -13,7 +13,7 @@ import {
 } from '@react-three/drei';
 import {useRef, Suspense, useState, useEffect, createRef} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
-import {Box3, Vector3} from 'three';
+import {Box3, Object3D, Vector3} from 'three';
 import Aircraft from './Aircraft';
 import {PlotControls} from './PlotControls';
 import {BoundingPlane} from './BoundingPlane';
@@ -21,6 +21,7 @@ import {Path} from './Path';
 import {HoverInfo} from './HoverInfo';
 import {Legend} from './Legend';
 
+Object3D.DefaultUp = new Vector3(0, 0, 1);
 export const initialCameraPosition = new Vector3(0, 0, 100);
 
 const hoverInfoFields = [
@@ -254,7 +255,7 @@ FlightPath.propTypes = {
     hoverData: PropTypes.object,
 
     /** Updated on click */
-    clickData: PropTypes.object,
+    clickData: PropTypes.obect,
 };
 
 export default FlightPath;
