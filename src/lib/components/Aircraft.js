@@ -31,9 +31,8 @@ export default function Aircraft({
 
     useLayoutEffect(() => {
         new GLTFLoader().load(modelFile, (response) => {
-            const material = new MeshStandardMaterial({color: color});
             response.scene.traverse((o) => {
-                if (o.isMesh) o.material = material;
+                if (o.isMesh) o.material.color.set(color);
             });
             setModel(response);
         });
