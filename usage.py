@@ -63,7 +63,7 @@ def choose_file(options):
 def load_data(file):
     if file is None:
         return []
-    return pd.read_csv(file).to_dict(orient='records')
+    return [pd.read_csv(file).to_dict(orient='records')]
 
 
 app.clientside_callback(
