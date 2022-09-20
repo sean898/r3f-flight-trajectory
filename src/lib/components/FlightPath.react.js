@@ -45,6 +45,9 @@ const FlightPath = ({
     modelFile,
     playing,
     playbackSpeed,
+    setProps,
+    hoverData,
+    clickData,
 }) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -52,6 +55,7 @@ const FlightPath = ({
     const [followMode, setFollowMode] = useState(false);
     const [viewDistance, setViewDistance] = useState(150000);
     const [traceIndex, setTraceIndex] = useState(0);
+    const [hoverTraceIndex, setHoverTraceIndex] = useState(0);
 
     const controlsRef = useRef();
     const aircraftRefs = useRef([]);
@@ -60,9 +64,28 @@ const FlightPath = ({
         setFollowMode(!followMode);
     }
 
+    function getOutputData(timeIndex, traceIndex) {
+        return {
+            data: data[traceIndex][timeIndex],
+            traceIndex: traceIndex,
+            timeIndex: timeIndex,
+        };
+    }
+
     function onTraceHover(timeIndex, traceIndex) {
         setHoverIndex(timeIndex);
+        setHoverTraceIndex(traceIndex);
+        if (setProps) {
+            setProps({
+                hoverData: getOutputData(timeIndex, traceIndex),
+            });
+        }
+    }
+
+    function onTraceClick(timeIndex, traceIndex) {
         setTraceIndex(traceIndex);
+        if (setProps)
+            setProps({clickData: getOutputData(timeIndex, traceIndex)});
     }
 
     useEffect(() => {
@@ -112,6 +135,7 @@ const FlightPath = ({
                             coords={coords[i]}
                             color={'lightblue'}
                             onHover={onTraceHover}
+                            onClick={onTraceClick}
                             segmentInfo={segmentInfo}
                             followMode={followMode}
                             key={`path-${i}`}
@@ -181,7 +205,7 @@ const FlightPath = ({
                 />
             </Bounds>
             <HoverInfo
-                data={data[traceIndex][hoverIndex]}
+                data={data[hoverTraceIndex][hoverIndex]}
                 fields={hoverInfoFields}
             />
             <Legend segmentInfo={segmentInfo} />
@@ -225,6 +249,12 @@ FlightPath.propTypes = {
 
     /** Playback speed in ms. Value should be synchronized with interval component which updates counter. */
     playbackSpeed: PropTypes.number,
+
+    /** Prop on hover */
+    hoverData: PropTypes.object,
+
+    /** Updated on click */
+    clickData: PropTypes.obect,
 };
 
 export default FlightPath;

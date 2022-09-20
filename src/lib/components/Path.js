@@ -53,7 +53,7 @@ let box = new Box3();
 const range = 30;
 
 /** The flight path */
-function Path({coords, onHover, segmentInfo, followMode, index}) {
+function Path({coords, onHover, onClick, segmentInfo, followMode, index}) {
     const colors = useMemo(
         () => (coords == null ? [] : chooseColors(coords.length, segmentInfo)),
         [coords.length, segmentInfo]
@@ -66,6 +66,12 @@ function Path({coords, onHover, segmentInfo, followMode, index}) {
         },
         [followMode]
     );
+
+    const clickCallback = useCallback((e) => {
+        e.stopPropagation();
+        onClick(e.intersections[0].faceIndex, index);
+    }, []);
+
     const ref = useRef();
     const bounds = useBounds();
     useEffect(() => {
@@ -93,6 +99,7 @@ function Path({coords, onHover, segmentInfo, followMode, index}) {
                 color={defaultColorObj}
                 onPointerMove={hoverCallback}
                 onDoubleClick={onDoubleClick}
+                onClick={clickCallback}
             />
             {/* <Points limit={coords.length}>
                 <PointMaterial vertexColors size={0.8} />
@@ -116,6 +123,9 @@ Path.propTypes = {
 
     /** Function for hovering on path line */
     onHover: PropTypes.func,
+
+    /** Function for clicking on path line */
+    onClick: PropTypes.func,
 
     /** Segment info */
     segmentInfo: PropTypes.array,
