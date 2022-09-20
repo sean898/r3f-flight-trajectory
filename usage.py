@@ -76,12 +76,33 @@ def choose_file(options):
 
 @app.callback(
     Output('flight-data', 'data'),
+    Output('path', 'traceTitles'),
     Input('file-select', 'value')
 )
 def load_data(file):
     if file is None:
         return []
-    return [pd.read_csv(file).to_dict(orient='records')]
+    df = pd.read_csv(file)
+
+    if 'TIME' not in df.columns:
+        df['TIME'] = df.index.map(lambda x: pd.Timedelta(seconds=x))
+    df['TIME'] = (df['TIME'] + pd.Timestamp('1970-01-01')).dt.strftime('%H:%M:%S')
+    df['flight_label'] = 'A'
+
+    df_copy = df.copy()
+    df_copy.loc[:, 'x'] = df_copy['x'] + 400
+    df_copy.loc[:, 'y'] = df_copy['y'] + 1400
+    df_copy['flight_label'] = 'B'
+
+    df = pd.concat([df, df_copy])
+    data = []
+    traceTitles = [] 
+    for i, gdf in df.groupby('flight_label', as_index=False):
+        data.append(gdf.to_dict(orient='records'))
+        traceTitles.append(i)
+    return data, traceTitles
+
+    return [df.to_dict(orient='records')]
 
 
 app.clientside_callback(

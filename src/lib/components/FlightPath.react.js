@@ -39,6 +39,7 @@ const FlightPath = ({
     hoverData,
     clickData,
     hoverInfoFields,
+    traceTitles,
 }) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -60,6 +61,7 @@ const FlightPath = ({
             data: data[traceIndex][timeIndex],
             traceIndex: traceIndex,
             timeIndex: timeIndex,
+            traceTitle: traceTitles && traceTitles[traceIndex],
         };
     }
 
@@ -198,6 +200,7 @@ const FlightPath = ({
             <HoverInfo
                 data={data[hoverTraceIndex][hoverIndex]}
                 fields={hoverInfoFields}
+                traceTitle={traceTitles[hoverTraceIndex]}
             />
             <Legend segmentInfo={segmentInfo} />
             {/* <Stats /> */}
@@ -220,6 +223,7 @@ FlightPath.defaultProps = {
         'pitch',
         'wow',
     ],
+    traceTitles: [],
 };
 
 FlightPath.propTypes = {
@@ -259,7 +263,10 @@ FlightPath.propTypes = {
     clickData: PropTypes.object,
 
     /** Fields in data to show in hover info */
-    hoverInfoFields: PropTypes.object,
+    hoverInfoFields: PropTypes.array,
+
+    /** Names of traces, ordered as data */
+    traceTitles: PropTypes.array,
 };
 
 export default FlightPath;
