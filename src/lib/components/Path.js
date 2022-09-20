@@ -60,7 +60,6 @@ function Path({coords, onHover, onClick, segmentInfo, followMode, index}) {
     );
     const hoverCallback = useCallback(
         (e) => {
-            if (followMode) return {};
             e.stopPropagation();
             onHover(e.intersections[0].faceIndex, index);
         },
