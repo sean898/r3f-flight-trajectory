@@ -46,7 +46,11 @@
     background: #f7f9ff;
 }
 
-.plot-legend > ul {
+.plot-legend .legend-group-title {
+    font-weight: bold;
+}
+
+.plot-legend ul {
     margin: 0;
     padding: 0;
     list-style-type: none;

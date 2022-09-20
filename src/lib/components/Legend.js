@@ -35,7 +35,9 @@ function Legend({segmentInfo, traceTitles}) {
                 {segmentInfo.map((traceSegmentInfo, traceIndex) => {
                     return (
                         <div>
-                            <div>{traceTitles[traceIndex]}</div>
+                            <div className="legend-group-title">
+                                {traceTitles[traceIndex]}
+                            </div>
                             <ul>{traceLegend(traceSegmentInfo)}</ul>
                         </div>
                     );
