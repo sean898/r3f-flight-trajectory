@@ -28,7 +28,7 @@ function HoverInfo({data, fields}) {
     });
 
     if (data == null) return <></>;
-    const formattedContent = fields.map((k) => `${k}: ${data[k].toFixed(2)}`);
+    const formattedContent = fields.map((k) => `${k}: ${data[k].toFixed(1)}`);
     return (
         <>
             <Sphere

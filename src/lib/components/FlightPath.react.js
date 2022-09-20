@@ -24,17 +24,6 @@ import {Legend} from './Legend';
 Object3D.DefaultUp = new Vector3(0, 0, 1);
 export const initialCameraPosition = new Vector3(0, 0, 100);
 
-const hoverInfoFields = [
-    'x',
-    'y',
-    'z',
-    'alt',
-    'ralt',
-    'heading',
-    'bank',
-    'pitch',
-    'wow',
-];
 const viewDistanceFactor = 3;
 
 /** 3D flight trjaectory plot  */
@@ -49,6 +38,7 @@ const FlightPath = ({
     setProps,
     hoverData,
     clickData,
+    hoverInfoFields,
 }) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -219,6 +209,17 @@ FlightPath.defaultProps = {
     counter: 0,
     segmentInfo: [],
     playbackSpeed: 1000,
+    hoverInfoFields: [
+        'x',
+        'y',
+        'z',
+        'alt',
+        'ralt',
+        'heading',
+        'bank',
+        'pitch',
+        'wow',
+    ],
 };
 
 FlightPath.propTypes = {
@@ -255,7 +256,10 @@ FlightPath.propTypes = {
     hoverData: PropTypes.object,
 
     /** Updated on click */
-    clickData: PropTypes.obect,
+    clickData: PropTypes.object,
+
+    /** Fields in data to show in hover info */
+    hoverInfoFields: PropTypes.object,
 };
 
 export default FlightPath;
