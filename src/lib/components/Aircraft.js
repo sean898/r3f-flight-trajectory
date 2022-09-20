@@ -8,7 +8,7 @@ import {vectorEquals} from '../util/vectors';
 import {useSpring, animated} from '@react-spring/three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 
-const headingOffset = -120;
+const headingOffset = -135;
 const minModelScale = 0.6;
 const maxModelScale = 30;
 let scale, xRot, yRot, zRot;
@@ -62,10 +62,10 @@ export default function Aircraft({
             }
 
             /* Rotation */
-            yRot = (heading + headingOffset) * degreesToRadians;
-            zRot = pitch * degreesToRadians;
-            xRot = bank * degreesToRadians;
-            euler.set(xRot, yRot, zRot, 'XYZ');
+            xRot = (bank + 90) * degreesToRadians; // roll
+            yRot = pitch * degreesToRadians; // pitch
+            zRot = (heading + headingOffset) * degreesToRadians; // yaw
+            euler.set(xRot, yRot, zRot, 'YZX');
             aircraftRef.current.setRotationFromEuler(euler);
 
             /* Scale */
