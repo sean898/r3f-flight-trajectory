@@ -5,6 +5,7 @@ import dash
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import pandas as pd
+import json 
 
 app = dash.Dash(__name__, update_title=None)
 
@@ -12,6 +13,8 @@ flight_data = 'src/demo/data/'
 
 app.layout = html.Div(style={'display': 'flex', 'height': '100vh', 'flexDirection': 'column'}, children=[
     dcc.Dropdown(id='file-select'),
+    html.Pre(id='hover-data'),
+    html.Pre(id='click-data'),
     flight_path.FlightPath(
         id='path',
         segmentInfo=[],
@@ -30,6 +33,21 @@ app.layout = html.Div(style={'display': 'flex', 'height': '100vh', 'flexDirectio
     dcc.Interval(id='playback-interval', interval=100),
     dcc.Input(id='onLoad', style={'display': 'none'})
 ])
+
+@app.callback(
+    Output('hover-data', 'children'),
+    Input('path', 'hoverData')
+)
+def set_hover_data(data):
+    return json.dumps(data)
+
+@app.callback(
+    Output('click-data', 'children'),
+    Input('path', 'clickData')
+)
+def set_click_data(data):
+    return json.dumps(data, indent=2)
+
 
 @app.callback(
     Output('time-slider', 'max'),

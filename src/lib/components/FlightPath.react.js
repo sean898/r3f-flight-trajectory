@@ -254,7 +254,7 @@ FlightPath.propTypes = {
     hoverData: PropTypes.object,
 
     /** Updated on click */
-    clickData: PropTypes.obect,
+    clickData: PropTypes.object,
 };
 
 export default FlightPath;
