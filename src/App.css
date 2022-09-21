@@ -71,3 +71,13 @@
     display: inline-block;
     margin-inline-end: 0.3rem;
 }
+
+.plot-legend button {
+    font-size: 0.8rem; 
+    margin-left: 5px;
+}
+
+.plot-legend button.active {
+    font-weight: bold;
+}
+

@@ -46,7 +46,7 @@ const FlightPath = ({
     const [bounds, setBounds] = useState(null);
     const [followMode, setFollowMode] = useState(false);
     const [viewDistance, setViewDistance] = useState(150000);
-    const [traceIndex, setTraceIndex] = useState(0);
+    const [targetTraceIndex, setTargetTraceIndex] = useState(0);
     const [hoverTraceIndex, setHoverTraceIndex] = useState(0);
 
     const controlsRef = useRef();
@@ -58,7 +58,7 @@ const FlightPath = ({
 
     function getOutputData(timeIndex, traceIndex) {
         return {
-            data: data[traceIndex][timeIndex],
+            data: traceIndex && data[traceIndex][timeIndex],
             traceIndex: traceIndex,
             timeIndex: timeIndex,
             traceTitle: traceTitles && traceTitles[traceIndex],
@@ -76,7 +76,7 @@ const FlightPath = ({
     }
 
     function onTraceClick(timeIndex, traceIndex) {
-        setTraceIndex(traceIndex);
+        setTargetTraceIndex(traceIndex);
         if (setProps)
             setProps({clickData: getOutputData(timeIndex, traceIndex)});
     }
@@ -157,10 +157,10 @@ const FlightPath = ({
                 <p>No data</p>
             </>
         );
-    return (
+    return (<div className='flight-trajectory-plot'>
+        <div className='plot-controls'>Control panel</div>
         <Canvas
             id={id}
-            className="flight-trajectory-plot"
             raycaster={{
                 params: {
                     Line2: {threshold: 3},
@@ -191,10 +191,10 @@ const FlightPath = ({
                 <PlotControls
                     followMode={followMode}
                     toggleFollowMode={toggleFollowMode}
-                    currentData={data[traceIndex][counter]} // todo
+                    currentData={targetTraceIndex == null ? null : data[targetTraceIndex][counter]} // todo
                     controlsRef={controlsRef}
                     playing={playing}
-                    aircraftRef={aircraftRefs.current[traceIndex]}
+                    aircraftRef={targetTraceIndex == null ?  null : aircraftRefs.current[targetTraceIndex]}
                 />
             </Bounds>
             <HoverInfo
@@ -202,10 +202,10 @@ const FlightPath = ({
                 fields={hoverInfoFields}
                 traceTitle={traceTitles[hoverTraceIndex]}
             />
-            <Legend segmentInfo={segmentInfo} traceTitles={traceTitles} />
+            <Legend segmentInfo={segmentInfo} traceTitles={traceTitles} currentTraceIndex={targetTraceIndex} setCurrentTraceIndex={(index) => setTargetTraceIndex(index === targetTraceIndex ? null : index)} />
             {/* <Stats /> */}
         </Canvas>
-    );
+    </div>);
 };
 FlightPath.defaultProps = {
     data: [],

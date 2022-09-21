@@ -24,7 +24,7 @@ function traceLegend(segmentInfo) {
     });
 }
 
-function Legend({segmentInfo, traceTitles}) {
+function Legend({segmentInfo, traceTitles, currentTraceIndex, setCurrentTraceIndex}) {
     return (
         <Html
             wrapperClass="plot-legend-wrapper"
@@ -36,7 +36,8 @@ function Legend({segmentInfo, traceTitles}) {
                     return (
                         <div key={`legend-trace-${traceIndex}`}>
                             <div className="legend-group-title">
-                                {traceTitles[traceIndex]}
+                                {traceTitles[traceIndex]} 
+                                <button onClick={() => setCurrentTraceIndex(traceIndex)} className={traceIndex === currentTraceIndex ? 'active' : ''}>Target</button>
                             </div>
                             <ul>{traceLegend(traceSegmentInfo)}</ul>
                         </div>

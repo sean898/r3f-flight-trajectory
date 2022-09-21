@@ -43,6 +43,7 @@ function PlotControls({
     }
 
     function snapToAircraft(alpha = 0.9, ...args) {
+        if (currentData == null) return
         const aircraftPosition = getCoordinates(currentData);
         const targetDiff = aircraftPosition
             .clone()
@@ -56,6 +57,7 @@ function PlotControls({
     }
 
     function setGoal() {
+        if (currentData == null) return
         const aircraftPosition = getCoordinates(currentData);
         const targetDiff = aircraftPosition
             .clone()
