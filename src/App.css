@@ -16,6 +16,7 @@
     bottom: 1rem;
     border-radius: 2px;
     width: max-content;
+    font-size: 0.7rem;
 }
 
 .hover-info-entry {
@@ -45,7 +46,11 @@
     background: #f7f9ff;
 }
 
-.plot-legend > ul {
+.plot-legend .legend-group-title {
+    font-weight: bold;
+}
+
+.plot-legend ul {
     margin: 0;
     padding: 0;
     list-style-type: none;

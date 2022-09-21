@@ -87,10 +87,11 @@ function App() {
             <FlightPath
                 counter={counter}
                 data={data}
-                segmentInfo={segmentInfo}
+                segmentInfo={[segmentInfo, []]}
                 modelFile="assets/F-16.glb"
                 playing={playing}
                 playbackSpeed={playbackSpeed}
+                traceTitles={['A', 'B']}
             />
         </>
     );

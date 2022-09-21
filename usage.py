@@ -5,6 +5,7 @@ import dash
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import pandas as pd
+import json 
 
 app = dash.Dash(__name__, update_title=None)
 
@@ -12,6 +13,8 @@ flight_data = 'src/demo/data/'
 
 app.layout = html.Div(style={'display': 'flex', 'height': '100vh', 'flexDirection': 'column'}, children=[
     dcc.Dropdown(id='file-select'),
+    html.Pre(id='hover-data'),
+    html.Pre(id='click-data'),
     flight_path.FlightPath(
         id='path',
         segmentInfo=[],
@@ -30,6 +33,21 @@ app.layout = html.Div(style={'display': 'flex', 'height': '100vh', 'flexDirectio
     dcc.Interval(id='playback-interval', interval=100),
     dcc.Input(id='onLoad', style={'display': 'none'})
 ])
+
+@app.callback(
+    Output('hover-data', 'children'),
+    Input('path', 'hoverData')
+)
+def set_hover_data(data):
+    return json.dumps(data)
+
+@app.callback(
+    Output('click-data', 'children'),
+    Input('path', 'clickData')
+)
+def set_click_data(data):
+    return json.dumps(data, indent=2)
+
 
 @app.callback(
     Output('time-slider', 'max'),
@@ -58,12 +76,33 @@ def choose_file(options):
 
 @app.callback(
     Output('flight-data', 'data'),
+    Output('path', 'traceTitles'),
     Input('file-select', 'value')
 )
 def load_data(file):
     if file is None:
         return []
-    return pd.read_csv(file).to_dict(orient='records')
+    df = pd.read_csv(file)
+
+    if 'TIME' not in df.columns:
+        df['TIME'] = df.index.map(lambda x: pd.Timedelta(seconds=x))
+    df['TIME'] = (df['TIME'] + pd.Timestamp('1970-01-01')).dt.strftime('%H:%M:%S')
+    df['flight_label'] = 'A'
+
+    df_copy = df.copy()
+    df_copy.loc[:, 'x'] = df_copy['x'] + 400
+    df_copy.loc[:, 'y'] = df_copy['y'] + 1400
+    df_copy['flight_label'] = 'B'
+
+    df = pd.concat([df, df_copy])
+    data = []
+    traceTitles = [] 
+    for i, gdf in df.groupby('flight_label', as_index=False):
+        data.append(gdf.to_dict(orient='records'))
+        traceTitles.append(i)
+    return data, traceTitles
+
+    return [df.to_dict(orient='records')]
 
 
 app.clientside_callback(

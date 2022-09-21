@@ -12,7 +12,7 @@ const sphereMaterial = new MeshBasicMaterial({
 });
 
 /** Show information about currently hovered point. */
-function HoverInfo({data, fields}) {
+function HoverInfo({data, fields, traceTitle}) {
     const position = data && getCoordinates(data);
 
     const {camera} = useThree();
@@ -28,7 +28,8 @@ function HoverInfo({data, fields}) {
     });
 
     if (data == null) return <></>;
-    const formattedContent = fields.map((k) => `${k}: ${data[k].toFixed(2)}`);
+    let formattedContent = fields.map((k) => `${k}: ${data[k].toFixed(1)}`);
+    if ('TIME' in data) formattedContent = [data['TIME'], ...formattedContent];
     return (
         <>
             <Sphere
@@ -44,6 +45,7 @@ function HoverInfo({data, fields}) {
                 scaleFactor={15}
             >
                 <div className="hover-info">
+                    <div>{traceTitle}</div>
                     {formattedContent.map((entry, i) => (
                         <div key={i} className="hover-info-entry">
                             {entry}

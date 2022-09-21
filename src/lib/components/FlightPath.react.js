@@ -13,7 +13,7 @@ import {
 } from '@react-three/drei';
 import {useRef, Suspense, useState, useEffect, createRef} from 'react';
 import {Canvas, useFrame} from '@react-three/fiber';
-import {Box3, Vector3} from 'three';
+import {Box3, Object3D, Vector3} from 'three';
 import Aircraft from './Aircraft';
 import {PlotControls} from './PlotControls';
 import {BoundingPlane} from './BoundingPlane';
@@ -21,19 +21,9 @@ import {Path} from './Path';
 import {HoverInfo} from './HoverInfo';
 import {Legend} from './Legend';
 
+Object3D.DefaultUp = new Vector3(0, 0, 1);
 export const initialCameraPosition = new Vector3(0, 0, 100);
 
-const hoverInfoFields = [
-    'x',
-    'y',
-    'z',
-    'alt',
-    'ralt',
-    'heading',
-    'bank',
-    'pitch',
-    'wow',
-];
 const viewDistanceFactor = 3;
 
 /** 3D flight trjaectory plot  */
@@ -45,6 +35,11 @@ const FlightPath = ({
     modelFile,
     playing,
     playbackSpeed,
+    setProps,
+    hoverData,
+    clickData,
+    hoverInfoFields,
+    traceTitles,
 }) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -52,6 +47,7 @@ const FlightPath = ({
     const [followMode, setFollowMode] = useState(false);
     const [viewDistance, setViewDistance] = useState(150000);
     const [traceIndex, setTraceIndex] = useState(0);
+    const [hoverTraceIndex, setHoverTraceIndex] = useState(0);
 
     const controlsRef = useRef();
     const aircraftRefs = useRef([]);
@@ -60,9 +56,29 @@ const FlightPath = ({
         setFollowMode(!followMode);
     }
 
+    function getOutputData(timeIndex, traceIndex) {
+        return {
+            data: data[traceIndex][timeIndex],
+            traceIndex: traceIndex,
+            timeIndex: timeIndex,
+            traceTitle: traceTitles && traceTitles[traceIndex],
+        };
+    }
+
     function onTraceHover(timeIndex, traceIndex) {
         setHoverIndex(timeIndex);
+        setHoverTraceIndex(traceIndex);
+        if (setProps) {
+            setProps({
+                hoverData: getOutputData(timeIndex, traceIndex),
+            });
+        }
+    }
+
+    function onTraceClick(timeIndex, traceIndex) {
         setTraceIndex(traceIndex);
+        if (setProps)
+            setProps({clickData: getOutputData(timeIndex, traceIndex)});
     }
 
     useEffect(() => {
@@ -112,7 +128,8 @@ const FlightPath = ({
                             coords={coords[i]}
                             color={'lightblue'}
                             onHover={onTraceHover}
-                            segmentInfo={segmentInfo}
+                            onClick={onTraceClick}
+                            segmentInfo={segmentInfo[i]}
                             followMode={followMode}
                             key={`path-${i}`}
                             index={i}
@@ -181,10 +198,11 @@ const FlightPath = ({
                 />
             </Bounds>
             <HoverInfo
-                data={data[traceIndex][hoverIndex]}
+                data={data[hoverTraceIndex][hoverIndex]}
                 fields={hoverInfoFields}
+                traceTitle={traceTitles[hoverTraceIndex]}
             />
-            <Legend segmentInfo={segmentInfo} />
+            <Legend segmentInfo={segmentInfo} traceTitles={traceTitles} />
             {/* <Stats /> */}
         </Canvas>
     );
@@ -194,6 +212,18 @@ FlightPath.defaultProps = {
     counter: 0,
     segmentInfo: [],
     playbackSpeed: 1000,
+    hoverInfoFields: [
+        'x',
+        'y',
+        'z',
+        'alt',
+        'ralt',
+        'heading',
+        'bank',
+        'pitch',
+        'wow',
+    ],
+    traceTitles: [],
 };
 
 FlightPath.propTypes = {
@@ -225,6 +255,18 @@ FlightPath.propTypes = {
 
     /** Playback speed in ms. Value should be synchronized with interval component which updates counter. */
     playbackSpeed: PropTypes.number,
+
+    /** Prop on hover */
+    hoverData: PropTypes.object,
+
+    /** Updated on click */
+    clickData: PropTypes.object,
+
+    /** Fields in data to show in hover info */
+    hoverInfoFields: PropTypes.array,
+
+    /** Names of traces, ordered as data */
+    traceTitles: PropTypes.array,
 };
 
 export default FlightPath;

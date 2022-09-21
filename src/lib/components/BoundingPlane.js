@@ -25,11 +25,11 @@ function axisArange(minValue, maxValue, interval) {
 /** Draw a plane representing bottom of the 3D area. */
 function RealBoundingPlane({bounds}) {
     const {camera} = useThree();
-    const xzGrid = useRef();
+    const xyGrid = useRef();
 
     useFrame(() => {
-        if (camera != null && xzGrid.current != null) {
-            xzGrid.current.visible = camera.position.y > bounds.min.y;
+        if (camera != null && xyGrid.current != null) {
+            xyGrid.current.visible = camera.position.z > bounds.min.z;
         }
     });
 
@@ -40,14 +40,14 @@ function RealBoundingPlane({bounds}) {
 
     function xGrid(interval = 10000) {
         const elements = new Array();
-        const zValues = axisArange(bounds.min.z, bounds.max.z, interval);
-        zValues.forEach((z) => {
+        const yValues = axisArange(bounds.min.y, bounds.max.y, interval);
+        yValues.forEach((y) => {
             elements.push(
                 <Segment
-                    start={[bounds.min.x, bounds.min.y, z]}
-                    end={[bounds.max.x, bounds.min.y, z]}
+                    start={[bounds.min.x, y, bounds.min.z]}
+                    end={[bounds.max.x, y, bounds.min.z]}
                     color="lightgray"
-                    key={`z-${z}`}
+                    key={`y-${y}`}
                 />
             );
         });
@@ -55,7 +55,7 @@ function RealBoundingPlane({bounds}) {
             elements.push(
                 <Segment
                     start={[x, bounds.min.y, bounds.min.z]}
-                    end={[x, bounds.min.y, bounds.max.z]}
+                    end={[x, bounds.max.y, bounds.min.z]}
                     color="lightgray"
                     key={`x-${x}`}
                 />
@@ -67,7 +67,7 @@ function RealBoundingPlane({bounds}) {
 
     return (
         <>
-            <Segments ref={xzGrid}>{xGrid()}</Segments>
+            <Segments ref={xyGrid}>{xGrid()}</Segments>
         </>
     );
 }
