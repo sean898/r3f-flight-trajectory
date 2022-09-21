@@ -67,6 +67,13 @@ function Path({coords, onHover, onClick, segmentInfo, followMode, index}) {
         [followMode]
     );
 
+    const hoverOffCallback = useCallback(
+        (e) => {
+            e.stopPropagation();
+            onHover(null, index)
+        }
+    )
+
     const clickCallback = useCallback((e) => {
         e.stopPropagation();
         onClick(e.intersections[0].faceIndex, index);
@@ -98,6 +105,7 @@ function Path({coords, onHover, onClick, segmentInfo, followMode, index}) {
                 vertexColors={colors}
                 color={defaultColorObj}
                 onPointerMove={hoverCallback}
+                onPointerLeave={hoverOffCallback}
                 onDoubleClick={onDoubleClick}
                 onClick={clickCallback}
             />
