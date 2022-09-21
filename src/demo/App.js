@@ -1,6 +1,7 @@
 import {FlightPath} from '../lib';
 import {useRef, useState, useEffect} from 'react';
 import csvFile from './data/test.csv';
+import stylesheet from '../../flight_path/flight_path.css';
 import Papa from 'papaparse';
 
 function shifted(d) {

@@ -2,6 +2,15 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 0.9rem;
     background-color: #f0f4ff;
+    max-height: 100vh;
+    height: auto;
+    flex: 1;
+}
+
+.flight-trajectory-plot-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .hover-info-wrapper {
@@ -16,6 +25,7 @@
     bottom: 1rem;
     border-radius: 2px;
     width: max-content;
+    font-size: 0.7rem;
 }
 
 .hover-info-entry {
@@ -24,31 +34,36 @@
 
 .plot-controls-wrapper {
     transform: none !important;
+    width: 100%;
 }
 
-.plot-legend-wrapper {
-    transform: none !important;
-    position: absolute;
-    pointer-events: none;
-    width: 100%;
-    height: 100%;
+.plot-controls {
+    right: 0;
 }
 
 .plot-legend {
-    bottom: 0;
+    position: absolute;
+    top: 0;
     left: 0;
     pointer-events: all;
     border: 1px solid gray;
     padding: 0.5rem;
-    margin-bottom: 3rem;
-    margin-left: 2rem;
+    margin: 2rem;
     background: #f7f9ff;
 }
 
-.plot-legend > ul {
+.plot-legend .legend-group-title {
+    font-weight: bold;
+}
+
+.plot-legend ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
+}
+
+.plot-legend .legend-group-title {
+    font-weight: bold;
 }
 
 .plot-legend li {
@@ -67,6 +82,11 @@
     margin-inline-end: 0.3rem;
 }
 
-button.selected {
+.plot-legend button {
+    font-size: 0.8rem; 
+    margin-left: 5px;
+}
+
+.plot-legend button.active {
     font-weight: bold;
 }
