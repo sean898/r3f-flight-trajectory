@@ -34,7 +34,7 @@ function Legend({segmentInfo, traceTitles}) {
             <ul>
                 {segmentInfo.map((traceSegmentInfo, traceIndex) => {
                     return (
-                        <div>
+                        <div key={`legend-trace-${traceIndex}`}>
                             <div className="legend-group-title">
                                 {traceTitles[traceIndex]}
                             </div>

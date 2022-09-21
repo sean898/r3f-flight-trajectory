@@ -54,10 +54,11 @@ const range = 30;
 
 /** The flight path */
 function Path({coords, onHover, onClick, segmentInfo, followMode, index}) {
-    const colors = useMemo(
-        () => (coords == null ? [] : chooseColors(coords.length, segmentInfo)),
-        [coords.length, segmentInfo]
-    );
+    const colors = useMemo(() => {
+        return coords == null || coords.length == 0
+            ? []
+            : chooseColors(coords.length, segmentInfo);
+    }, [coords, segmentInfo]);
     const hoverCallback = useCallback(
         (e) => {
             e.stopPropagation();
