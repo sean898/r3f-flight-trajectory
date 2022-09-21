@@ -157,8 +157,7 @@ const FlightPath = ({
                 <p>No data</p>
             </>
         );
-    return (<div className='flight-trajectory-plot'>
-        <div className='plot-controls'>Control panel</div>
+    return (<div className='flight-trajectory-plot'><div className='flight-trajectory-plot-inner'>
         <Canvas
             id={id}
             raycaster={{
@@ -202,10 +201,10 @@ const FlightPath = ({
                 fields={hoverInfoFields}
                 traceTitle={traceTitles[hoverTraceIndex]}
             />
-            <Legend segmentInfo={segmentInfo} traceTitles={traceTitles} currentTraceIndex={targetTraceIndex} setCurrentTraceIndex={(index) => setTargetTraceIndex(index === targetTraceIndex ? null : index)} />
             {/* <Stats /> */}
         </Canvas>
-    </div>);
+        <Legend segmentInfo={segmentInfo} traceTitles={traceTitles} currentTraceIndex={targetTraceIndex} setCurrentTraceIndex={(index) => setTargetTraceIndex(index === targetTraceIndex ? null : index)} />
+    </div></div>);
 };
 FlightPath.defaultProps = {
     data: [],

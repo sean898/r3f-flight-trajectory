@@ -2,6 +2,13 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 0.9rem;
     background-color: #f0f4ff;
+    max-height: 100vh;
+    height: auto;
+    flex: 1;
+}
+
+.flight-trajectory-plot-inner {
+    position: relative;
 }
 
 .hover-info-wrapper {
@@ -25,24 +32,21 @@
 
 .plot-controls-wrapper {
     transform: none !important;
+    width: 100%;
 }
 
-.plot-legend-wrapper {
-    transform: none !important;
-    position: absolute;
-    pointer-events: none;
-    width: 100%;
-    height: 100%;
+.plot-controls {
+    right: 0;
 }
 
 .plot-legend {
-    bottom: 0;
+    position: absolute;
+    top: 0;
     left: 0;
     pointer-events: all;
     border: 1px solid gray;
     padding: 0.5rem;
-    margin-bottom: 3rem;
-    margin-left: 2rem;
+    margin: 2rem;
     background: #f7f9ff;
 }
 
