@@ -11,7 +11,7 @@ app = dash.Dash(__name__, update_title=None)
 
 flight_data = 'src/demo/data/'
 
-app.layout = html.Div(style={'display': 'flex', 'height': '100vh', 'flexDirection': 'column'}, children=[
+app.layout = html.Div(style={'display': 'flex', 'maxHeight': '100vh', 'height': '100vh', 'overflow': 'hidden', 'flexDirection': 'column'}, children=[
     dcc.Dropdown(id='file-select'),
     html.Pre(id='hover-data'),
     html.Pre(id='click-data'),

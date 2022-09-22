@@ -2,7 +2,7 @@ import {Html, Sphere} from '@react-three/drei';
 import {useEffect, useRef} from 'react';
 import {useThree} from '@react-three/fiber';
 import {getCoordinates} from '../util';
-import {MeshBasicMaterial} from 'three';
+import {Color, MeshBasicMaterial} from 'three';
 import PropTypes from 'prop-types';
 
 const sphereMaterial = new MeshBasicMaterial({
@@ -11,8 +11,20 @@ const sphereMaterial = new MeshBasicMaterial({
     polygonOffsetFactor: -2,
 });
 
+function getSegment(index, segments) {
+    if (index == null || segments == null) return null;
+    let result = null;
+    segments.every(({start, end}, i) => {
+        if (index >= start && index <= end) {
+            result = i;
+            return false;
+        }
+    });
+    return result;
+}
+
 /** Show information about currently hovered point. */
-function HoverInfo({data, fields, traceTitle}) {
+function HoverInfo({data, fields, traceTitle, segmentInfo, timeIndex}) {
     const position = data && getCoordinates(data);
 
     const {camera} = useThree();
@@ -30,6 +42,14 @@ function HoverInfo({data, fields, traceTitle}) {
     if (data == null) return <></>;
     let formattedContent = fields.map((k) => `${k}: ${data[k].toFixed(1)}`);
     if ('TIME' in data) formattedContent = [data['TIME'], ...formattedContent];
+
+    const segment = getSegment(timeIndex, segmentInfo);
+    if (segment != null) {
+        formattedContent = [
+            segmentInfo[segment]['maneuver'],
+            ...formattedContent,
+        ];
+    }
     return (
         <>
             <Sphere
@@ -45,7 +65,7 @@ function HoverInfo({data, fields, traceTitle}) {
                 scaleFactor={15}
             >
                 <div className="hover-info">
-                    <div>{traceTitle}</div>
+                    <strong>{traceTitle}</strong>
                     {formattedContent.map((entry, i) => (
                         <div key={i} className="hover-info-entry">
                             {entry}

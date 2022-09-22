@@ -43,6 +43,7 @@ function PlotControls({
     }
 
     function snapToAircraft(alpha = 0.9, ...args) {
+        if (currentData == null) return;
         const aircraftPosition = getCoordinates(currentData);
         const targetDiff = aircraftPosition
             .clone()
@@ -56,6 +57,7 @@ function PlotControls({
     }
 
     function setGoal() {
+        if (currentData == null) return;
         const aircraftPosition = getCoordinates(currentData);
         const targetDiff = aircraftPosition
             .clone()
@@ -74,8 +76,10 @@ function PlotControls({
     }, [controlsRef.current, followMode, currentData]);
 
     useFrame((state, delta) => {
-        if (playing && followMode && aircraftRef != null) {
-            if (!dragging) camera.position.lerp(goalPosition, delta);
+        if (aircraftRef != null) {
+            if (playing && followMode && !dragging) {
+                camera.position.lerp(goalPosition, delta);
+            }
             controlsRef.current.target.copy(aircraftRef.current.position);
             controlsRef.current.update();
         }
@@ -112,7 +116,7 @@ function PlotControls({
             <button onClick={snapCallback}>Snap</button>
             <button
                 onClick={toggleFollowMode}
-                className={followMode ? 'selected' : ''}
+                className={followMode ? 'active' : ''}
             >
                 Follow
             </button>

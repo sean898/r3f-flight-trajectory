@@ -1,34 +1,8 @@
 import * as THREE from 'three';
 import {useCallback, useEffect, useState, useMemo, useRef} from 'react';
-import {
-    Point,
-    Points,
-    Line,
-    PointMaterial,
-    useHelper,
-    useBounds,
-} from '@react-three/drei';
+import {Line, useBounds} from '@react-three/drei';
 import {Box3} from 'three';
 import PropTypes from 'prop-types';
-
-// function FlightPoint({index, onHover, ...props}) {
-//     const [hovered, setHover] = useState(false);
-//     return (
-//         <Point
-//             {...props}
-//             color={hovered ? 'red' : 'blue'}
-//             onPointerOver={(e) => {
-//                 e.stopPropagation();
-//                 onHover(index);
-//                 setHover(true);
-//             }}
-//             onPointerOut={(e) => {
-//                 e.stopPropagation();
-//                 setHover(false);
-//             }}
-//         />
-//     );
-// }
 
 const defaultColor = [0.5, 0.6, 0.9];
 const defaultColorObj = new THREE.Color(...defaultColor);
@@ -67,6 +41,11 @@ function Path({coords, onHover, onClick, segmentInfo, followMode, index}) {
         [followMode]
     );
 
+    const hoverOffCallback = useCallback((e) => {
+        e.stopPropagation();
+        onHover(null, index);
+    });
+
     const clickCallback = useCallback((e) => {
         e.stopPropagation();
         onClick(e.intersections[0].faceIndex, index);
@@ -98,21 +77,10 @@ function Path({coords, onHover, onClick, segmentInfo, followMode, index}) {
                 vertexColors={colors}
                 color={defaultColorObj}
                 onPointerMove={hoverCallback}
+                onPointerLeave={hoverOffCallback}
                 onDoubleClick={onDoubleClick}
                 onClick={clickCallback}
             />
-            {/* <Points limit={coords.length}>
-                <PointMaterial vertexColors size={0.8} />
-                {coords.map((position, i) => (
-                    <Point
-                        key={i}
-                        position={position}
-                        // onPointerOver={callback}
-                        color={'blue'}
-                    />
-                ))}
-            </Points> */}
-            {/* <boxHelper args={[ref.current, 'blue']} opacity={0.3} /> */}
         </mesh>
     );
 }

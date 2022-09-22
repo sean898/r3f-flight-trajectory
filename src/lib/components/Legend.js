@@ -1,4 +1,3 @@
-import {Html} from '@react-three/drei';
 import * as THREE from 'three';
 import PropTypes from 'prop-types';
 
@@ -6,6 +5,7 @@ import PropTypes from 'prop-types';
 let color = new THREE.Color();
 
 function traceLegend(segmentInfo) {
+    if (segmentInfo == null || segmentInfo.length === 0) return <></>
     return segmentInfo.map((entry, i) => {
         return (
             <li key={i}>
@@ -24,11 +24,9 @@ function traceLegend(segmentInfo) {
     });
 }
 
-function Legend({segmentInfo, traceTitles}) {
+function Legend({segmentInfo, traceTitles, currentTraceIndex, setCurrentTraceIndex}) {
     return (
-        <Html
-            wrapperClass="plot-legend-wrapper"
-            onOcclude={() => {}}
+        <div
             className="plot-legend"
         >
             <ul>
@@ -36,14 +34,15 @@ function Legend({segmentInfo, traceTitles}) {
                     return (
                         <div key={`legend-trace-${traceIndex}`}>
                             <div className="legend-group-title">
-                                {traceTitles[traceIndex]}
+                                {traceTitles[traceIndex]} 
+                                <button onClick={() => setCurrentTraceIndex(traceIndex)} className={traceIndex === currentTraceIndex ? 'active' : ''}>Target</button>
                             </div>
                             <ul>{traceLegend(traceSegmentInfo)}</ul>
                         </div>
                     );
                 })}
             </ul>
-        </Html>
+        </div>
     );
 }
 
