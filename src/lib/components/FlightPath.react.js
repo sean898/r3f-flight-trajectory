@@ -157,54 +157,81 @@ const FlightPath = ({
                 <p>No data</p>
             </>
         );
-    return (<div className='flight-trajectory-plot'><div className='flight-trajectory-plot-inner'>
-        <Canvas
-            id={id}
-            raycaster={{
-                params: {
-                    Line2: {threshold: 3},
-                    Line: {threshold: 3},
-                },
-            }}
-        >
-            <PerspectiveCamera
-                makeDefault
-                position={initialCameraPosition}
-                far={viewDistance}
-                minDistance={10}
-            />
-            <OrbitControls
-                makeDefault
-                zoomSpeed="2"
-                maxDistance={viewDistance * 0.8}
-                ref={controlsRef}
-                enableDamping
-                dampingFactor={0.05}
-            />
-            <BoundingPlane bounds={bounds} />
-            <ambientLight color={0xffffff} />
-            <spotLight position={[9, 10, 10]} angle={0.15} penumbra={1} />
-            <pointLight position={[-11, -10, -10]} />
-            <Bounds fit={true} clip={false} damping={6} margin={1.2}>
-                {traces}
-                <PlotControls
-                    followMode={followMode}
-                    toggleFollowMode={toggleFollowMode}
-                    currentData={targetTraceIndex == null ? null : data[targetTraceIndex][counter]} // todo
-                    controlsRef={controlsRef}
-                    playing={playing}
-                    aircraftRef={targetTraceIndex == null ?  null : aircraftRefs.current[targetTraceIndex]}
+    return (
+        <div className="flight-trajectory-plot">
+            <div className="flight-trajectory-plot-inner">
+                <Canvas
+                    id={id}
+                    raycaster={{
+                        params: {
+                            Line2: {threshold: 3},
+                            Line: {threshold: 3},
+                        },
+                    }}
+                >
+                    <PerspectiveCamera
+                        makeDefault
+                        position={initialCameraPosition}
+                        far={viewDistance}
+                        minDistance={10}
+                    />
+                    <OrbitControls
+                        makeDefault
+                        zoomSpeed="2"
+                        maxDistance={viewDistance * 0.8}
+                        ref={controlsRef}
+                        enableDamping
+                        dampingFactor={0.05}
+                    />
+                    <BoundingPlane bounds={bounds} />
+                    <ambientLight color={0xffffff} />
+                    <spotLight
+                        position={[9, 10, 10]}
+                        angle={0.15}
+                        penumbra={1}
+                    />
+                    <pointLight position={[-11, -10, -10]} />
+                    <Bounds fit={true} clip={false} damping={6} margin={1.2}>
+                        {traces}
+                        <PlotControls
+                            followMode={followMode}
+                            toggleFollowMode={toggleFollowMode}
+                            currentData={
+                                targetTraceIndex == null
+                                    ? null
+                                    : data[targetTraceIndex][counter]
+                            } // todo
+                            controlsRef={controlsRef}
+                            playing={playing}
+                            aircraftRef={
+                                targetTraceIndex == null
+                                    ? null
+                                    : aircraftRefs.current[targetTraceIndex]
+                            }
+                        />
+                    </Bounds>
+                    <HoverInfo
+                        data={data[hoverTraceIndex][hoverIndex]}
+                        fields={hoverInfoFields}
+                        traceTitle={traceTitles[hoverTraceIndex]}
+                        segmentInfo={segmentInfo[hoverTraceIndex]}
+                        timeIndex={hoverIndex}
+                    />
+                    {/* <Stats /> */}
+                </Canvas>
+                <Legend
+                    segmentInfo={segmentInfo}
+                    traceTitles={traceTitles}
+                    currentTraceIndex={targetTraceIndex}
+                    setCurrentTraceIndex={(index) =>
+                        setTargetTraceIndex(
+                            index === targetTraceIndex ? null : index
+                        )
+                    }
                 />
-            </Bounds>
-            <HoverInfo
-                data={data[hoverTraceIndex][hoverIndex]}
-                fields={hoverInfoFields}
-                traceTitle={traceTitles[hoverTraceIndex]}
-            />
-            {/* <Stats /> */}
-        </Canvas>
-        <Legend segmentInfo={segmentInfo} traceTitles={traceTitles} currentTraceIndex={targetTraceIndex} setCurrentTraceIndex={(index) => setTargetTraceIndex(index === targetTraceIndex ? null : index)} />
-    </div></div>);
+            </div>
+        </div>
+    );
 };
 FlightPath.defaultProps = {
     data: [],
