@@ -114,12 +114,6 @@ function PlotControls({
         >
             <button onClick={resetCallback}>Reset</button>
             <button onClick={snapCallback}>Snap</button>
-            <button
-                onClick={toggleFollowMode}
-                className={followMode ? 'active' : ''}
-            >
-                Follow
-            </button>
         </Html>
     );
 }

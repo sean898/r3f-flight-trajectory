@@ -219,6 +219,17 @@ const FlightPath = ({
                     />
                     {/* <Stats /> */}
                 </Canvas>
+                <div
+                    className="plot-controls"
+                    style={{position: 'absolute', top: 0, left: 0}}
+                >
+                    <button
+                        onClick={toggleFollowMode}
+                        className={followMode ? 'active' : ''}
+                    >
+                        Follow
+                    </button>
+                </div>
                 <Legend
                     segmentInfo={segmentInfo}
                     traceTitles={traceTitles}
