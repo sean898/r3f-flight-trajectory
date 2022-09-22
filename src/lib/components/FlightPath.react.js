@@ -76,7 +76,7 @@ const FlightPath = ({
     }
 
     function onTraceClick(timeIndex, traceIndex) {
-        setTargetTraceIndex(traceIndex);
+        // setTargetTraceIndex(traceIndex);
         if (setProps)
             setProps({clickData: getOutputData(timeIndex, traceIndex)});
     }
