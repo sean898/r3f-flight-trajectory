@@ -158,10 +158,9 @@ const FlightPath = ({
             </>
         );
     return (
-        <div className="flight-trajectory-plot">
+        <div id={id} className="flight-trajectory-plot">
             <div className="flight-trajectory-plot-inner">
                 <Canvas
-                    id={id}
                     raycaster={{
                         params: {
                             Line2: {threshold: 3},

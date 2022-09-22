@@ -89,6 +89,7 @@ def load_data(file):
     df['TIME'] = (df['TIME'] + pd.Timestamp('1970-01-01')).dt.strftime('%H:%M:%S')
     df['flight_label'] = 'A'
 
+    df['wow'] = None
     df_copy = df.copy()
     df_copy.loc[:, 'x'] = df_copy['x'] + 400
     df_copy.loc[:, 'y'] = df_copy['y'] + 1400
