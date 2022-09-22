@@ -24,35 +24,12 @@ function PlotControls({
     ...props
 }) {
     const camera = useThree((state) => state.camera);
-    const snapCallback = useCallback((e) => {
-        e.stopPropagation();
-        snapToAircraft();
-    });
-    const resetCallback = useCallback((e) => {
-        console.log(initialCameraPosition, origin, camera.position);
-        e.stopPropagation();
-        setCamera(initialCameraPosition, origin);
-    });
     const [goalPosition, setGoalPosition] = useState(new Vector3());
     const [dragging, setDragging] = useState(false);
 
     function setCamera(position, target) {
         camera.position.set(position.x, position.y, position.z);
         controlsRef.current.target.copy(target);
-        controlsRef.current.update();
-    }
-
-    function snapToAircraft(alpha = 0.9, ...args) {
-        if (currentData == null) return;
-        const aircraftPosition = getCoordinates(currentData);
-        const targetDiff = aircraftPosition
-            .clone()
-            .sub(controlsRef.current.target);
-        const goal = pointBetween(aircraftPosition, camera.position, 200).add(
-            targetDiff
-        );
-        camera.position.lerp(goal, alpha);
-        controlsRef.current.target.copy(aircraftPosition);
         controlsRef.current.update();
     }
 
@@ -103,19 +80,7 @@ function PlotControls({
         };
     }, [controlsRef.current]);
 
-    return (
-        <Html
-            wrapperClass="plot-controls-wrapper"
-            className="plot-controls"
-            transform={false}
-            center={false}
-            fullScreen
-            onOcclude={() => {}} /* don't occlude */
-        >
-            <button onClick={resetCallback}>Reset</button>
-            <button onClick={snapCallback}>Snap</button>
-        </Html>
-    );
+    return <></>;
 }
 
 PlotControls.propTypes = {
