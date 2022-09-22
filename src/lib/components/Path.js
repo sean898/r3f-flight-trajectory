@@ -79,7 +79,7 @@ function Path({coords, onHover, onClick, segmentInfo, followMode, index}) {
                 onPointerMove={hoverCallback}
                 onPointerLeave={hoverOffCallback}
                 onDoubleClick={onDoubleClick}
-                onClick={clickCallback}
+                // onClick={clickCallback}
             />
         </mesh>
     );
