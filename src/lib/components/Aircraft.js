@@ -8,7 +8,6 @@ import {vectorEquals} from '../util/vectors';
 import {useSpring, animated} from '@react-spring/three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 
-const headingOffset = -135;
 const minModelScale = 0.6;
 const maxModelScale = 30;
 let scale, xRot, yRot, zRot;
@@ -23,6 +22,7 @@ export default function Aircraft({
     aircraftRef,
     index,
     color,
+    headingOffset,
     ...otherProps
 }) {
     const modelRef = useRef();
@@ -63,10 +63,10 @@ export default function Aircraft({
 
             /* Rotation */
             if (bank != null && pitch != null && heading != null) {
-                xRot = (bank + 90) * degreesToRadians; // roll
-                yRot = pitch * degreesToRadians; // pitch
+                xRot = bank * degreesToRadians; // roll
+                yRot = -pitch * degreesToRadians; // pitch
                 zRot = (heading + headingOffset) * degreesToRadians; // yaw
-                euler.set(xRot, yRot, zRot, 'YZX');
+                euler.set(xRot, yRot, zRot, 'ZYX');
                 aircraftRef.current.setRotationFromEuler(euler);
             }
 
@@ -100,6 +100,7 @@ export default function Aircraft({
                     object={model.scene}
                     materials={model.materials}
                     scale={minModelScale}
+                    rotation-x={90 * degreesToRadians}
                 />
             ) : (
                 <></>

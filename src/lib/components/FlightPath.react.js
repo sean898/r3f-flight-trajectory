@@ -40,6 +40,7 @@ const FlightPath = ({
     clickData,
     hoverInfoFields,
     traceTitles,
+    headingOffset,
 }) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -144,6 +145,7 @@ const FlightPath = ({
                                 index={i}
                                 color={i === 0 ? 'green' : 'orange'}
                                 key={`aircraft-${i}`}
+                                headingOffset={headingOffset}
                             />
                         </Suspense>
                     </group>
@@ -248,6 +250,7 @@ FlightPath.defaultProps = {
     counter: 0,
     segmentInfo: [],
     playbackSpeed: 1000,
+    headingOffset: 0,
     hoverInfoFields: [
         'x',
         'y',
@@ -303,6 +306,9 @@ FlightPath.propTypes = {
 
     /** Names of traces, ordered as data */
     traceTitles: PropTypes.array,
+
+    /** Degrees to offset heading rotation of aircraft model */
+    headingOffset: PropTypes.number,
 };
 
 export default FlightPath;
