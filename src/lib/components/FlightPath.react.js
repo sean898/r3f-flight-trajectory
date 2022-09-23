@@ -59,7 +59,7 @@ const FlightPath = ({
 
     function getOutputData(timeIndex, traceIndex) {
         return {
-            data: traceIndex && data[traceIndex][timeIndex],
+            data: data?.[traceIndex]?.[timeIndex],
             traceIndex: traceIndex,
             timeIndex: timeIndex,
             traceTitle: traceTitles && traceTitles[traceIndex],
