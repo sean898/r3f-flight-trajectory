@@ -106,3 +106,19 @@
     font-weight: bold;
     color: #050544;
 }
+
+.flight-trajectory-plot .note-annotation {
+    font-size: 0.7rem;
+    pointer-events: none;
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+
+    text-align: left;
+    background: #202035b2;
+    color: white;
+    padding: 0.2rem;
+    border-radius: 5px;
+    border-top-left-radius: 0;
+}
