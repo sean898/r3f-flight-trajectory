@@ -266,6 +266,7 @@ FlightPath.defaultProps = {
         'wow',
     ],
     traceTitles: [],
+    notes: [],
 };
 
 FlightPath.propTypes = {
