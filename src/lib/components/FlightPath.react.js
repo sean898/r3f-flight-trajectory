@@ -20,6 +20,7 @@ import {BoundingPlane} from './BoundingPlane';
 import {Path} from './Path';
 import {HoverInfo} from './HoverInfo';
 import {Legend} from './Legend';
+import {Notes} from './Notes';
 
 Object3D.DefaultUp = new Vector3(0, 0, 1);
 export const initialCameraPosition = new Vector3(0, 0, 100);
@@ -41,6 +42,7 @@ const FlightPath = ({
     hoverInfoFields,
     traceTitles,
     headingOffset,
+    notes,
 }) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -219,6 +221,7 @@ const FlightPath = ({
                         timeIndex={hoverIndex}
                     />
                     {/* <Stats /> */}
+                    <Notes notes={notes} />
                 </Canvas>
                 <div
                     className="plot-controls"
@@ -309,6 +312,9 @@ FlightPath.propTypes = {
 
     /** Degrees to offset heading rotation of aircraft model */
     headingOffset: PropTypes.number,
+
+    /** Entries of text notes and coordinates */
+    notes: PropTypes.array,
 };
 
 export default FlightPath;

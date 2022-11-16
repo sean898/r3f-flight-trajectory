@@ -93,6 +93,7 @@ function App() {
                 playing={playing}
                 playbackSpeed={playbackSpeed}
                 traceTitles={['A', 'B']}
+                notes={[{x: -100, y: 0, z: 0, text: 'Here'}]}
             />
         </>
     );
