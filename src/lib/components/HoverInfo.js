@@ -13,13 +13,10 @@ const sphereMaterial = new MeshBasicMaterial({
 
 function getSegment(index, segments) {
     if (index == null || segments == null) return null;
-    let result = null;
-    segments.every(({start, end}, i) => {
-        if (index >= start && index <= end) {
-            result = i;
-            return false;
-        }
-    });
+    const result = segments.findIndex(
+        ({start, end}) => index >= start && index <= end
+    );
+    if (result == -1) return null;
     return result;
 }
 
