@@ -95,7 +95,7 @@ function App() {
                 traceTitles={['A', 'B']}
                 notes={[
                     {x: 0, y: 0, z: 0, text: 'Here'},
-                    {x: -563, y: 53, z: 111, text: 'endA'},
+                    {x: -594, y: 51.1, z: 110.1, text: 'endA'},
                 ]}
             />
         </>
