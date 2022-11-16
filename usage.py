@@ -13,8 +13,10 @@ flight_data = 'src/demo/data/'
 
 app.layout = html.Div(style={'display': 'flex', 'maxHeight': '100vh', 'height': '100vh', 'overflow': 'hidden', 'flexDirection': 'column'}, children=[
     dcc.Dropdown(id='file-select'),
-    html.Pre(id='hover-data'),
-    html.Pre(id='click-data'),
+    html.Div(style={'display': 'none'}, children=[
+        html.Pre(id='hover-data'),
+        html.Pre(id='click-data'),
+    ]),
     flight_path.FlightPath(
         id='path',
         segmentInfo=[],
@@ -23,7 +25,14 @@ app.layout = html.Div(style={'display': 'flex', 'maxHeight': '100vh', 'height': 
     ),
     html.Div(style={'display': 'flex', 'padding': '1em', 'background': 'gray'}, children=[
         html.Button(id='play-toggle', children='Play/pause'),
-        dcc.Input(id='playback-rate', value=100, type='number', min=1, max=100000),
+        html.Div([
+            html.Label('Rate'),
+            dcc.Input(id='playback-rate', value=100, type='number', min=1, max=100000, debounce=True),
+        ]),
+        html.Div([
+            html.Label('Heading offset'),
+            dcc.Input(id='heading-offset', type='number', min=-180, max=180, step=1, value=0, debounce=True),
+        ]),
         html.Div(style={'flex': '1'}, children=[
             dcc.Slider( id='time-slider', marks=None, min=0, max=len(flight_data), value=0, step=1, updatemode='drag', tooltip={'placement': 'bottom', 'always_visible': True}),
         ]),
@@ -33,6 +42,16 @@ app.layout = html.Div(style={'display': 'flex', 'maxHeight': '100vh', 'height': 
     dcc.Interval(id='playback-interval', interval=100),
     dcc.Input(id='onLoad', style={'display': 'none'})
 ])
+
+
+app.clientside_callback(
+    """function(value) {
+        if (isNaN(value)) return 0;
+        return value
+    }""",
+    Output('path', 'headingOffset'),
+    Input('heading-offset', 'value'),
+)
 
 @app.callback(
     Output('hover-data', 'children'),
@@ -54,7 +73,7 @@ def set_click_data(data):
     Input('flight-data', 'data')
 )
 def set_n(data):
-    return len(data)
+    return len(data[0])
 
 
 @app.callback(
@@ -89,6 +108,7 @@ def load_data(file):
     df['TIME'] = (df['TIME'] + pd.Timestamp('1970-01-01')).dt.strftime('%H:%M:%S')
     df['flight_label'] = 'A'
 
+    df['wow'] = None
     df_copy = df.copy()
     df_copy.loc[:, 'x'] = df_copy['x'] + 400
     df_copy.loc[:, 'y'] = df_copy['y'] + 1400

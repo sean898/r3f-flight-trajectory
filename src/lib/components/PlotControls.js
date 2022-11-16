@@ -27,21 +27,10 @@ function PlotControls({
     const [goalPosition, setGoalPosition] = useState(new Vector3());
     const [dragging, setDragging] = useState(false);
 
-    function setCamera(position, target) {
-        camera.position.set(position.x, position.y, position.z);
-        controlsRef.current.target.copy(target);
-        controlsRef.current.update();
-    }
-
     function setGoal() {
         if (currentData == null) return;
         const aircraftPosition = getCoordinates(currentData);
-        const targetDiff = aircraftPosition
-            .clone()
-            .sub(controlsRef.current.target);
-        const goal = pointBetween(aircraftPosition, camera.position, 200).add(
-            targetDiff
-        );
+        const goal = pointBetween(aircraftPosition, camera.position, 200);
         setGoalPosition(goal);
     }
 

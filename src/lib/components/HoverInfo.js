@@ -23,6 +23,14 @@ function getSegment(index, segments) {
     return result;
 }
 
+function formatField(field, data) {
+    if (field == null || data == null || data[field] == null) return null;
+    let value;
+    if (isNaN(data[field])) value = String(data[field]);
+    else value = data[field].toFixed(1);
+    return `${field}: ${value}`;
+}
+
 /** Show information about currently hovered point. */
 function HoverInfo({data, fields, traceTitle, segmentInfo, timeIndex}) {
     const position = data && getCoordinates(data);
@@ -40,7 +48,7 @@ function HoverInfo({data, fields, traceTitle, segmentInfo, timeIndex}) {
     });
 
     if (data == null) return <></>;
-    let formattedContent = fields.map((k) => `${k}: ${data[k].toFixed(1)}`);
+    let formattedContent = fields.map((k) => formatField(k, data));
     if ('TIME' in data) formattedContent = [data['TIME'], ...formattedContent];
 
     const segment = getSegment(timeIndex, segmentInfo);

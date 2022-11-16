@@ -40,6 +40,7 @@ const FlightPath = ({
     clickData,
     hoverInfoFields,
     traceTitles,
+    headingOffset,
 }) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -58,7 +59,7 @@ const FlightPath = ({
 
     function getOutputData(timeIndex, traceIndex) {
         return {
-            data: traceIndex && data[traceIndex][timeIndex],
+            data: data?.[traceIndex]?.[timeIndex],
             traceIndex: traceIndex,
             timeIndex: timeIndex,
             traceTitle: traceTitles && traceTitles[traceIndex],
@@ -76,7 +77,7 @@ const FlightPath = ({
     }
 
     function onTraceClick(timeIndex, traceIndex) {
-        setTargetTraceIndex(traceIndex);
+        // setTargetTraceIndex(traceIndex);
         if (setProps)
             setProps({clickData: getOutputData(timeIndex, traceIndex)});
     }
@@ -144,6 +145,7 @@ const FlightPath = ({
                                 index={i}
                                 color={i === 0 ? 'green' : 'orange'}
                                 key={`aircraft-${i}`}
+                                headingOffset={headingOffset}
                             />
                         </Suspense>
                     </group>
@@ -158,10 +160,9 @@ const FlightPath = ({
             </>
         );
     return (
-        <div className="flight-trajectory-plot">
+        <div id={id} className="flight-trajectory-plot">
             <div className="flight-trajectory-plot-inner">
                 <Canvas
-                    id={id}
                     raycaster={{
                         params: {
                             Line2: {threshold: 3},
@@ -249,6 +250,7 @@ FlightPath.defaultProps = {
     counter: 0,
     segmentInfo: [],
     playbackSpeed: 1000,
+    headingOffset: 0,
     hoverInfoFields: [
         'x',
         'y',
@@ -304,6 +306,9 @@ FlightPath.propTypes = {
 
     /** Names of traces, ordered as data */
     traceTitles: PropTypes.array,
+
+    /** Degrees to offset heading rotation of aircraft model */
+    headingOffset: PropTypes.number,
 };
 
 export default FlightPath;
