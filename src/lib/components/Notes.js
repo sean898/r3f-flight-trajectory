@@ -6,7 +6,7 @@ function Notes({notes}) {
     return notes.map(({x, y, z, text}, i) => (
         <mesh key={`notes=${i}`} position={[x, y, z]}>
             <Html wrapperClass="hover-info-wrapper">
-                <div class="note-annotation">{text}</div>
+                <div className="note-annotation">{text}</div>
             </Html>
         </mesh>
     ));
