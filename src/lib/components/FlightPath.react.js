@@ -43,6 +43,7 @@ const FlightPath = ({
     traceTitles,
     headingOffset,
     notes,
+    traceColors,
 }) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -129,7 +130,7 @@ const FlightPath = ({
                     <group key={`trace-${i}`}>
                         <Path
                             coords={coords[i]}
-                            color={'lightblue'}
+                            color={traceColors[i % data.length]}
                             onHover={onTraceHover}
                             onClick={onTraceClick}
                             segmentInfo={segmentInfo[i]}
@@ -267,6 +268,7 @@ FlightPath.defaultProps = {
     ],
     traceTitles: [],
     notes: [],
+    traceColors: ['lightblue', 'pink', 'green'],
 };
 
 FlightPath.propTypes = {
@@ -316,6 +318,9 @@ FlightPath.propTypes = {
 
     /** Entries of text notes and coordinates */
     notes: PropTypes.array,
+
+    /** Array of colors corresponding to traces in `data` */
+    traceColors: PropTypes.array,
 };
 
 export default FlightPath;

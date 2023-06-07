@@ -6,19 +6,18 @@ import PropTypes from 'prop-types';
 
 const defaultColor = [0.5, 0.6, 0.9];
 const defaultColorObj = new THREE.Color(...defaultColor);
-function chooseColors(n, segmentInfo) {
+function chooseColors(n, segmentInfo, baseColor) {
     if (n < 2) return null;
     let colors = new Array();
     let pointIndex = 0;
     segmentInfo.forEach(({start, end, color}, i) => {
         if (pointIndex < start) {
-            colors.push(...Array(start - pointIndex).fill(defaultColor));
+            colors.push(...Array(start - pointIndex).fill(baseColor));
         }
         colors.push(...Array(end - start).fill(color));
         pointIndex = end;
     });
-    if (pointIndex < n)
-        colors.push(...Array(n - pointIndex).fill(defaultColor));
+    if (pointIndex < n) colors.push(...Array(n - pointIndex).fill(baseColor));
 
     return colors;
 }
@@ -27,12 +26,23 @@ let box = new Box3();
 const range = 30;
 
 /** The flight path */
-function Path({coords, onHover, onClick, segmentInfo, followMode, index}) {
+function Path({
+    coords,
+    onHover,
+    onClick,
+    segmentInfo,
+    followMode,
+    index,
+    color,
+}) {
+    const colorObj = useMemo(() => {
+        return new THREE.Color(color);
+    }, [color]);
     const colors = useMemo(() => {
         return coords == null || coords.length == 0
             ? []
-            : chooseColors(coords.length, segmentInfo);
-    }, [coords, segmentInfo]);
+            : chooseColors(coords.length, segmentInfo, colorObj);
+    }, [coords, segmentInfo, colorObj]);
     const hoverCallback = useCallback(
         (e) => {
             e.stopPropagation();
@@ -103,12 +113,16 @@ Path.propTypes = {
 
     /** Index of traces drawn. */
     index: PropTypes.number,
+
+    /** Color for trace */
+    color: PropTypes.string,
 };
 
 Path.defaultProps = {
     coords: [],
     segmentInfo: [],
     followMode: false,
+    color: 'lightblue',
 };
 
 export {Path};
