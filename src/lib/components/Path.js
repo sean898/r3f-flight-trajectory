@@ -105,7 +105,7 @@ Path.propTypes = {
     /** Function for clicking on path line */
     onClick: PropTypes.func,
 
-    /** Segment info */
+    /** Segment info containing 'start', 'end', 'color' fields */
     segmentInfo: PropTypes.array,
 
     /** Follow mode enabled */

@@ -44,6 +44,7 @@ const FlightPath = ({
     headingOffset,
     notes,
     traceColors,
+    aircraftColors,
 }) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -146,7 +147,7 @@ const FlightPath = ({
                                 playbackSpeed={playbackSpeed}
                                 aircraftRef={aircraftRefs.current[i]}
                                 index={i}
-                                color={i === 0 ? 'green' : 'orange'}
+                                color={aircraftColors[i % data.length]}
                                 key={`aircraft-${i}`}
                                 headingOffset={headingOffset}
                             />
@@ -269,6 +270,7 @@ FlightPath.defaultProps = {
     traceTitles: [],
     notes: [],
     traceColors: ['lightblue', 'pink', 'green'],
+    aircraftColors: ['green', 'orange', 'black'],
 };
 
 FlightPath.propTypes = {
@@ -321,6 +323,9 @@ FlightPath.propTypes = {
 
     /** Array of colors corresponding to traces in `data` */
     traceColors: PropTypes.array,
+
+    /** Array of colors for aircraft model corresponding to traces in `data` */
+    aircraftColors: PropTypes.array,
 };
 
 export default FlightPath;
