@@ -115,6 +115,15 @@ const FlightPath = ({
         }
     }, [bounds]);
 
+    // Update animateData output on aircraft movement
+    useEffect(() => {
+        if (followMode && setProps) {
+            setProps({animateData: getOutputData(counter, targetTraceIndex)});
+        } else {
+            setProps({animateData: null});
+        }
+    }, [counter, targetTraceIndex, data]);
+
     /** Reference:
      *  https://stackoverflow.com/questions/54633690/how-can-i-use-multiple-refs-for-an-array-of-elements-with-hooks/ */
     if (coords != null && aircraftRefs.current.length !== coords.length) {
@@ -308,6 +317,9 @@ FlightPath.propTypes = {
 
     /** Updated on click */
     clickData: PropTypes.object,
+
+    /** Updated on animate (counter change) */
+    animateData: PropTypes.object,
 
     /** Fields in data to show in hover info */
     hoverInfoFields: PropTypes.array,

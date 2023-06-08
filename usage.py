@@ -13,9 +13,14 @@ flight_data = 'src/demo/data/'
 
 app.layout = html.Div(style={'display': 'flex', 'maxHeight': '100vh', 'height': '100vh', 'overflow': 'hidden', 'flexDirection': 'column'}, children=[
     dcc.Dropdown(id='file-select'),
-    html.Div(style={'display': 'none'}, children=[
+    html.Details(children=[
+        html.Summary('Data events'), 
+        html.Label('hover'),
         html.Pre(id='hover-data'),
+        html.Label('click'),
         html.Pre(id='click-data'),
+        html.Label('animate'),
+        html.Pre(id='animate-data'),
     ]),
     flight_path.FlightPath(
         id='path',
@@ -66,6 +71,14 @@ def set_hover_data(data):
 )
 def set_click_data(data):
     return json.dumps(data, indent=2)
+
+@app.callback(
+    Output('animate-data', 'children'),
+    Input('path', 'animateData')
+)
+def set_animate(data):
+    return json.dumps(data, indent=2)
+
 
 
 @app.callback(
