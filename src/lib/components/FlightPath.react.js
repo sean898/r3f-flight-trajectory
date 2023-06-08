@@ -43,6 +43,8 @@ const FlightPath = ({
     traceTitles,
     headingOffset,
     notes,
+    traceColors,
+    aircraftColors,
 }) => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [coords, setCoords] = useState(null);
@@ -113,6 +115,15 @@ const FlightPath = ({
         }
     }, [bounds]);
 
+    // Update animateData output on aircraft movement
+    useEffect(() => {
+        if (followMode && setProps) {
+            setProps({animateData: getOutputData(counter, targetTraceIndex)});
+        } else {
+            setProps({animateData: null});
+        }
+    }, [counter, targetTraceIndex, data]);
+
     /** Reference:
      *  https://stackoverflow.com/questions/54633690/how-can-i-use-multiple-refs-for-an-array-of-elements-with-hooks/ */
     if (coords != null && aircraftRefs.current.length !== coords.length) {
@@ -129,7 +140,7 @@ const FlightPath = ({
                     <group key={`trace-${i}`}>
                         <Path
                             coords={coords[i]}
-                            color={'lightblue'}
+                            color={traceColors[i % data.length]}
                             onHover={onTraceHover}
                             onClick={onTraceClick}
                             segmentInfo={segmentInfo[i]}
@@ -145,7 +156,7 @@ const FlightPath = ({
                                 playbackSpeed={playbackSpeed}
                                 aircraftRef={aircraftRefs.current[i]}
                                 index={i}
-                                color={i === 0 ? 'green' : 'orange'}
+                                color={aircraftColors[i % data.length]}
                                 key={`aircraft-${i}`}
                                 headingOffset={headingOffset}
                             />
@@ -267,6 +278,8 @@ FlightPath.defaultProps = {
     ],
     traceTitles: [],
     notes: [],
+    traceColors: ['lightblue', 'pink', 'green'],
+    aircraftColors: ['green', 'orange', 'black'],
 };
 
 FlightPath.propTypes = {
@@ -305,6 +318,9 @@ FlightPath.propTypes = {
     /** Updated on click */
     clickData: PropTypes.object,
 
+    /** Updated on animate (counter change) */
+    animateData: PropTypes.object,
+
     /** Fields in data to show in hover info */
     hoverInfoFields: PropTypes.array,
 
@@ -316,6 +332,12 @@ FlightPath.propTypes = {
 
     /** Entries of text notes and coordinates */
     notes: PropTypes.array,
+
+    /** Array of colors corresponding to traces in `data` */
+    traceColors: PropTypes.array,
+
+    /** Array of colors for aircraft model corresponding to traces in `data` */
+    aircraftColors: PropTypes.array,
 };
 
 export default FlightPath;
