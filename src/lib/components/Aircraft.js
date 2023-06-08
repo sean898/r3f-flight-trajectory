@@ -74,20 +74,12 @@ export default function Aircraft({
             const distance = camera.position.distanceTo(
                 aircraftRef.current.position
             );
-            // if (distance > 10000) {
-            //     scale = maxModelScale;
-            // } else if (distance > 5000) {
-            //     scale = maxModelScale / 2;
-            // } else {
-            //     scale = minModelScale;
-            // }
             scale = (distance * 5) / window.innerWidth;
             if (
                 scale &&
                 modelRef.current != null &&
                 scale != modelRef.current.scale
             ) {
-                console.log(distance, window.innerWidth, scale);
                 modelRef.current.scale.set(scale, scale, scale);
                 modelRef.current.updateMatrix();
             }
