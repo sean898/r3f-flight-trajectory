@@ -11,6 +11,38 @@ app = dash.Dash(__name__, update_title=None)
 
 flight_data = 'src/demo/data/'
 
+
+colorPalette = [
+    [0.9, 0, 0],
+    [0, 0.0, 0],
+    [0, 0, 0.90],
+    [0.9, 0, 0.9],
+]
+
+segmentInfo=[
+    {
+        'start': 10,
+        'end': 50,
+        'maneuver': 'ManeuverA',
+        'number': 1,
+        'color': colorPalette[0],
+    },
+    {
+        'start': 100,
+        'end': 140,
+        'maneuver': 'ManeuverB',
+        'number': 1,
+        'color': colorPalette[1],
+    },
+    {
+        'start': 150,
+        'end': 160,
+        'maneuver': 'ManeuverA',
+        'number': 2,
+        'color': colorPalette[2],
+    },
+]
+
 app.layout = html.Div(style={'display': 'flex', 'maxHeight': '100vh', 'height': '100vh', 'overflow': 'hidden', 'flexDirection': 'column'}, children=[
     dcc.Dropdown(id='file-select'),
     html.Details(children=[
@@ -24,7 +56,6 @@ app.layout = html.Div(style={'display': 'flex', 'maxHeight': '100vh', 'height': 
     ]),
     flight_path.FlightPath(
         id='path',
-        segmentInfo=[],
         modelFile=app.get_asset_url('F-16.glb'),
         counter=0
     ),
@@ -109,6 +140,7 @@ def choose_file(options):
 @app.callback(
     Output('flight-data', 'data'),
     Output('path', 'traceTitles'),
+    Output('path', 'segmentInfo'),
     Input('file-select', 'value')
 )
 def load_data(file):
@@ -130,10 +162,12 @@ def load_data(file):
     df = pd.concat([df, df_copy])
     data = []
     traceTitles = [] 
+    pathSegmentInfo = []
     for i, gdf in df.groupby('flight_label', as_index=False):
         data.append(gdf.to_dict(orient='records'))
+        pathSegmentInfo.append(segmentInfo)
         traceTitles.append(i)
-    return data, traceTitles
+    return data, traceTitles, pathSegmentInfo
 
     return [df.to_dict(orient='records')]
 
