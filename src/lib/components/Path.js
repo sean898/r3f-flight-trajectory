@@ -8,17 +8,10 @@ const defaultColor = [0.5, 0.6, 0.9];
 const defaultColorObj = new THREE.Color(...defaultColor);
 function chooseColors(n, segmentInfo, baseColor) {
     if (n < 2) return null;
-    let colors = new Array();
-    let pointIndex = 0;
-    segmentInfo.forEach(({start, end, color}, i) => {
-        if (pointIndex < start) {
-            colors.push(...Array(start - pointIndex).fill(baseColor));
-        }
-        colors.push(...Array(end - start).fill(color));
-        pointIndex = end;
-    });
-    if (pointIndex < n) colors.push(...Array(n - pointIndex).fill(baseColor));
-
+    let colors = new Array(n).fill(baseColor);
+    for (let segment of segmentInfo) {
+        colors.fill(segment.color, segment.start, segment.end + 1);
+    }
     return colors;
 }
 
