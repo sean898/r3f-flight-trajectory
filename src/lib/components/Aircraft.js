@@ -9,7 +9,8 @@ import {useSpring, animated} from '@react-spring/three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 
 const minModelScale = 0.6;
-const maxModelScale = 30;
+const maxModelScale = 60;
+const modelScaleFactor = 5;
 let scale, xRot, yRot, zRot;
 let euler = new Euler();
 
@@ -74,13 +75,10 @@ export default function Aircraft({
             const distance = camera.position.distanceTo(
                 aircraftRef.current.position
             );
-            if (distance > 10000) {
-                scale = maxModelScale;
-            } else if (distance > 5000) {
-                scale = maxModelScale / 2;
-            } else {
-                scale = minModelScale;
-            }
+            scale = Math.min(
+                maxModelScale,
+                (distance * modelScaleFactor) / window.innerWidth
+            );
             if (
                 scale &&
                 modelRef.current != null &&
@@ -90,7 +88,13 @@ export default function Aircraft({
                 modelRef.current.updateMatrix();
             }
         }
-    }, [playing, positionData, playbackSpeed, headingOffset]);
+    }, [
+        window.innerWidth,
+        playing,
+        positionData,
+        playbackSpeed,
+        headingOffset,
+    ]);
 
     return (
         <animated.group ref={aircraftRef} position={springPosition}>
