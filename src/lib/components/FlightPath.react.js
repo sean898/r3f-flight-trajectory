@@ -117,10 +117,14 @@ const FlightPath = ({
 
     // Update animateData output on aircraft movement
     useEffect(() => {
-        if (followMode && setProps) {
-            setProps({animateData: getOutputData(counter, targetTraceIndex)});
-        } else {
-            setProps({animateData: null});
+        if (setProps) {
+            if (targetTraceIndex != null) {
+                setProps({
+                    animateData: getOutputData(counter, targetTraceIndex),
+                });
+            } else {
+                setProps({animateData: null});
+            }
         }
     }, [counter, targetTraceIndex, data]);
 

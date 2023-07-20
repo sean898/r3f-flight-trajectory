@@ -1,6 +1,6 @@
 Package: flightPath
 Title: 3D trajectory plot of aircraft flight data
-Version: 0.0.3
+Version: 0.0.4
 Description: 3D trajectory plot of aircraft flight data
 Depends: R (>= 3.0.2)
 Imports: 
